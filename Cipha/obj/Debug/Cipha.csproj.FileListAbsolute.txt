@@ -1,5 +1,0 @@
-D:\vsproj\Cipha\Cipha\bin\Debug\Cipha.pdb
-D:\vsproj\Cipha\Cipha\obj\Debug\Cipha.pdb
-D:\vsproj\Cipha\Cipha\bin\Debug\Cipha.dll.config
-D:\vsproj\Cipha\Cipha\bin\Debug\Cipha.dll
-D:\vsproj\Cipha\Cipha\obj\Debug\Cipha.dll

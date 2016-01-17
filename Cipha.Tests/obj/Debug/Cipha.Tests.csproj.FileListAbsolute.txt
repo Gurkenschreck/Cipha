@@ -1,7 +1,0 @@
-D:\vsproj\Cipha\Cipha.Tests\bin\Debug\Cipha.Tests.dll
-D:\vsproj\Cipha\Cipha.Tests\bin\Debug\Cipha.Tests.pdb
-D:\vsproj\Cipha\Cipha.Tests\obj\Debug\Cipha.Tests.csprojResolveAssemblyReference.cache
-D:\vsproj\Cipha\Cipha.Tests\obj\Debug\Cipha.Tests.dll
-D:\vsproj\Cipha\Cipha.Tests\obj\Debug\Cipha.Tests.pdb
-D:\vsproj\Cipha\Cipha.Tests\bin\Debug\Cipha.dll
-D:\vsproj\Cipha\Cipha.Tests\bin\Debug\Cipha.pdb
