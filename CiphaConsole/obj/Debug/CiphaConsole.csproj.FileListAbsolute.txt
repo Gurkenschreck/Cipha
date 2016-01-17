@@ -1,0 +1,8 @@
+D:\vsproj\Cipha\CiphaConsole\bin\Debug\CiphaConsole.exe.config
+D:\vsproj\Cipha\CiphaConsole\bin\Debug\CiphaConsole.exe
+D:\vsproj\Cipha\CiphaConsole\bin\Debug\CiphaConsole.pdb
+D:\vsproj\Cipha\CiphaConsole\bin\Debug\Cipha.pdb
+D:\vsproj\Cipha\CiphaConsole\obj\Debug\CiphaConsole.csprojResolveAssemblyReference.cache
+D:\vsproj\Cipha\CiphaConsole\obj\Debug\CiphaConsole.exe
+D:\vsproj\Cipha\CiphaConsole\obj\Debug\CiphaConsole.pdb
+D:\vsproj\Cipha\CiphaConsole\bin\Debug\Cipha.dll

@@ -1,0 +1,8 @@
+D:\vsproj\Cipha\TestinggroundConsole\bin\Debug\TestinggroundConsole.exe.config
+D:\vsproj\Cipha\TestinggroundConsole\bin\Debug\TestinggroundConsole.exe
+D:\vsproj\Cipha\TestinggroundConsole\bin\Debug\TestinggroundConsole.pdb
+D:\vsproj\Cipha\TestinggroundConsole\obj\Debug\TestinggroundConsole.csprojResolveAssemblyReference.cache
+D:\vsproj\Cipha\TestinggroundConsole\obj\Debug\TestinggroundConsole.exe
+D:\vsproj\Cipha\TestinggroundConsole\obj\Debug\TestinggroundConsole.pdb
+D:\vsproj\Cipha\TestinggroundConsole\bin\Debug\Cipha.dll
+D:\vsproj\Cipha\TestinggroundConsole\bin\Debug\Cipha.pdb
