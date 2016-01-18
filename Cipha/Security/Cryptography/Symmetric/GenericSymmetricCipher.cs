@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Cipha.Security.Cryptography
+namespace Cipha.Security.Cryptography.Symmetric
 {
     /// <summary>
     /// The GenericSymmetricCipher class provides
@@ -38,7 +38,22 @@ namespace Cipha.Security.Cryptography
         public int? KeySize
         {
             get { return keySize; }
-            set { keySize = value; }
+            set 
+            {
+                if (value == null)
+                    throw new InvalidOperationException("new keysize value is null");
+
+                using(SymmetricAlgorithm algo = new T())
+                {
+                    if (algo.ValidKeySize((int)value))
+                    {
+                        keySize = value;
+
+                    }
+                    else
+                        throw new CryptographicException("invalid new keysize");
+                }
+            }
         }
 
         private Encoding encoding = Encoding.Default;
@@ -176,38 +191,105 @@ namespace Cipha.Security.Cryptography
             }
         }
 
-        public void EncryptFile(string inName, string outName)
+        /// <summary>
+        /// Encrypts a file using the SymmetricAlgorithm T.
+        /// 
+        /// If you do not have a key or iv, pass null for both,
+        /// those references will be filled with the key and
+        /// iv used in the process.
+        /// 
+        /// When only a key or a iv is given, it is not used.
+        /// 
+        /// Store the generated key and iv for later decryption.
+        /// </summary>
+        /// <param name="inFile">The file to read.</param>
+        /// <param name="outFile">The output file.</param>
+        /// <param name="key">The key to use. Passing null generates a key.</param>
+        /// <param name="iv"></param>
+        public void EncryptFile(string inFile, string outFile, ref byte[] key, ref byte[] iv)
         {
-            EncryptFile(inName, outName, null, null);
-        }
+            if (!File.Exists(inFile))
+                throw new FileNotFoundException("inFile not found: " + inFile);
 
-        public void EncryptFile(string inName, string outName, byte[] key, byte[] iv)
-        {
-            using(FileStream fIn = new FileStream(inName, FileMode.Open, FileAccess.Read))
+            using(FileStream fIn = new FileStream(inFile, FileMode.Open, FileAccess.Read))
             {
+                //Create variables to help with read and write.
+                int bufferLength = 100;
+                byte[] bin = new byte[bufferLength]; //This is intermediate storage for the encryption.
+                long rdlen = 0;              //This is the total number of bytes written.
+                long totlen = fIn.Length;    //This is the total length of the input file.
+                int len;                    //This is the number of bytes to be written at a time.
+
                 using (SymmetricAlgorithm algo = new T())
                 {
+                    SetKeySize(algo, keySize);
+
                     if (key != null && iv != null)
                     {
                         algo.Key = key;
                         algo.IV = iv;
                     }
-
-                    using(FileStream fOut = new FileStream(outName, FileMode.OpenOrCreate, FileAccess.Write))
+                    else
+                    {
+                        key = algo.Key;
+                        iv = algo.IV;
+                    }
+                    
+                    using(FileStream fOut = new FileStream(outFile, FileMode.OpenOrCreate, FileAccess.Write))
                     {                    
                         using(CryptoStream encStream = new CryptoStream(fOut, algo.CreateEncryptor(), CryptoStreamMode.Write))
                         {
-                            //Create variables to help with read and write.
-                            byte[] bin = new byte[100]; //This is intermediate storage for the encryption.
-                            long rdlen = 0;              //This is the total number of bytes written.
-                            long totlen = fIn.Length;    //This is the total length of the input file.
-                            int len;                     //This is the number of bytes to be written at a time.
-
                             while (rdlen < totlen)
                             {
-                                len = fIn.Read(bin, 0, 100);
+                                len = fIn.Read(bin, 0, bufferLength);
                                 encStream.Write(bin, 0, len);
                                 rdlen = rdlen + len;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        /// <summary>
+        /// Decrypts a file which was previously encrypted
+        /// with the alogrithm T.
+        /// </summary>
+        /// <param name="inFile">The encrypted file.</param>
+        /// <param name="outFile">The output file.</param>
+        /// <param name="key">The key used.</param>
+        /// <param name="iv">The iv used.</param>
+        public void DecryptFile(string inFile, string outFile, byte[] key, byte[] iv)
+        {
+            if (!File.Exists(inFile))
+                throw new FileNotFoundException("inFile not found: " + inFile);
+
+            using (FileStream fIn = new FileStream(inFile, FileMode.Open, FileAccess.Read))
+            {
+                //Create variables to help with read and write.
+                int bufferLength = 100;
+                byte[] bin = new byte[bufferLength]; //This is intermediate storage for the encryption.
+                long totlen = fIn.Length;    //This is the total length of the input file.
+
+                using (SymmetricAlgorithm algo = new T())
+                {
+                    SetKeySize(algo, keySize);
+
+                    if (key != null && iv != null)
+                    {
+                        algo.Key = key;
+                        algo.IV = iv;
+                    }
+                    
+                    using (FileStream fOut = new FileStream(outFile, FileMode.OpenOrCreate, FileAccess.Write))
+                    {
+                        using (CryptoStream decStream = new CryptoStream(fIn, algo.CreateDecryptor(), CryptoStreamMode.Read))
+                        {
+                            // read byte for byte
+                            int bytee = 0;
+                            while(((bytee = decStream.ReadByte()) != -1))
+                            {
+                                fOut.WriteByte((byte)bytee);
                             }
                         }
                     }

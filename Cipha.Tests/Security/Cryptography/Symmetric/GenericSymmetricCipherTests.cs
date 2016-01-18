@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Cipha.Security.Cryptography;
 using System.Security.Cryptography;
 using System.Text;
+using Cipha.Security.Cryptography.Symmetric;
 
 namespace Cipha.Tests.Security.Cryptography.Symmetric
 {

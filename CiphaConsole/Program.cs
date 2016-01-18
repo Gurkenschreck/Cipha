@@ -9,6 +9,7 @@ using Cipha.Security.Cryptography;
 using System.Security.Cryptography;
 using System.IO;
 using System.Reflection;
+using Cipha.Security.Cryptography.Symmetric;
 
 namespace CiphaConsole
 {
