@@ -25,6 +25,11 @@ namespace Cipha.Security.Cryptography.Symmetric
     /// 
     /// The standard encoding of the strings is UTF8 but can be
     /// changed via the property Encoding.
+    /// 
+    /// GenericSymmetricCipher does not hold any sensitive data.
+    /// Each time a Method is called, a new instance of the
+    /// symmetric algorithm is created, whose values is set
+    /// to the previously set properties of this class.
     /// </summary>
     /// <typeparam name="T">The specific SymmetricAlgorithm to be used for en- and decryption.</typeparam>
     public class GenericSymmetricCipher<T>
@@ -41,7 +46,7 @@ namespace Cipha.Security.Cryptography.Symmetric
             set 
             {
                 if (value == null)
-                    throw new InvalidOperationException("new keysize value is null");
+                    throw new ArgumentNullException("value");
 
                 using(SymmetricAlgorithm algo = new T())
                 {
@@ -67,14 +72,46 @@ namespace Cipha.Security.Cryptography.Symmetric
             set 
             {
                 if (value == null)
-                    throw new InvalidOperationException("encoding cannot be set to null");
+                    throw new ArgumentNullException("value");
                 encoding = value; 
+            }
+        }
+
+        private PaddingMode padding = PaddingMode.PKCS7;
+        /// <summary>
+        /// The padding to be used in the cryptographic
+        /// processes.
+        /// </summary>
+        public PaddingMode Padding
+        {
+            get { return padding; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                padding = value;
+            }
+        }
+
+        private CipherMode mode = CipherMode.CBC;
+        /// <summary>
+        /// The CipherMode which shall be used
+        /// in the cryptographic process.
+        /// </summary>
+        public CipherMode Mode
+        {
+            get { return mode; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                mode = value;
             }
         }
 
 
         /// <summary>
-        /// Provides help encrypting a string with any encryption algorithm
+        /// Provides help encrypting a string with any encryption algo
         /// extending from SymmetricAlgorithm.
         /// Possible algorithms to use are
         /// AesManages, TripleDESCryptoServiceprovider, RijndaelManaged
@@ -91,13 +128,11 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <summary>
         /// Provides help encrypting a string with any encryption algorithm
         /// extending from SymmetricAlgorithm.
-        /// Possible algorithms to use are
-        /// AesManages, TripleDESCryptoServiceprovider, RijndaelManaged
         /// </summary>
         /// <typeparam name="T">The subclass of SymmetricAlgorithm.</typeparam>
         /// <param name="plainData">The plain data to encrypt.</param>
-        /// <param name="password"></param>
-        /// <param name="salt"></param>
+        /// <param name="password">The password for the encryption process.</param>
+        /// <param name="salt">The salt to be used.</param>
         /// <returns></returns>
         public byte[] Encrypt(byte[] plainData, string password, string salt)
         {
@@ -110,14 +145,14 @@ namespace Cipha.Security.Cryptography.Symmetric
 
             DeriveBytes rgb = new Rfc2898DeriveBytes(password, encoding.GetBytes(salt));
 
-            SymmetricAlgorithm algorithm = new T();
+            SymmetricAlgorithm algo = new T();
+            
+            ApplyConfigurations(algo);
 
-            SetKeySize(algorithm, keySize);
+            byte[] rgbKey = rgb.GetBytes(algo.KeySize >> 3);
+            byte[] rgbIV = rgb.GetBytes(algo.BlockSize >> 3);
 
-            byte[] rgbKey = rgb.GetBytes(algorithm.KeySize >> 3);
-            byte[] rgbIV = rgb.GetBytes(algorithm.BlockSize >> 3);
-
-            ICryptoTransform transform = algorithm.CreateEncryptor(rgbKey, rgbIV);
+            ICryptoTransform transform = algo.CreateEncryptor(rgbKey, rgbIV);
 
             using (MemoryStream buffer = new MemoryStream())
             {
@@ -128,7 +163,7 @@ namespace Cipha.Security.Cryptography.Symmetric
                         writer.Write(encoding.GetString(plainData));
                     }
                 }
-                algorithm.Dispose();
+                algo.Dispose();
                 return buffer.ToArray();
             }
         }
@@ -149,12 +184,12 @@ namespace Cipha.Security.Cryptography.Symmetric
         }
 
         /// <summary>
-        /// Provides help decrypting a string with any encryption algorithm
+        /// Provides help decrypting a string with any encryption algo
         /// extending from SymmetricAlgorithm.
         /// Possible algorithms to use are
         /// AesManages, TripleDESCryptoServiceprovider, RijndaelManaged
         /// </summary>
-        /// <typeparam name="T">The algorithm deriving from SymmetricAlgorithm.</typeparam>
+        /// <typeparam name="T">The algo deriving from SymmetricAlgorithm.</typeparam>
         /// <param name="cipherData">The previously encrypted plain data.</param>
         /// <param name="password">The password to decrypt.</param>
         /// <param name="salt">The salt used to encrypt the data.</param>
@@ -169,14 +204,14 @@ namespace Cipha.Security.Cryptography.Symmetric
                 throw new ArgumentNullException("salt");
             DeriveBytes rgb = new Rfc2898DeriveBytes(password, encoding.GetBytes(salt));
 
-            SymmetricAlgorithm algorithm = new T();
+            SymmetricAlgorithm algo = new T();
 
-            SetKeySize(algorithm, KeySize);
+            ApplyConfigurations(algo);
 
-            byte[] rgbKey = rgb.GetBytes(algorithm.KeySize >> 3);
-            byte[] rgbIV = rgb.GetBytes(algorithm.BlockSize >> 3);
+            byte[] rgbKey = rgb.GetBytes(algo.KeySize >> 3);
+            byte[] rgbIV = rgb.GetBytes(algo.BlockSize >> 3);
 
-            ICryptoTransform transform = algorithm.CreateDecryptor(rgbKey, rgbIV);
+            ICryptoTransform transform = algo.CreateDecryptor(rgbKey, rgbIV);
 
             using (MemoryStream buffer = new MemoryStream(cipherData))
             {
@@ -184,7 +219,7 @@ namespace Cipha.Security.Cryptography.Symmetric
                 {
                     using (StreamReader reader = new StreamReader(stream, encoding))
                     {
-                        algorithm.Dispose();
+                        algo.Dispose();
                         return encoding.GetBytes(reader.ReadToEnd());
                     }
                 }
@@ -222,7 +257,7 @@ namespace Cipha.Security.Cryptography.Symmetric
 
                 using (SymmetricAlgorithm algo = new T())
                 {
-                    SetKeySize(algo, keySize);
+                    ApplyConfigurations(algo);
 
                     if (key != null && iv != null)
                     {
@@ -273,7 +308,7 @@ namespace Cipha.Security.Cryptography.Symmetric
 
                 using (SymmetricAlgorithm algo = new T())
                 {
-                    SetKeySize(algo, keySize);
+                    ApplyConfigurations(algo);
 
                     if (key != null && iv != null)
                     {
@@ -298,6 +333,21 @@ namespace Cipha.Security.Cryptography.Symmetric
         }
 
         /// <summary>
+        /// Sets the configuration of the SymmetricAlgorithm.
+        /// </summary>
+        /// <param name="algo">The algorithm to configure.</param>
+        private void ApplyConfigurations(SymmetricAlgorithm algo)
+        {
+            if (algo.Padding != padding)
+                algo.Padding = padding;
+
+            if (algo.Mode != mode)
+                algo.Mode = mode;
+
+            SetKeySize(algo, keySize);
+        }
+
+        /// <summary>
         /// Sets the keysize of the SymmetricAlgorithm if a
         /// size is given.
         /// 
@@ -306,7 +356,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// 
         /// Throws CryptographicException if the keySize is invalid.
         /// </summary>
-        /// <param name="algo">The algorithm to change the keysize.</param>
+        /// <param name="algo">The algo to change the keysize.</param>
         /// <param name="keySize">The keysize to set.</param>
         private void SetKeySize(SymmetricAlgorithm algo, int? keySize)
         {
