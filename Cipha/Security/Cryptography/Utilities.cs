@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -22,6 +23,43 @@ namespace Cipha.Security.Cryptography
             for (int i = 0; i < a.Length && i < b.Length; i++)
                 diff |= (uint)(a[i] ^ b[i]);
             return diff == 0;
+        }
+
+        /// <summary>
+        /// Uses the ValidKeySize method implementation of
+        /// the SymmetricAlgorithm class.
+        /// </summary>
+        /// <param name="algo">The symmetric algorithm to validate the size for.</param>
+        /// <param name="bitLength">The requested block length in bits.</param>
+        /// <returns>If the bitLenght is a valid block size.</returns>
+        public static bool ValidSymmetricBlockSize(SymmetricAlgorithm algo, int bitLength)
+        {
+            KeySizes[] validSizes = algo.LegalBlockSizes;
+            int i, j;
+
+            if (validSizes == null) return false;
+            for (i = 0; i < validSizes.Length; i++)
+            {
+                if (validSizes[i].SkipSize == 0)
+                {
+                    if (validSizes[i].MinSize == bitLength)
+                    { // assume MinSize = MaxSize
+                        return true;
+                    }
+                }
+                else
+                {
+                    for (j = validSizes[i].MinSize; j <= validSizes[i].MaxSize;
+                         j += validSizes[i].SkipSize)
+                    {
+                        if (j == bitLength)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
     }
 }
