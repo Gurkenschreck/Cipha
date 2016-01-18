@@ -87,8 +87,6 @@ namespace Cipha.Security.Cryptography.Symmetric
             get { return padding; }
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException("value");
                 padding = value;
             }
         }
@@ -103,8 +101,6 @@ namespace Cipha.Security.Cryptography.Symmetric
             get { return mode; }
             set
             {
-                if (value == null)
-                    throw new ArgumentNullException("value");
                 mode = value;
             }
         }

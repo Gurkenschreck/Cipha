@@ -40,7 +40,7 @@ namespace Sandbox
                         ms.WriteByte(0x00);
                     }
                 }
-                catch (OutOfMemoryException ex) { }
+                catch (OutOfMemoryException) { }
                 finally
                 {
                     ms.Close();
