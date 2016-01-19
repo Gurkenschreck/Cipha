@@ -9,26 +9,9 @@ namespace Cipha.Tests.Security.Cryptography.Hash
     [TestClass]
     public class GenericHasherTests
     {
-        [TestMethod]
-        public void StringSHA512Hash()
-        {
-            GenericHasher<SHA512Managed> hasher = new GenericHasher<SHA512Managed>();
-
-            string stringToHash = "This is my cool hasher!";
-            byte[] stringToHashBytes;
-            byte[] hashed;
-            string base64Hash;
-
-            stringToHashBytes = hasher.Encoding.GetBytes(stringToHash);
-
-            hashed = hasher.ComputeHash(stringToHashBytes);
-
-            base64Hash = Convert.ToBase64String(hashed);
-            Assert.AreEqual("VWCtgRIln4ysDD8kVqdoRDtUazQlEzRJtGXLJFqE49CUwTFmPF+agJsqZl4R3Od77Hv9k5x5Ozl+z+XjGYLqnA==", base64Hash);
-        }
 
         [TestMethod]
-        public void ComputeHashBase64Test()
+        public void SHA512BasicHash_GenerateHash_CompareOutput()
         {
             GenericHasher<SHA512Managed> hasher = new GenericHasher<SHA512Managed>();
             string stringToHash;
@@ -42,7 +25,7 @@ namespace Cipha.Tests.Security.Cryptography.Hash
         }
 
         [TestMethod]
-        public void ComputeMD5Hash()
+        public void MD5BasicHash_GenerateHexHash_CompareOutput()
         {
             GenericHasher<MD5CryptoServiceProvider> hasher = new GenericHasher<MD5CryptoServiceProvider>();
             string stringToHash = "This is my hashable stuff";
@@ -52,7 +35,7 @@ namespace Cipha.Tests.Security.Cryptography.Hash
         }
 
         [TestMethod]
-        public void ComputeMD5HashAndCompareToOriginalImplementation()
+        public void MD5CompareHash_GenerateHash_EqualHashReturnsTrue()
         {
             GenericHasher<MD5CryptoServiceProvider> hasher = new GenericHasher<MD5CryptoServiceProvider>();
             string stringToHash = "This is my hashable stuff";
@@ -63,9 +46,9 @@ namespace Cipha.Tests.Security.Cryptography.Hash
         }
 
         [TestMethod]
-        public void CompareSHA512HashString()
+        public void SHA256BasicHash_GenerateHash_EqualsTrueReturnsSameOutput()
         {
-            GenericHasher<SHA512Managed> hasher = new GenericHasher<SHA512Managed>();
+            GenericHasher<SHA256Managed> hasher = new GenericHasher<SHA256Managed>();
             hasher.Encoding = Encoding.UTF8;
             string stringA = "welcoMe";
             string stringB = "welcoMe";

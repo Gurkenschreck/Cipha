@@ -53,6 +53,7 @@
     <Compile Include="Security\Cryptography\Hash\GenericHasher.cs" />
     <Compile Include="Security\Cryptography\Symmetric\GenericSymmetricCipherTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\Cryptography\SymmetricCipherTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cipha\Cipha.csproj">
