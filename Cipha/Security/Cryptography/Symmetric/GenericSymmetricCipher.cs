@@ -183,7 +183,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// Possible algorithms to use are
         /// AesManages, TripleDESCryptoServiceprovider, RijndaelManaged
         /// </summary>
-        /// <param name="plainString">The Unicode string to encrypt.</param>
+        /// <param name="cipherData">The Unicode string to encrypt.</param>
         /// <param name="password">The password to encrypt.</param>
         /// <param name="salt">The salt to encrypt.</param>
         /// <returns></returns>
@@ -197,7 +197,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// extending from SymmetricAlgorithm.
         /// </summary>
         /// <typeparam name="T">The subclass of SymmetricAlgorithm.</typeparam>
-        /// <param name="plainData">The plain data to encrypt.</param>
+        /// <param name="cipherData">The plain data to encrypt.</param>
         /// <param name="password">The password for the encryption process.</param>
         /// <param name="salt">The salt to be used.</param>
         /// <returns></returns>
@@ -230,18 +230,17 @@ namespace Cipha.Security.Cryptography.Symmetric
                         writer.Write(encoding.GetString(plainData));
                     }
                 }
-                algo.Dispose();
                 return buffer.ToArray();
             }
         }
 
         /// <summary>
-        /// Decrypts a cipherString by using the password and salt.
+        /// Decrypts a cipherData by using the password and salt.
         /// 
         /// The character encoding can be changed via the
         /// property Encoding.
         /// </summary>
-        /// <param name="cipherString">The previously encrypted string.</param>
+        /// <param name="cipherData">The previously encrypted string.</param>
         /// <param name="password">The password to decrypt.</param>
         /// <param name="salt">The salt used for decryption.</param>
         /// <returns>The decrypted string.</returns>

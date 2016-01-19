@@ -26,11 +26,5 @@ namespace Cipha.Security.Cryptography
             new RNGCryptoServiceProvider().GetBytes(randomBytes);
             return randomBytes;
         }
-
-        public int GetRandom(int maxValue)
-        {
-
-            throw new NotImplementedException();
-        }
     }
 }
