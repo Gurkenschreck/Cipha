@@ -122,6 +122,37 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
         }
 
         [TestMethod]
+        public void Constructor_ChangeKeySize_ExpectedKey()
+        {
+            string plainText = "Encryption is pretty fun";
+            byte[] plainTextArr = Encoding.UTF8.GetBytes(plainText);
+            int keySize = 128;
+            int newKeySize;
+            using (var cipher = new SymmetricCipher<AesManaged>("mypasswd2", "mysalt1337bb44", keysize: keySize))
+            {
+                newKeySize = cipher.Algorithm.KeySize;
+            }
+
+            Assert.AreEqual(keySize, newKeySize);
+        }
+
+        [ExpectedException(typeof(CryptographicException))]
+        [TestMethod]
+        public void Constructor_ChangeKeySize_FailDueToInvalidKeySize()
+        {
+            string plainText = "Encryption is pretty fun";
+            byte[] plainTextArr = Encoding.UTF8.GetBytes(plainText);
+            int keySize = 234;
+            int newKeySize;
+            using (var cipher = new SymmetricCipher<AesManaged>("mypasswd2", "mysalt1337bb44", keysize: keySize))
+            {
+                newKeySize = cipher.Algorithm.KeySize;
+            }
+
+            Assert.AreEqual(keySize, newKeySize);
+        }
+
+        [TestMethod]
         public void BasicCipher_AesSimpleCryption_ShouldPass()
         {
             string plainText = "Encryption is pretty fun";
@@ -138,6 +169,88 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
             {
                 decryptArr = cipher.Decrypt(encryptArr);
             }
+
+            CollectionAssert.AreEqual(plainTextArr, decryptArr);
+        }
+        [TestMethod]
+        public void BasicCipher_RijndaelSimpleCryption_ShouldPass()
+        {
+            string plainText = "Encryption is pretty fun";
+            byte[] plainTextArr = Encoding.UTF8.GetBytes(plainText);
+            byte[] encryptArr;
+            byte[] decryptArr;
+
+            using (var cipher = new SymmetricCipher<RijndaelManaged>("mypasswd2", "mysalt1337bb44"))
+            {
+                encryptArr = cipher.Encrypt(plainText);
+            }
+
+            using (var cipher = new SymmetricCipher<RijndaelManaged>("mypasswd2", "mysalt1337bb44"))
+            {
+                decryptArr = cipher.Decrypt(encryptArr);
+            }
+
+            CollectionAssert.AreEqual(plainTextArr, decryptArr);
+        }
+        [TestMethod]
+        public void BasicCipher_DESSimpleCryption_ShouldPass()
+        {
+            string plainText = "Encryption is pretty fun";
+            byte[] plainTextArr = Encoding.UTF8.GetBytes(plainText);
+            byte[] encryptArr;
+            byte[] decryptArr;
+
+            using (var cipher = new SymmetricCipher<DESCryptoServiceProvider>("mypasswd2", "mysalt1337bb44"))
+            {
+                encryptArr = cipher.Encrypt(plainText);
+            }
+
+            using (var cipher = new SymmetricCipher<DESCryptoServiceProvider>("mypasswd2", "mysalt1337bb44"))
+            {
+                decryptArr = cipher.Decrypt(encryptArr);
+            }
+
+            CollectionAssert.AreEqual(plainTextArr, decryptArr);
+        }
+        [TestMethod]
+        public void BasicCipher_RC2SimpleCryption_ShouldPass()
+        {
+            string plainText = "Encryption is pretty fun";
+            byte[] plainTextArr = Encoding.UTF8.GetBytes(plainText);
+            byte[] encryptArr;
+            byte[] decryptArr;
+
+            using (var cipher = new SymmetricCipher<RC2CryptoServiceProvider>("mypasswd2", "mysalt1337bb44"))
+            {
+                encryptArr = cipher.Encrypt(plainText);
+            }
+
+            using (var cipher = new SymmetricCipher<RC2CryptoServiceProvider>("mypasswd2", "mysalt1337bb44"))
+            {
+                decryptArr = cipher.Decrypt(encryptArr);
+            }
+
+            CollectionAssert.AreEqual(plainTextArr, decryptArr);
+        }
+        [TestMethod]
+        public void BasicCipher_TrippleDESSimpleCryption_ShouldPass()
+        {
+            string plainText = "Encryption is pretty fun";
+            byte[] plainTextArr = Encoding.UTF8.GetBytes(plainText);
+            byte[] encryptArr;
+            byte[] decryptArr;
+
+            using (var cipher = new SymmetricCipher<TripleDESCryptoServiceProvider>("mypasswd2", "mysalt1337bb44"))
+            {
+                encryptArr = cipher.Encrypt(plainText);
+            }
+
+            using (var cipher = new SymmetricCipher<TripleDESCryptoServiceProvider>("mypasswd2", "mysalt1337bb44"))
+            {
+                decryptArr = cipher.Decrypt(encryptArr);
+            }
+
+            CollectionAssert.AreEqual(plainTextArr, decryptArr);
         }
     }
 }
