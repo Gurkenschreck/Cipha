@@ -9,7 +9,7 @@ using Cipha.Security.Cryptography.Symmetric;
 namespace Cipha.Tests.Security.Cryptography.Symmetric
 {
     [TestClass]
-    public class GenericSymmetricCipherTests
+    public class GenericSymmetricCipherTest
     {
         /// <summary>
         /// Compares the methods of encrypting a string

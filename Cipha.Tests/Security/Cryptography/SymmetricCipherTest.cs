@@ -7,7 +7,7 @@ using System.Text;
 namespace Cipha.Tests.Security.Cryptography
 {
     [TestClass]
-    public class SymmetricCipherTests
+    public class SymmetricCipherTest
     {
         [TestMethod]
         public void AesBasicCipher1_SameInstance_ComparesOutput()
@@ -119,6 +119,16 @@ namespace Cipha.Tests.Security.Cryptography
             {
                 decryptArr = cipher.Decrypt(encryptArr);
             }
+        }
+        [TestMethod]
+        public void Test()
+        {
+            SymmetricCipher<TripleDESCryptoServiceProvider> desprov;
+            using(desprov = new SymmetricCipher<TripleDESCryptoServiceProvider>("mypassword", "thesalt8bis", iterations:1500))
+            {
+
+            }
+            SymmetricAlgorithm algo = desprov.Algorithm;
         }
     }
 }

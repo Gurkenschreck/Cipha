@@ -70,6 +70,8 @@ namespace Cipha.Security.Cryptography
                 hashIterations = 0;
                 encoding = Encoding.ASCII;
                 encoding = null;
+                Utilities.SetArrayValuesZero(salt);
+                salt = null;
             }
 
             DisposeImplementation(disposing);

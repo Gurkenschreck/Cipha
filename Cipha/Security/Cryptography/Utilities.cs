@@ -61,5 +61,33 @@ namespace Cipha.Security.Cryptography
             }
             return false;
         }
+
+        /// <summary>
+        /// Overwrites each value with zeroes.
+        /// </summary>
+        /// <param name="arr">The array to fill.</param>
+        public static void SetArrayValuesZero(byte[] arr)
+        {
+            for (int i = 0; i < arr.Length; i++)
+                arr[i] = 0;
+        }
+        /// <summary>
+        /// Overwrites each value with zeroes.
+        /// </summary>
+        /// <param name="arr">The array to fill.</param>
+        public static void SetArrayValuesZero(int[] arr)
+        {
+            for (int i = 0; i < arr.Length; i++)
+                arr[i] = 0;
+        }
+        /// <summary>
+        /// Overwrites each value with string.Empty.
+        /// </summary>
+        /// <param name="arr">The array to fill.</param>
+        public static void SetArrayValuesEmpty(string[] arr)
+        {
+            for (int i = 0; i < arr.Length; i++)
+                arr[i] = string.Empty;
+        }
     }
 }

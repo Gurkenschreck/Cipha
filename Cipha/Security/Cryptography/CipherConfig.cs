@@ -105,19 +105,18 @@ namespace Cipha.Security.Cryptography
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-        public void Dispose(bool disposing)
+
+        /// <summary>
+        /// Release all ressources.
+        /// </summary>
+        /// <param name="disposing">If the call comes from local Dispose() method.</param>
+        protected void Dispose(bool disposing)
         {
             if(disposing)
             {
-                if(iv != null)
-                for (int i = 0; i < iv.Length; i++)
-                    iv[i] = 0;
-                if(key != null)
-                for (int i = 0; i < key.Length; i++)
-                    key[i] = 0;
-                if(salt != null)
-                for (int i = 0; i < salt.Length; i++)
-                    salt[i] = 0;
+                Utilities.SetArrayValuesZero(iv);
+                Utilities.SetArrayValuesZero(key);
+                Utilities.SetArrayValuesZero(salt);  
 
                 iv = null;
                 key = null;
