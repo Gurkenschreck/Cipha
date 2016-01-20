@@ -94,7 +94,7 @@ namespace Cipha.Security.Cryptography.Symmetric
                 {
                     if (Utilities.ValidSymmetricBlockSize(algo, (int)value))
                     {
-                        keySize = value;
+                        blockSize = value;
                     }
                     else
                         throw new CryptographicException("invalid new block size");

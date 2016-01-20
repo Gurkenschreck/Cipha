@@ -8,11 +8,24 @@ using System.Threading.Tasks;
 
 namespace Cipha.Security.Cryptography.Symmetric
 {
+    /// <summary>
+    /// Cipher implementation for symmetric algorithms.
+    ///  
+    /// Algorithms with full support:
+    ///     AesManaged
+    ///     AesCryptoServiceProvider
+    ///     RC2CryptoServiceProvider
+    ///     RijndaelManaged
+    ///     TrippleDESCryptoServiceProvider
+    /// </summary>
+    /// <typeparam name="T">The symmetric algorithm.</typeparam>
     public sealed class SymmetricCipher<T> : Cipher
         where T : SymmetricAlgorithm, new()
     {
-        SymmetricAlgorithm algo;
+        // Fields
+        T algo;
 
+        // Properties
         /// <summary>
         /// The SymmetricAlgorithm which is used for the
         /// cryptographic processes.
@@ -24,7 +37,23 @@ namespace Cipha.Security.Cryptography.Symmetric
             {
                 if (value == null)
                     throw new ArgumentNullException("value");
-                algo = value; 
+
+                if(value.GetType() == typeof(T))
+                    algo = (T)value;
+
+                throw new ArgumentException("value is not of type " + algo.GetType());
+            }
+        }
+
+        public override int KeySize
+        {
+            get
+            {
+                return algo.KeySize;
+            }
+            set
+            {
+                algo.KeySize = value;
             }
         }
 
@@ -62,8 +91,8 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <param name="password">The password used in the hashing process.</param>
         /// <param name="salt">The salt to use.</param>
         /// <param name="iterations">The iteration count that shall be used in Rfc2898DeriveBytes.</param>
-        public SymmetricCipher(string password, string salt, int iterations = 10000)
-            : this(password, Encoding.UTF8.GetBytes(salt), iterations)
+        public SymmetricCipher(string password, string salt, int keysize = 0, int iterations = 10000)
+            : this(password, Encoding.UTF8.GetBytes(salt), keysize, iterations)
         {        }
 
         /// <summary>
@@ -91,7 +120,7 @@ namespace Cipha.Security.Cryptography.Symmetric
                 throw new ArgumentNullException("salt");
 
             algo = new T();
-            if (keysize == 0)
+            if (keysize > 0)
                 algo.KeySize = keysize;
 
             GenerateKeys(password, salt, iterations);

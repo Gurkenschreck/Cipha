@@ -68,6 +68,8 @@ namespace Cipha.Security.Cryptography
         /// <param name="arr">The array to fill.</param>
         public static void SetArrayValuesZero(byte[] arr)
         {
+            if (arr == null)
+                throw new ArgumentNullException("byte array");
             for (int i = 0; i < arr.Length; i++)
                 arr[i] = 0;
         }
@@ -78,6 +80,8 @@ namespace Cipha.Security.Cryptography
         /// <param name="arr">The array to fill.</param>
         public static void SetArrayValuesZero(int[] arr)
         {
+            if (arr == null)
+                throw new ArgumentNullException("int array");
             for (int i = 0; i < arr.Length; i++)
                 arr[i] = 0;
         }
@@ -88,6 +92,8 @@ namespace Cipha.Security.Cryptography
         /// <param name="arr">The array to fill.</param>
         public static void SetArrayValuesEmpty(string[] arr)
         {
+            if (arr == null)
+                throw new ArgumentNullException("string array");
             for (int i = 0; i < arr.Length; i++)
                 arr[i] = string.Empty;
         }
