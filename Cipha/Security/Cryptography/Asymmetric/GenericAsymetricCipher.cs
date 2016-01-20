@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 
 namespace Cipha.Security.Cryptography.Asymmetric
 {
-    public class GenericAssymetricCipher<T>
+    public class GenericAsymetricCipher<T>
         where T : AsymmetricAlgorithm, new()
     {
     }

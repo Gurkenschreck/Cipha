@@ -10,6 +10,9 @@ namespace Cipha.Security.Cryptography
     {
         //Properties
         protected int hashIterations = 10000;
+        protected Encoding encoding = Encoding.UTF8;
+        protected byte[] salt;
+
         /// <summary>
         /// The amount of iterations used in the key
         /// derivation process.
@@ -29,7 +32,6 @@ namespace Cipha.Security.Cryptography
             }
         }
 
-        protected Encoding encoding = Encoding.UTF8;
         /// <summary>
         /// The encoding with which the strings are converted.
         /// 
@@ -42,18 +44,28 @@ namespace Cipha.Security.Cryptography
             set { encoding = value; }
         }
 
-        protected byte[] salt;
         /// <summary>
         /// The salt used in the password derivation
         /// process.
         /// 
         /// Returns null if no salt was previously used.
+        /// 
+        /// Default:
+        ///     null
         /// </summary>
         public byte[] Salt
         {
             get { return salt; }
         }
 
+        /// <summary>
+        /// Gets or sets the used key size.
+        /// </summary>
+        public abstract int KeySize
+        {
+            get;
+            set;
+        }
 
         // destructor
         ~Cipher()
@@ -74,7 +86,8 @@ namespace Cipha.Security.Cryptography
                 hashIterations = 0;
                 encoding = Encoding.ASCII;
                 encoding = null;
-                Utilities.SetArrayValuesZero(salt);
+                if(salt != null)
+                    Utilities.SetArrayValuesZero(salt);
                 salt = null;
             }
 
@@ -83,6 +96,9 @@ namespace Cipha.Security.Cryptography
 
         /// <summary>
         /// Encrypts a rgb using the algorithm.
+        /// 
+        /// Throws:
+        ///     CryptographicException
         /// </summary>
         /// <param name="plainData">The data to encrypt.</param>
         /// <returns>The encrypted data.</returns>
@@ -96,6 +112,9 @@ namespace Cipha.Security.Cryptography
         /// 
         /// Specify the character encoding with the
         /// Encoding property of this class.
+        /// 
+        /// Throws:
+        ///     CryptographicException
         /// </summary>
         /// <param name="plainString">The string to encrypt.</param>
         /// <returns>The encrypted string.</returns>
@@ -106,6 +125,9 @@ namespace Cipha.Security.Cryptography
 
         /// <summary>
         /// Decrypts a rgb using the algorithm.
+        /// 
+        /// Throws:
+        ///     CryptographicException
         /// </summary>
         /// <param name="cipherData">The string to decrypt.</param>
         /// <returns>The original data.</returns>
@@ -119,6 +141,9 @@ namespace Cipha.Security.Cryptography
         /// 
         /// Specify the character encoding with the
         /// Encoding property of this class.
+        /// 
+        /// Throws:
+        ///     CryptographicException
         /// </summary>
         /// <param name="cipherString">The string to decrypt.</param>
         /// <returns>The decrypted string.</returns>
@@ -132,6 +157,9 @@ namespace Cipha.Security.Cryptography
         /// 
         /// The used character encoding is specified
         /// via the Encoding property.
+        /// 
+        /// Throws:
+        ///     CryptographicException
         /// </summary>
         /// <param name="plainData">The data to encrypt.</param>
         /// <returns>The encrypted data represented as a string.</returns>
@@ -145,6 +173,9 @@ namespace Cipha.Security.Cryptography
         /// 
         /// The used character encoding is specified
         /// via the Encoding property.
+        /// 
+        /// Throws:
+        ///     CryptographicException
         /// </summary>
         /// <param name="plainString">The plain string.</param>
         /// <returns>The encrypted string represented as a string.</returns>
@@ -158,6 +189,9 @@ namespace Cipha.Security.Cryptography
         /// 
         /// The used character encoding is specified
         /// via the Encoding property.
+        /// 
+        /// Throws:
+        ///     CryptographicException
         /// </summary>
         /// <param name="cipherData">The data to decrypt.</param>
         /// <returns>The decrypted data represented as a string.</returns>
@@ -171,6 +205,9 @@ namespace Cipha.Security.Cryptography
         /// 
         /// The used character encoding is specified
         /// via the Encoding property.
+        /// 
+        /// Throws:
+        ///     CryptographicException
         /// </summary>
         /// <param name="cipherString">The encrypted string.</param>
         /// <returns>The decrypted string.</returns>
@@ -182,6 +219,9 @@ namespace Cipha.Security.Cryptography
         // Implementations of the encryption process.
         /// <summary>
         /// The specific encryption implementation.
+        /// 
+        /// Throws:
+        ///     CryptographicException
         /// </summary>
         /// <param name="plainData">The data to encrypt.</param>
         /// <returns>The encrypted data.</returns>
@@ -189,6 +229,9 @@ namespace Cipha.Security.Cryptography
 
         /// <summary>
         /// The specific decryption implementation.
+        /// 
+        /// Throws:
+        ///     CryptographicException
         /// </summary>
         /// <param name="cipherData">The data to decrypt.</param>
         /// <returns>The decrypted data.</returns>
@@ -198,6 +241,9 @@ namespace Cipha.Security.Cryptography
         /// This method is used inside the Dispose method of
         /// the base class.
         /// Dispose every ressource which is derivate specific.
+        /// 
+        /// Throws:
+        ///     CryptographicException
         /// </summary>
         /// <param name="disposing">If the Dispose call has been made by the client.</param>
         protected abstract void DisposeImplementation(bool disposing);
@@ -207,6 +253,9 @@ namespace Cipha.Security.Cryptography
         /// 
         /// This config contains all information used in this
         /// algorithm for later use or key exchange.
+        /// 
+        /// Throws:
+        ///     CryptographicException
         /// </summary>
         /// <returns>The new CipherConfig.</returns>
         public abstract CipherConfig ExportConfig();

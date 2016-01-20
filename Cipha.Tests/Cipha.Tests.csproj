@@ -50,10 +50,11 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="Security\Cryptography\Asymmetric\AsymmetricCipherTest.cs" />
     <Compile Include="Security\Cryptography\Hash\GenericHasher.cs" />
     <Compile Include="Security\Cryptography\Symmetric\GenericSymmetricCipherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Security\Cryptography\SymmetricCipherTest.cs" />
+    <Compile Include="Security\Cryptography\Symmetric\SymmetricCipherTest.cs" />
     <Compile Include="Security\Cryptography\UtilitiesTest.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -46,7 +46,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Cryptography\AlgorithmType.cs" />
-    <Compile Include="Security\Cryptography\Asymmetric\GenericAssymetricCipher.cs" />
+    <Compile Include="Security\Cryptography\Asymmetric\AsymmetricCipher.cs" />
+    <Compile Include="Security\Cryptography\Asymmetric\GenericAsymetricCipher.cs" />
     <Compile Include="Security\Cryptography\Cipher.cs" />
     <Compile Include="Security\Cryptography\Hash\GenericHasher.cs" />
     <Compile Include="Security\Cryptography\Random.cs" />
@@ -62,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
