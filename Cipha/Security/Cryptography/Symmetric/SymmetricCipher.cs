@@ -13,6 +13,10 @@ namespace Cipha.Security.Cryptography.Symmetric
     {
         SymmetricAlgorithm algo;
 
+        /// <summary>
+        /// The SymmetricAlgorithm which is used for the
+        /// cryptographic processes.
+        /// </summary>
         public SymmetricAlgorithm Algorithm
         {
             get { return algo; }
@@ -32,6 +36,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         {
             algo = symmetricAlgorithm;
         }
+
         /// <summary>
         /// Creates a new instance of the algorithm and sets
         /// its key and iv.
@@ -46,6 +51,7 @@ namespace Cipha.Security.Cryptography.Symmetric
             algo.Key = key;
             algo.IV = iv;
         }
+
         /// <summary>
         /// Creates a new instance of the algorithm.
         /// 
@@ -56,27 +62,40 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <param name="password">The password used in the hashing process.</param>
         /// <param name="salt">The salt to use.</param>
         /// <param name="iterations">The iteration count that shall be used in Rfc2898DeriveBytes.</param>
-        public SymmetricCipher(string password, string salt, int iterations = 1000)
+        public SymmetricCipher(string password, string salt, int iterations = 10000)
             : this(password, Encoding.UTF8.GetBytes(salt), iterations)
         {        }
+
         /// <summary>
         /// Creates a new instance of the algorithm.
         /// 
         /// It creates a key with the password, salt and
         /// iteration count by using the Rfc2898DeriveBytes
         /// implementation of PBKDF2.
+        /// 
+        /// The key size of 0 indicates that the standard 
+        /// key size shall be used.
+        /// 
+        /// Throws:
+        ///     ArgumentNullException: pw or salt is null
+        ///     CryptographicException: invalid keysize
         /// </summary>
         /// <param name="password">The password used in the hashing process.</param>
         /// <param name="salt">The salt to use.</param>
         /// <param name="iterations">The iteration count that shall be used in Rfc2898DeriveBytes.</param>
-        public SymmetricCipher(string password, byte[] salt, int iterations = 1000)
+        public SymmetricCipher(string password, byte[] salt, int keysize = 0, int iterations = 10000)
         {
-            using(DeriveBytes db = new Rfc2898DeriveBytes(password, salt, iterations))
-            {
-                algo = new T();
-                algo.Key = db.GetBytes(algo.KeySize >> 3);
-                algo.IV = db.GetBytes(algo.BlockSize >> 3);
-            }
+            if (password == null)
+                throw new ArgumentNullException("password");
+            if (salt == null)
+                throw new ArgumentNullException("salt");
+
+            algo = new T();
+            if (keysize == 0)
+                algo.KeySize = keysize;
+
+            GenerateKeys(password, salt, iterations);
+
             this.salt = salt;
         }
 
@@ -135,6 +154,15 @@ namespace Cipha.Security.Cryptography.Symmetric
         public override CipherConfig ExportConfig()
         {
             return new CipherConfig(algo);
+        }
+
+        public void GenerateKeys(string password, byte[] salt, int iterationCount = 10000)
+        {
+            using (DeriveBytes db = new Rfc2898DeriveBytes(password, salt, iterationCount))
+            {
+                algo.Key = db.GetBytes(algo.KeySize >> 3);
+                algo.IV = db.GetBytes(algo.BlockSize >> 3);
+            }
         }
     }
 }

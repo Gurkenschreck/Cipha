@@ -9,13 +9,13 @@ namespace Cipha.Security.Cryptography
     public abstract class Cipher : IDisposable
     {
         //Properties
-        protected int hashIterations = 1000;
+        protected int hashIterations = 10000;
         /// <summary>
         /// The amount of iterations used in the key
         /// derivation process.
         /// 
         /// Default:
-        ///     1000
+        ///     10000
         /// </summary>
         public int HashIterations
         {
@@ -43,11 +43,15 @@ namespace Cipha.Security.Cryptography
         }
 
         protected byte[] salt;
-
+        /// <summary>
+        /// The salt used in the password derivation
+        /// process.
+        /// 
+        /// Returns null if no salt was previously used.
+        /// </summary>
         public byte[] Salt
         {
             get { return salt; }
-            set { salt = value; }
         }
 
 

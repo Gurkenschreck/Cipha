@@ -71,6 +71,7 @@ namespace Cipha.Security.Cryptography
             for (int i = 0; i < arr.Length; i++)
                 arr[i] = 0;
         }
+
         /// <summary>
         /// Overwrites each value with zeroes.
         /// </summary>
@@ -80,6 +81,7 @@ namespace Cipha.Security.Cryptography
             for (int i = 0; i < arr.Length; i++)
                 arr[i] = 0;
         }
+
         /// <summary>
         /// Overwrites each value with string.Empty.
         /// </summary>

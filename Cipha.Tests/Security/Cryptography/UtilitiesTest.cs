@@ -17,7 +17,7 @@ namespace Cipha.Tests.Security.Cryptography
                                   0,0,0,0,0,0,0,0,0,0
                               };
 
-            Utilities.SetArrayValuesNull(arr);
+            Utilities.SetArrayValuesZero(arr);
 
             Assert.IsTrue(Utilities.SlowEquals(finalArr, arr));
         }

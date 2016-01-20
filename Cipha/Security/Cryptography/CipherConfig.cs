@@ -84,6 +84,7 @@ namespace Cipha.Security.Cryptography
             this.keySize = algorithm.KeySize;
             this.feedbackSize = algorithm.FeedbackSize;
         }
+
         /// <summary>
         /// Clones the values of an AsymmetricAlgorithm.
         /// </summary>
@@ -100,6 +101,7 @@ namespace Cipha.Security.Cryptography
         {
             Dispose(false);
         }
+
         public void Dispose()
         {
             Dispose(true);

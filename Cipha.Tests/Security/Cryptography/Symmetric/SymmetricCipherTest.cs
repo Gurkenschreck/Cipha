@@ -4,7 +4,7 @@ using Cipha.Security.Cryptography.Symmetric;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Cipha.Tests.Security.Cryptography
+namespace Cipha.Tests.Security.Cryptography.Symmetric
 {
     [TestClass]
     public class SymmetricCipherTest
@@ -120,15 +120,24 @@ namespace Cipha.Tests.Security.Cryptography
                 decryptArr = cipher.Decrypt(encryptArr);
             }
         }
-        [TestMethod]
-        public void Test()
-        {
-            SymmetricCipher<TripleDESCryptoServiceProvider> desprov;
-            using(desprov = new SymmetricCipher<TripleDESCryptoServiceProvider>("mypassword", "thesalt8bis", iterations:1500))
-            {
 
+        [TestMethod]
+        public void BasicCipher_AesSimpleCryption_ShouldPass()
+        {
+            string plainText = "Encryption is pretty fun";
+            byte[] plainTextArr = Encoding.UTF8.GetBytes(plainText);
+            byte[] encryptArr;
+            byte[] decryptArr;
+
+            using (var cipher = new SymmetricCipher<AesManaged>("mypasswd2", "mysalt1337bb44"))
+            {
+                encryptArr = cipher.Encrypt(plainText);
             }
-            SymmetricAlgorithm algo = desprov.Algorithm;
+
+            using (var cipher = new SymmetricCipher<AesManaged>("mypasswd2", "mysalt1337bb44"))
+            {
+                decryptArr = cipher.Decrypt(encryptArr);
+            }
         }
     }
 }
