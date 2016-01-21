@@ -69,10 +69,10 @@ namespace Cipha.Security.Cryptography.Asymmetric
 
         /// <summary>
         /// The most simple constructor which is setting
-        /// the key size of the algorithm to 2048.
+        /// the key size of the algorithm to 1024.
         /// </summary>
         public AsymmetricCipher()
-            :this(2048)
+            : this(1024)
         {        }
 
         /// <summary>
@@ -146,7 +146,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         {
             algo.FromXmlString(xmlString);
         }
-
+        
         /// <summary>
         /// Makes use of the SymmetricCipher to encrypt
         /// the current encryptedXmlString configuration using
@@ -165,8 +165,8 @@ namespace Cipha.Security.Cryptography.Asymmetric
         public string ToEncryptedXmlString<U>(bool includePrivateKey, string password, byte[] salt, int keySize = 0, int iterationCount = 10000)
             where U : SymmetricAlgorithm, new ()
         {
-            using(var symAlgo = new SymmetricCipher<U>(password, salt, keySize, iterationCount))
-            {
+            using(var symAlgo = new SymmetricCipher<U>(password, (byte[])salt.Clone()))
+            {//, keySize, iterationCount
                 return symAlgo.EncryptToString(algo.ToXmlString(includePrivateKey));
             }
         }
@@ -188,8 +188,8 @@ namespace Cipha.Security.Cryptography.Asymmetric
         public void FromEncryptedXmlString<U>(string encryptedXmlString, string password, byte[] salt, int keySize = 0, int iterationCount = 10000)
             where U : SymmetricAlgorithm, new ()
         {
-            using(var symAlgo = new SymmetricCipher<U>(password, salt, keySize, iterationCount))
-            {
+            using(var symAlgo = new SymmetricCipher<U>(password, (byte[])salt.Clone(), keySize, iterationCount))
+            {// , keySize, iterationCount
                 algo.FromXmlString(symAlgo.DecryptToString(encryptedXmlString));
             }
         }
