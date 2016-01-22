@@ -180,11 +180,6 @@ namespace Cipha.Security.Cryptography.Symmetric
             }
         }
 
-        public CipherConfig ExportConfig()
-        {
-            return new CipherConfig(algo);
-        }
-
         public void GenerateKeys(string password, byte[] salt, int iterationCount)
         {
             using (DeriveBytes db = new Rfc2898DeriveBytes(password, salt, iterationCount))
