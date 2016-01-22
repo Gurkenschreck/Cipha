@@ -258,6 +258,5 @@ namespace Cipha.Security.Cryptography
         ///     CryptographicException
         /// </summary>
         /// <returns>The new CipherConfig.</returns>
-        public abstract CipherConfig ExportConfig();
     }
 }

@@ -56,6 +56,7 @@
     <Compile Include="Security\Cryptography\CipherConfig.cs" />
     <Compile Include="Security\Cryptography\Symmetric\SymmetricCipher.cs" />
     <Compile Include="Security\Cryptography\Utilities.cs" />
+    <Compile Include="Security\IO\CryptoFileHandler.cs" />
     <Compile Include="Security\Wiping\Wiper.cs" />
     <Compile Include="Security\Wiping\WiperFactory.cs" />
     <Compile Include="Security\Wiping\HMG_IS5Wiper.cs" />
@@ -63,7 +64,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

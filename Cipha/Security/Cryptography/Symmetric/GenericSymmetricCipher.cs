@@ -323,7 +323,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <param name="outFile">The file to decrypt.</param>
         /// <param name="password">The password used in the encryption process.</param>
         /// <param name="salt">The salt used in the encryption process.</param>
-        public void EcnryptFile(string inFile, string outFile, string password, string salt)
+        public void EncryptFile(string inFile, string outFile, string password, string salt)
         {
             DeriveBytes rgb = new Rfc2898DeriveBytes(password, encoding.GetBytes(salt), rfc2898Iterations);
             

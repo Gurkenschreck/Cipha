@@ -11,15 +11,15 @@ namespace Cipha.Security.Cryptography.Symmetric
     /// <summary>
     /// Cipher implementation for symmetric algorithms.
     ///  
-    /// Algorithms with full support:
-    ///     AesManaged
-    ///     AesCryptoServiceProvider
-    ///     RC2CryptoServiceProvider
-    ///     RijndaelManaged
-    ///     TrippleDESCryptoServiceProvider
+    /// Algorithms with full support: <para />
+    ///     AesManaged<para />
+    ///     AesCryptoServiceProvider<para />
+    ///     RC2CryptoServiceProvider<para />
+    ///     RijndaelManaged<para />
+    ///     TrippleDESCryptoServiceProvider<para />
     /// </summary>
     /// <typeparam name="T">The symmetric algorithm.</typeparam>
-    public sealed class SymmetricCipher<T> : Cipher
+    public class SymmetricCipher<T> : Cipher
         where T : SymmetricAlgorithm, new()
     {
         // Fields
@@ -180,12 +180,12 @@ namespace Cipha.Security.Cryptography.Symmetric
             }
         }
 
-        public override CipherConfig ExportConfig()
+        public CipherConfig ExportConfig()
         {
             return new CipherConfig(algo);
         }
 
-        public void GenerateKeys(string password, byte[] salt, int iterationCount = 10000)
+        public void GenerateKeys(string password, byte[] salt, int iterationCount)
         {
             using (DeriveBytes db = new Rfc2898DeriveBytes(password, salt, iterationCount))
             {

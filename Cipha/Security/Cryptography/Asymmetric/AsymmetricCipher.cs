@@ -18,12 +18,12 @@ namespace Cipha.Security.Cryptography.Asymmetric
     ///     RSACryptoServiceProvider
     /// </summary>
     /// <typeparam name="T">The asymmetric algorithm.</typeparam>
-    public sealed class AsymmetricCipher<T> : Cipher
+    public class AsymmetricCipher<T> : Cipher
         where T : AsymmetricAlgorithm, new()
     {
         // Fields
-        T algo = new T();
-        bool usefOAEPPadding = true;
+        protected T algo = new T();
+        protected bool usefOAEPPadding = true;
 
         //Properties
         public AsymmetricAlgorithm Algorithm
@@ -189,7 +189,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
             where U : SymmetricAlgorithm, new ()
         {
             using(var symAlgo = new SymmetricCipher<U>(password, (byte[])salt.Clone(), keySize, iterationCount))
-            {// , keySize, iterationCount
+            {
                 algo.FromXmlString(symAlgo.DecryptToString(encryptedXmlString));
             }
         }
@@ -227,11 +227,6 @@ namespace Cipha.Security.Cryptography.Asymmetric
                 algo.Dispose();
                 algo = null;
             }
-        }
-
-        public override CipherConfig ExportConfig()
-        {
-            throw new NotImplementedException();
         }
     }
 }

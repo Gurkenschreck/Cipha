@@ -56,6 +56,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Cryptography\Symmetric\SymmetricCipherTest.cs" />
     <Compile Include="Security\Cryptography\UtilitiesTest.cs" />
+    <Compile Include="Security\IO\CryptoFileHandlerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cipha\Cipha.csproj">
@@ -63,6 +64,7 @@
       <Name>Cipha</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>
