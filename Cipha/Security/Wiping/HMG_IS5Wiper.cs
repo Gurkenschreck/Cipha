@@ -22,16 +22,29 @@ namespace Cipha.Security.Wiping
                 {
                     Random rdm = new Random();
                     byte[] bytes;
+                    long maximumValue = 0;
+                    int divisor = 50;
                     for(int round = 0; round < 3; round ++)
                     {
-                        bytes = Enumerable.Repeat<byte>(0x00, (int)fs.Length).ToArray();
-                        fs.Write(bytes, 0, bytes.Length);
+                        bytes = Enumerable.Repeat<byte>(0x00, (int)fs.Length / divisor).ToArray();
+                        maximumValue = fs.Length - bytes.Length;
+                        while (fs.Position < maximumValue)
+                            fs.Write(bytes, 0, bytes.Length);
+                        while (fs.Position < maximumValue)
+                            fs.WriteByte(0x00);
 
-                        bytes = Enumerable.Repeat<byte>(0xFF, (int)fs.Length).ToArray();
-                        fs.Write(bytes, 0, bytes.Length);
+
+                        bytes = Enumerable.Repeat<byte>(0xFF, (int)fs.Length / 50).ToArray();
+                        while (fs.Position < maximumValue)
+                            fs.Write(bytes, 0, bytes.Length);
+                        while (fs.Position < maximumValue)
+                            fs.WriteByte(0x00);
 
                         rdm.NextBytes(bytes);
-                        fs.Write(bytes, 0, bytes.Length);
+                        while (fs.Position < maximumValue)
+                            fs.Write(bytes, 0, bytes.Length);
+                        while (fs.Position < maximumValue)
+                            fs.WriteByte(0x00);
                     }
                     
                 }
