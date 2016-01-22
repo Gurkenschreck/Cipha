@@ -23,7 +23,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         where T : SymmetricAlgorithm, new()
     {
         // Fields
-        T algo;
+        protected T algo;
 
         // Properties
         /// <summary>

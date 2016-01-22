@@ -53,10 +53,9 @@
     <Compile Include="Security\Cryptography\Random.cs" />
     <Compile Include="Security\Cryptography\SecureStringHandler.cs" />
     <Compile Include="Security\Cryptography\Symmetric\GenericSymmetricCipher.cs" />
-    <Compile Include="Security\Cryptography\CipherConfig.cs" />
     <Compile Include="Security\Cryptography\Symmetric\SymmetricCipher.cs" />
     <Compile Include="Security\Cryptography\Utilities.cs" />
-    <Compile Include="Security\IO\CryptoFileHandler.cs" />
+    <Compile Include="Security\IO\CipherStream.cs" />
     <Compile Include="Security\Wiping\Wiper.cs" />
     <Compile Include="Security\Wiping\WiperFactory.cs" />
     <Compile Include="Security\Wiping\HMG_IS5Wiper.cs" />

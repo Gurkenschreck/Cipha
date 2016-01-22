@@ -82,7 +82,7 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             string encryptedString;
             string decryptedString;
 
-            using (var cipher = new AsymmetricCipher<RSACryptoServiceProvider>())
+            using (var cipher = new AsymmetricCipher<RSACryptoServiceProvider>(new RSACryptoServiceProvider(2048)))
             {
                 encryptedString = cipher.EncryptToString(plainString);
                 encryptedKey = cipher.ToEncryptedXmlString<AesManaged>(true, passwd, salt);

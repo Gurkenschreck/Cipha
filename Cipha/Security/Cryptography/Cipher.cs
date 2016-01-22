@@ -247,16 +247,5 @@ namespace Cipha.Security.Cryptography
         /// </summary>
         /// <param name="disposing">If the Dispose call has been made by the client.</param>
         protected abstract void DisposeImplementation(bool disposing);
-
-        /// <summary>
-        /// When overwritten, it returns a new CipherConfig object.
-        /// 
-        /// This config contains all information used in this
-        /// algorithm for later use or key exchange.
-        /// 
-        /// Throws:
-        ///     CryptographicException
-        /// </summary>
-        /// <returns>The new CipherConfig.</returns>
     }
 }

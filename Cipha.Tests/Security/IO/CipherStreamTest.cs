@@ -8,7 +8,7 @@ using Cipha.Security.Cryptography;
 namespace Cipha.Tests.Security.IO
 {
     [TestClass]
-    public class CryptoFileHandlerTest
+    public class CipherStreamTest
     {
         [TestMethod]
         public void Constructor_PassReference_Pass()
@@ -23,7 +23,7 @@ namespace Cipha.Tests.Security.IO
 
             using(SymmetricCipher<AesManaged> cipher = new SymmetricCipher<AesManaged>(passwd, salt))
             {
-                using(var handler = new CryptoFileHandler<AesManaged>(cipher))
+                using(var handler = new CipherStream<AesManaged>(cipher))
                 {
                     handlerCipher = handler.Cipher;
                 }

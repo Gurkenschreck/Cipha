@@ -176,16 +176,18 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
         public void BasicCipher_RijndaelSimpleCryption_ShouldPass()
         {
             string plainText = "Encryption is pretty fun";
+            string passwd = "mypasswd2";
+            string salt = "mysalt1337bb44";
             byte[] plainTextArr = Encoding.UTF8.GetBytes(plainText);
             byte[] encryptArr;
             byte[] decryptArr;
 
-            using (var cipher = new SymmetricCipher<RijndaelManaged>("mypasswd2", "mysalt1337bb44"))
+            using (var cipher = new SymmetricCipher<RijndaelManaged>(passwd, salt))
             {
                 encryptArr = cipher.Encrypt(plainText);
             }
 
-            using (var cipher = new SymmetricCipher<RijndaelManaged>("mypasswd2", "mysalt1337bb44"))
+            using (var cipher = new SymmetricCipher<RijndaelManaged>(passwd, salt))
             {
                 decryptArr = cipher.Decrypt(encryptArr);
             }
