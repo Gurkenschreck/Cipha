@@ -24,7 +24,10 @@ namespace Cipha.Security.Wiping
                     byte[] bytes;
                     long maximumValue = 0;
                     int divisor = 50;
-                    for(int round = 0; round < 3; round ++)
+                    int maxRounds = (Enhanced) ? 3 : 1;
+
+
+                    for(int round = 0; round < maxRounds; round ++)
                     {
                         bytes = Enumerable.Repeat<byte>(0x00, (int)fs.Length / divisor).ToArray();
                         maximumValue = fs.Length - bytes.Length;
