@@ -26,7 +26,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         protected bool usefOAEPPadding = true;
 
         //Properties
-        public AsymmetricAlgorithm Algorithm
+        public T Algorithm
         {
             get { return algo; }
             set 
@@ -55,35 +55,29 @@ namespace Cipha.Security.Cryptography.Asymmetric
         }
 
 
+        /// <summary>
+        /// Gets the current used key size.
+        /// </summary>
         public override int KeySize
         {
             get
             {
                 return algo.KeySize;
             }
-            set
-            {
-                algo.KeySize = value;
-            }
         }
 
         /// <summary>
-        /// The most simple constructor which is setting
-        /// the key size of the algorithm to 1024.
+        /// Instantiates a new instance of the class.
+        /// 
+        /// The default key size of the algorithms can differ.
+        /// Check out the default size via KeySize.
+        /// 
+        /// To set a different key size, use the
+        /// AsymmetricCipher(T asymmetricAlgorithm)
+        /// constructor with new T(int keySize)
         /// </summary>
         public AsymmetricCipher()
-            : this(1024)
         {        }
-
-        /// <summary>
-        /// The constructor which accepts the
-        /// key size to use for the processes.
-        /// </summary>
-        /// <param name="keySize">The key size in bits.</param>
-        public AsymmetricCipher(int keySize)
-        {
-            algo.KeySize = keySize;
-        }
 
         /// <summary>
         /// A constructor which sets the reference of
