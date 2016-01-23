@@ -11,7 +11,7 @@ namespace Cipha.Tests.Security.Cryptography.Hash
     {
 
         [TestMethod]
-        public void SHA512BasicHash_GenerateHash_CompareOutput()
+        public void ComputeHash_GenerateSHA512Hash_CompareOutput()
         {
             GenericHasher<SHA512Managed> hasher = new GenericHasher<SHA512Managed>();
             string stringToHash;
@@ -19,13 +19,13 @@ namespace Cipha.Tests.Security.Cryptography.Hash
 
             stringToHash = "This is my cool hasher!";
 
-            hashed = hasher.ComputeHashBase64(stringToHash);
+            hashed = hasher.ComputeHashToString(stringToHash);
 
             Assert.AreEqual("VWCtgRIln4ysDD8kVqdoRDtUazQlEzRJtGXLJFqE49CUwTFmPF+agJsqZl4R3Od77Hv9k5x5Ozl+z+XjGYLqnA==", hashed);
         }
 
         [TestMethod]
-        public void MD5BasicHash_GenerateHexHash_CompareOutput()
+        public void ComputeHash_MD5HexHash_CompareOutput()
         {
             GenericHasher<MD5CryptoServiceProvider> hasher = new GenericHasher<MD5CryptoServiceProvider>();
             string stringToHash = "This is my hashable stuff";
@@ -35,7 +35,7 @@ namespace Cipha.Tests.Security.Cryptography.Hash
         }
 
         [TestMethod]
-        public void MD5CompareHash_GenerateHash_EqualHashReturnsTrue()
+        public void CompareHashes_MD5HashGeneration_EqualHashPass()
         {
             GenericHasher<MD5CryptoServiceProvider> hasher = new GenericHasher<MD5CryptoServiceProvider>();
             string stringToHash = "This is my hashable stuff";
@@ -46,7 +46,7 @@ namespace Cipha.Tests.Security.Cryptography.Hash
         }
 
         [TestMethod]
-        public void SHA256BasicHash_GenerateHash_EqualsTrueReturnsSameOutput()
+        public void CompareHashes_SHA256HashComparison_EqualHashPass()
         {
             GenericHasher<SHA256Managed> hasher = new GenericHasher<SHA256Managed>();
             hasher.Encoding = Encoding.UTF8;

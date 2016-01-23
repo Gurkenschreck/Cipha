@@ -23,13 +23,12 @@ namespace Cipha.Security.Cryptography.Hash
     ///     MD5CryptoServiceProvider
     ///     
     /// located in the System.Security.Cryptography namespace.
-    ///     
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">A concrete hash algorithm deriving from HashAlgorithm</typeparam>
     public class GenericHasher<T>
         where T : System.Security.Cryptography.HashAlgorithm, new()
     {
-        private Encoding encoding = Encoding.ASCII;
+        private Encoding encoding = Encoding.UTF8;
         /// <summary>
         /// The encoding which should be used.
         /// </summary>
@@ -50,9 +49,9 @@ namespace Cipha.Security.Cryptography.Hash
         /// </summary>
         /// <param name="stringToHash">The string to hash.</param>
         /// <returns>The hash as a base64 string.</returns>
-        public string ComputeHashBase64(string stringToHash)
+        public string ComputeHashToString(string stringToHash)
         {
-            return ComputeHashBase64(encoding.GetBytes(stringToHash));
+            return ComputeHashToString(encoding.GetBytes(stringToHash));
         }
 
         /// <summary>
@@ -61,7 +60,7 @@ namespace Cipha.Security.Cryptography.Hash
         /// </summary>
         /// <param name="bytesToHash">The data to hash.</param>
         /// <returns>The hash as a base64 string.</returns>
-        public string ComputeHashBase64(byte[] bytesToHash)
+        public string ComputeHashToString(byte[] bytesToHash)
         {
             return Convert.ToBase64String(ComputeHash(bytesToHash));
         }
@@ -119,24 +118,35 @@ namespace Cipha.Security.Cryptography.Hash
         }
 
         /// <summary>
-        /// Computes a hash
+        /// Computes a hash and transforms it to hex.
         /// </summary>
-        /// <param name="stringToHash"></param>
-        /// <param name="useLowercase"></param>
-        /// <returns></returns>
+        /// <param name="stringToHash">The string to hash.</param>
+        /// <param name="useLowercase">If the hex string should contain lowercase or uppercase letters.</param>
+        /// <returns>The hex string.</returns>
         public string ComputeHashToHex(string stringToHash, bool useLowercase)
         {
             byte[] inputBytes = encoding.GetBytes(stringToHash);
             byte[] hash = ComputeHash(inputBytes);
 
+            return HashToHex(hash, useLowercase);
+        }
+
+        /// <summary>
+        /// Converts a given hash to a hex string.
+        /// </summary>
+        /// <param name="hashedBytes">The already hashed data.</param>
+        /// <param name="useLowercase">If the hex string should contain lowercase or uppercase letters.</param>
+        /// <returns>The hex string.</returns>
+        public string HashToHex(byte[] hashedBytes, bool useLowercase)
+        {
             // step 2, convert byte array to hex string
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < hash.Length; i++)
+            for (int i = 0; i < hashedBytes.Length; i++)
             {
-                if(useLowercase)
-                    sb.Append(hash[i].ToString("x2"));
+                if (useLowercase)
+                    sb.Append(hashedBytes[i].ToString("x2"));
                 else
-                    sb.Append(hash[i].ToString("X2"));
+                    sb.Append(hashedBytes[i].ToString("X2"));
             }
             return sb.ToString();
         }
