@@ -55,8 +55,10 @@
     <Compile Include="Security\Cryptography\Symmetric\GenericSymmetricCipherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Cryptography\Symmetric\SymmetricCipherTest.cs" />
-    <Compile Include="Security\Cryptography\UtilitiesTest.cs" />
+    <Compile Include="Security\Cryptography\RandomTests.cs" />
+    <Compile Include="Security\Cryptography\UtilitiesTests.cs" />
     <Compile Include="Security\IO\CipherStreamTest.cs" />
+    <Compile Include="Security\Wiping\HMG_IS5WiperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cipha\Cipha.csproj">

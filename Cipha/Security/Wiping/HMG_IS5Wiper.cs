@@ -11,7 +11,7 @@ namespace Cipha.Security.Wiping
     {
         public bool Enhanced { get; set; }
 
-        public override bool WipeFile(string filePath)
+        public override void WipeFile(string filePath)
         {
             if (filePath == null)
                 throw new ArgumentNullException("filePath");
@@ -20,40 +20,47 @@ namespace Cipha.Security.Wiping
             {
                 using (var fs = File.OpenWrite(filePath))
                 {
-                    Random rdm = new Random();
-                    byte[] bytes;
-                    long maximumValue = 0;
-                    int divisor = 50;
-                    int maxRounds = (Enhanced) ? 3 : 1;
-
-
-                    for(int round = 0; round < maxRounds; round ++)
-                    {
-                        bytes = Enumerable.Repeat<byte>(0x00, (int)fs.Length / divisor).ToArray();
-                        maximumValue = fs.Length - bytes.Length;
-                        while (fs.Position < maximumValue)
-                            fs.Write(bytes, 0, bytes.Length);
-                        while (fs.Position < maximumValue)
-                            fs.WriteByte(0x00);
-
-
-                        bytes = Enumerable.Repeat<byte>(0xFF, (int)fs.Length / 50).ToArray();
-                        while (fs.Position < maximumValue)
-                            fs.Write(bytes, 0, bytes.Length);
-                        while (fs.Position < maximumValue)
-                            fs.WriteByte(0x00);
-
-                        rdm.NextBytes(bytes);
-                        while (fs.Position < maximumValue)
-                            fs.Write(bytes, 0, bytes.Length);
-                        while (fs.Position < maximumValue)
-                            fs.WriteByte(0x00);
-                    }
-                    
+                    WipeStream(fs);
                 }
                 File.Delete(filePath);
             }
-            return true;
+        }
+
+        public override void WipeStream(Stream stream)
+        {
+            Random rdm = new Random();
+            byte[] bytes;
+            long maximumValue = 0;
+            int divisor = 50;
+            long steps = stream.Length / divisor;
+            steps = (steps < 100) ? stream.Length : steps;
+
+            int maxRounds = (Enhanced) ? 3 : 1;
+
+
+            for (int round = 0; round < maxRounds; round++)
+            {
+                bytes = Enumerable.Repeat<byte>(0x00, (int)steps).ToArray();
+                maximumValue = stream.Length - bytes.Length;
+                while (stream.Position < maximumValue)
+                    stream.Write(bytes, 0, bytes.Length);
+                while (stream.Position < maximumValue)
+                    stream.WriteByte(0x00);
+
+
+                bytes = Enumerable.Repeat<byte>(0xFF, (int)steps).ToArray();
+                while (stream.Position < maximumValue)
+                    stream.Write(bytes, 0, bytes.Length);
+                while (stream.Position < maximumValue)
+                    stream.WriteByte(0x00);
+
+                rdm.NextBytes(bytes);
+                while (stream.Position < maximumValue)
+                    stream.Write(bytes, 0, bytes.Length);
+                while (stream.Position < maximumValue)
+                    stream.WriteByte(0x00);
+            }
+            stream.SetLength(0);
         }
     }
 }
