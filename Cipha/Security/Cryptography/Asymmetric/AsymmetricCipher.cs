@@ -18,12 +18,11 @@ namespace Cipha.Security.Cryptography.Asymmetric
     ///     RSACryptoServiceProvider
     /// </summary>
     /// <typeparam name="T">The asymmetric algorithm.</typeparam>
-    public class AsymmetricCipher<T> : Cipher
+    public abstract class AsymmetricCipher<T> : Cipher
         where T : AsymmetricAlgorithm, new()
     {
         // Fields
         protected T algo = new T();
-        protected bool usefOAEPPadding = true;
 
         //Properties
         public T Algorithm
@@ -35,34 +34,12 @@ namespace Cipha.Security.Cryptography.Asymmetric
                     throw new ArgumentNullException("value");
 
                 if(value.GetType() == typeof(T))
+                {
                     algo = (T)value;
+                    return;
+                }
 
                 throw new ArgumentException("value is not of type " + algo.GetType());
-            }
-        }
-
-        /// <summary>
-        /// fOAEP is a padding which can be used
-        /// by the RSACryptoServiceProvider.
-        /// 
-        /// Default:
-        ///     true
-        /// </summary>
-        public bool UsefOAEPPadding
-        {
-            get { return usefOAEPPadding; }
-            set { usefOAEPPadding = value; }
-        }
-
-
-        /// <summary>
-        /// Gets the current used key size.
-        /// </summary>
-        public override int KeySize
-        {
-            get
-            {
-                return algo.KeySize;
             }
         }
 
@@ -76,8 +53,11 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// AsymmetricCipher(T asymmetricAlgorithm)
         /// constructor with new T(int keySize)
         /// </summary>
-        public AsymmetricCipher()
-        {        }
+        public AsymmetricCipher(int keySize = 0)
+        {
+            if (keySize != 0)
+                KeySize = keySize;
+        }
 
         /// <summary>
         /// A constructor which sets the reference of
@@ -126,7 +106,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// </summary>
         /// <param name="includePrivateKey">If the exported configuration should include the private key.</param>
         /// <returns>The plain configuration string.</returns>
-        public string ToXmlString(bool includePrivateKey)
+        public virtual string ToXmlString(bool includePrivateKey)
         {
             return algo.ToXmlString(includePrivateKey);
         }
@@ -136,7 +116,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// object.
         /// </summary>
         /// <param name="encryptedXmlString">The xml configuration string.</param>
-        public void FromXmlString(string xmlString)
+        public virtual void FromXmlString(string xmlString)
         {
             algo.FromXmlString(xmlString);
         }
@@ -156,11 +136,11 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <param name="keySize">The key size to use.</param>
         /// <param name="iterationCount">The amount of iterations to derive the key.</param>
         /// <returns></returns>
-        public string ToEncryptedXmlString<U>(bool includePrivateKey, string password, byte[] salt, int keySize = 0, int iterationCount = 10000)
+        public virtual string ToEncryptedXmlString<U>(bool includePrivateKey, string password, byte[] salt, int keySize = 0, int iterationCount = 10000)
             where U : SymmetricAlgorithm, new ()
         {
             using(var symAlgo = new SymmetricCipher<U>(password, (byte[])salt.Clone()))
-            {//, keySize, iterationCount
+            {
                 return symAlgo.EncryptToString(algo.ToXmlString(includePrivateKey));
             }
         }
@@ -179,7 +159,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <param name="salt">The salt used in the encryption process.</param>
         /// <param name="keySize">THe key size to use.</param>
         /// <param name="iterationCount">The amount of iterations to derive the key.</param>
-        public void FromEncryptedXmlString<U>(string encryptedXmlString, string password, byte[] salt, int keySize = 0, int iterationCount = 10000)
+        public virtual void FromEncryptedXmlString<U>(string encryptedXmlString, string password, byte[] salt, int keySize = 0, int iterationCount = 10000)
             where U : SymmetricAlgorithm, new ()
         {
             using(var symAlgo = new SymmetricCipher<U>(password, (byte[])salt.Clone(), keySize, iterationCount))
@@ -188,25 +168,26 @@ namespace Cipha.Security.Cryptography.Asymmetric
             }
         }
 
-
+        /// <summary>
+        /// Encrypts a blob of plain data using the
+        /// current configuration.
+        /// 
+        /// Encrypted supported for RSACryptoServiceProvider.
+        /// </summary>
+        /// <param name="plainData">The data to encrypt.</param>
+        /// <returns>The encrypted data.</returns>
         protected override byte[] EncryptData(byte[] plainData)
         {
-            if(algo is RSA)
-            {
-                if(algo is RSACryptoServiceProvider)
-                {
-                    return (algo as RSACryptoServiceProvider).Encrypt(plainData, usefOAEPPadding);
-                }
-            }
             throw new NotSupportedException(string.Format("algo of type {0} does not support encryption", typeof(T)));
         }
 
+        /// <summary>
+        /// Decrypts a blob of encrypted data.
+        /// </summary>
+        /// <param name="cipherData">The encrypted blob.</param>
+        /// <returns>The decrypted data.</returns>
         protected override byte[] DecryptData(byte[] cipherData)
         {
-            if(algo is RSA)
-            {
-                return (algo as RSACryptoServiceProvider).Decrypt(cipherData, true);
-            }
             throw new NotSupportedException(string.Format("algo of type {0} does not support decryption", typeof(T)));
         }
 

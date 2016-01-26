@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 namespace Cipha.Tests.Security.Cryptography.Asymmetric
 {
     [TestClass]
-    public class AsymmetricCipherTest
+    public class RSACipherTests
     {
         [TestMethod]
         public void RSACipher_EncryptDecrypt_Pass()
@@ -16,7 +16,7 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             string encryptedString;
             string decryptedString;
 
-            using(var cipher = new AsymmetricCipher<RSACryptoServiceProvider>())
+            using(var cipher = new RSACipher<RSACryptoServiceProvider>())
             {
                 encryptedString = cipher.EncryptToString(plainString);
                 decryptedString = cipher.DecryptToString(encryptedString);
@@ -33,13 +33,13 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             string encryptedString;
             string decryptedString;
 
-            using (var cipher = new AsymmetricCipher<RSACryptoServiceProvider>())
+            using (var cipher = new RSACipher<RSACryptoServiceProvider>())
             {
                 encryptedString = cipher.EncryptToString(plainString);
                 plainkey = cipher.ToXmlString(true);
             }
 
-            using (var cipher = new AsymmetricCipher<RSACryptoServiceProvider>(plainkey))
+            using (var cipher = new RSACipher<RSACryptoServiceProvider>(plainkey))
             {
                 decryptedString = cipher.DecryptToString(encryptedString);
             }
@@ -56,13 +56,13 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             string encryptedString;
             string decryptedString;
 
-            using (var cipher = new AsymmetricCipher<RSACryptoServiceProvider>())
+            using (var cipher = new RSACipher<RSACryptoServiceProvider>())
             {
                 encryptedString = cipher.EncryptToString(plainString);
                 plainkey = cipher.ToXmlString(false);
             }
 
-            using (var cipher = new AsymmetricCipher<RSACryptoServiceProvider>(plainkey))
+            using (var cipher = new RSACipher<RSACryptoServiceProvider>(plainkey))
             {
                 decryptedString = cipher.DecryptToString(encryptedString);
             }
@@ -82,13 +82,13 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             string encryptedString;
             string decryptedString;
 
-            using (var cipher = new AsymmetricCipher<RSACryptoServiceProvider>(new RSACryptoServiceProvider(2048)))
+            using (var cipher = new RSACipher<RSACryptoServiceProvider>(new RSACryptoServiceProvider(2048)))
             {
                 encryptedString = cipher.EncryptToString(plainString);
                 encryptedKey = cipher.ToEncryptedXmlString<AesManaged>(true, passwd, salt);
             }
 
-            using (var cipher = new AsymmetricCipher<RSACryptoServiceProvider>(encryptedKey, passwd, salt))
+            using (var cipher = new RSACipher<RSACryptoServiceProvider>(encryptedKey, passwd, salt))
             {
                 decryptedString = cipher.DecryptToString(encryptedString);
             }
@@ -109,13 +109,13 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             string encryptedString;
             string decryptedString;
 
-            using (var cipher = new AsymmetricCipher<RSACryptoServiceProvider>())
+            using (var cipher = new RSACipher<RSACryptoServiceProvider>())
             {
                 encryptedString = cipher.EncryptToString(plainString);
                 encryptedKey = cipher.ToEncryptedXmlString<AesManaged>(false, passwd, salt);
             }
 
-            using (var cipher = new AsymmetricCipher<RSACryptoServiceProvider>(encryptedKey, passwd, salt))
+            using (var cipher = new RSACipher<RSACryptoServiceProvider>(encryptedKey, passwd, salt))
             {
                 decryptedString = cipher.DecryptToString(encryptedString);
             }
@@ -132,7 +132,7 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             string passwd = "SafeP4ssw0rd;,,:;DWAe";
             string encryptedKey = "";
 
-            using (var cipher = new AsymmetricCipher<RSACryptoServiceProvider>())
+            using (var cipher = new RSACipher<RSACryptoServiceProvider>())
             {
                 string plnKey = cipher.ToXmlString(true);
                 using(var symCip = new SymmetricCipher<AesManaged>(passwd, salt))
@@ -148,6 +148,18 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             }
 
             //Assert.AreEqual(plainKey, decryptedString);
+        }
+
+        [TestMethod]
+        public void ChangeRSAKeySize_CreateInstance_Pass()
+        {
+            int wantedKeySize = 4096;
+            int current = 0;
+            using(var cipher = new RSACipher<RSACryptoServiceProvider>(wantedKeySize))
+            {
+                current = cipher.KeySize;
+            }
+            Assert.AreEqual(wantedKeySize, current);
         }
     }
 }
