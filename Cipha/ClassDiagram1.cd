@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Cipha.Security.Cryptography.Asymmetric.AsymmetricCipher&lt;T&gt;" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AUAAAAAAAAAAAAAAAAAACCAJAAAAAAABAgAAAAQAAAA=</HashCode>
+      <FileName>Security\Cryptography\Asymmetric\AsymmetricCipher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Cipha.Security.Cryptography.Asymmetric.GenericAsymetricCipher&lt;T&gt;" Collapsed="true">
+    <Position X="7.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Security\Cryptography\Asymmetric\GenericAsymetricCipher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Cipha.Security.Cryptography.Asymmetric.RSACipher&lt;T&gt;" Collapsed="true">
+    <Position X="0.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAEAAAAAAAIAAAACAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Security\Cryptography\Asymmetric\RSACipher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Cipha.Security.Cryptography.Cipher" Collapsed="true">
+    <Position X="1.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQBAAAAgQCAAIAAYAAAACAAIgAAAAIEAAgAAAAAAAAE=</HashCode>
+      <FileName>Security\Cryptography\Cipher.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Cipha.Security.Cryptography.Random" Collapsed="true">
+    <Position X="7.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Security\Cryptography\Random.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Cipha.Security.Cryptography.SecureStringHandler" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="9.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAMAAACAgCAAgAAQAACAAABAAgAAAAAACQAAAABAAAA=</HashCode>
+      <FileName>Security\Cryptography\SecureStringHandler.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Cipha.Security.Cryptography.Utilities" Collapsed="true">
+    <Position X="6" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAAAAAAAAIAIAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Security\Cryptography\Utilities.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Cipha.Security.Cryptography.Hash.GenericHasher&lt;T&gt;" Collapsed="true">
+    <Position X="9.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAEAAAAAAgAAAAAAAAAgAAAAIAAAAAACAAAQAA=</HashCode>
+      <FileName>Security\Cryptography\Hash\GenericHasher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Cipha.Security.Cryptography.Symmetric.GenericSymmetricCipher&lt;T&gt;" Collapsed="true">
+    <Position X="6" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAIgAAACYCAAAQAAAgAAGAIAQIAIIADACAAA=</HashCode>
+      <FileName>Security\Cryptography\Symmetric\GenericSymmetricCipher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Cipha.Security.Cryptography.Symmetric.SymmetricCipher&lt;T&gt;" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAACAAJAAAQAAAAAgAAAAQAAAA=</HashCode>
+      <FileName>Security\Cryptography\Symmetric\SymmetricCipher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Cipha.Security.IO.CipherStream&lt;T&gt;" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="6" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>JCAAAAAAACAAAAAAAAAAAAAAAAACAAAAAAAIACQAACA=</HashCode>
+      <FileName>Security\IO\CipherStream.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Cipha.Security.Wiping.HMG_IS5Wiper" Collapsed="true">
+    <Position X="0.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAA=</HashCode>
+      <FileName>Security\Wiping\HMG_IS5Wiper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Cipha.Security.Wiping.HMG_IS5WiperFactory" Collapsed="true">
+    <Position X="3.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Security\Wiping\HMG_IS5WiperFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Cipha.Security.Wiping.Wiper" Collapsed="true">
+    <Position X="0.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Security\Wiping\Wiper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Cipha.Security.Wiping.WiperFactory" Collapsed="true">
+    <Position X="3.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Security\Wiping\WiperFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
