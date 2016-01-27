@@ -12,7 +12,7 @@ namespace Cipha.Security.Wiping
         {
             return CreateWiper(true);
         }
-        public HMG_IS5Wiper CreateWiper(bool enhanced)
+        public Wiper CreateWiper(bool enhanced)
         {
             return new HMG_IS5Wiper() { Enhanced = enhanced };
         }

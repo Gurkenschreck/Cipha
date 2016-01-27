@@ -17,7 +17,7 @@ namespace Cipha.Tests.Security.Wiping
                 stream.WriteByte(0x1F);
 
             var fact = new HMG_IS5WiperFactory();
-            HMG_IS5Wiper wiper = fact.CreateWiper(true);
+            HMG_IS5Wiper wiper = (HMG_IS5Wiper)fact.CreateWiper(true);
 
             wiper.WipeStream(stream);
 
@@ -32,7 +32,7 @@ namespace Cipha.Tests.Security.Wiping
         public void CreateWiper_InstantiateNew_Pass()
         {
             HMG_IS5WiperFactory fact = new HMG_IS5WiperFactory();
-            HMG_IS5Wiper wiper = (HMG_IS5Wiper)fact.CreateWiper(); // Check why i need to cast
+            HMG_IS5Wiper wiper = (HMG_IS5Wiper)fact.CreateWiper(); 
 
             Assert.IsNotNull(wiper);
         }
@@ -40,7 +40,7 @@ namespace Cipha.Tests.Security.Wiping
         public void CreateWiper_InstantiateNewEnhanced_Pass()
         {
             HMG_IS5WiperFactory fact = new HMG_IS5WiperFactory();
-            HMG_IS5Wiper wiper = fact.CreateWiper(true);
+            HMG_IS5Wiper wiper = (HMG_IS5Wiper)fact.CreateWiper(true);
 
             Assert.IsTrue(wiper.Enhanced);
         }
