@@ -145,7 +145,7 @@ namespace Cipha.Security.Cryptography
         /// Throws:
         ///     CryptographicException
         /// </summary>
-        /// <param name="cipherString">The string to decrypt.</param>
+        /// <param name="cipherData">The string to decrypt.</param>
         /// <returns>The decrypted string.</returns>
         public byte[] Decrypt(string cipherString)
         {
@@ -209,7 +209,7 @@ namespace Cipha.Security.Cryptography
         /// Throws:
         ///     CryptographicException
         /// </summary>
-        /// <param name="cipherString">The encrypted string.</param>
+        /// <param name="cipherData">The encrypted string.</param>
         /// <returns>The decrypted string.</returns>
         public string DecryptToString(string cipherString)
         {

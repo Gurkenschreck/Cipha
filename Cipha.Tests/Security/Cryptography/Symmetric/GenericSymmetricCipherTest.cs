@@ -27,11 +27,11 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
             string encryptedPlainDataAsString;
             string encryptedPlainDataAsString2;
             GenericSymmetricCipher<AesManaged> d = new GenericSymmetricCipher<AesManaged>();
-
+            d.Encoding = Encoding.Default;
 
             encryptedPlainData = d.Encrypt(plDt, password, salt);
-            encryptedPlainDataAsString = Encoding.Default.GetString(encryptedPlainData);
-            encryptedPlainDataAsString2 = d.Encrypt(plainData, password, salt);
+            encryptedPlainDataAsString = Convert.ToBase64String(encryptedPlainData);
+            encryptedPlainDataAsString2 = d.EncryptToString(plainData, password, salt);
 
             Assert.AreEqual(encryptedPlainDataAsString, encryptedPlainDataAsString2);
         }
@@ -48,12 +48,13 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
             byte[] plDt = d.Encoding.GetBytes(plainData);
             string password = "mySecure4,;..PW";
             string salt = "44qdbcdef;;53#";
+            byte[] saltBytes = d.Encoding.GetBytes(salt);
             byte[] encrypted;
             byte[] decrypted;
             string decryptedString;
 
             encrypted = d.Encrypt(plDt, password, salt);
-            decrypted = d.Decrypt(encrypted, password, salt);
+            decrypted = d.Decrypt(encrypted, password, saltBytes);
 
             decryptedString = d.Encoding.GetString(decrypted);
 
@@ -71,13 +72,14 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
             byte[] plDt = d.Encoding.GetBytes(plainData);
             string password = "mySecure4,;..PW";
             string salt = "44qdbcdef;;53#";
+            byte[] saltBytes = d.Encoding.GetBytes(salt);
             byte[] encrypted;
             byte[] decrypted;
             string decryptedString;
 
             d.KeySize = 128;
             encrypted = d.Encrypt(plDt, password, salt);
-            decrypted = d.Decrypt(encrypted, password, salt);
+            decrypted = d.Decrypt(encrypted, password, saltBytes);
 
             decryptedString = d.Encoding.GetString(decrypted);
 
@@ -96,9 +98,9 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
             string password = "thisismypass447";
             string salt = "k;dwa.r3-146;:##+$";
 
-            encryptedMessage = cipherA.Encrypt(plainMessage, password, salt);
+            encryptedMessage = cipherA.EncryptToString(plainMessage, password, salt);
 
-            decryptedMessage = cipherB.Decrypt(encryptedMessage, password, salt);
+            decryptedMessage = cipherB.DecryptToString(encryptedMessage, password, salt);
 
             Assert.AreEqual(plainMessage, decryptedMessage);
         }

@@ -186,12 +186,24 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <param name="cipherData">The Unicode string to encrypt.</param>
         /// <param name="password">The password to encrypt.</param>
         /// <param name="salt">The salt to encrypt.</param>
-        /// <returns></returns>
-        public string Encrypt(string plainString, string password, string salt)
+        /// <returns>The encrypted string.</returns>
+        public string EncryptToString(string plainString, string password, string salt)
         {
-            return encoding.GetString(Encrypt(encoding.GetBytes(plainString), password, salt));
+            return Convert.ToBase64String(Encrypt(encoding.GetBytes(plainString), encoding.GetBytes(password), encoding.GetBytes(salt)));
+        }
+        public string EncryptToString(byte[] plainString, byte[] password, byte[] salt)
+        {
+            return Convert.ToBase64String(Encrypt(plainString, password, salt));
         }
 
+        public byte[] Encrypt(byte[] plainData, string password, string salt)
+        {
+            return Encrypt(plainData, encoding.GetBytes(password), encoding.GetBytes(salt));
+        }
+        public byte[] Encrypt(byte[] plainData, string password, byte[] salt)
+        {
+            return Encrypt(plainData, encoding.GetBytes(password), salt);
+        }
         /// <summary>
         /// Provides help encrypting a string with any encryption algorithm
         /// extending from SymmetricAlgorithm.
@@ -201,7 +213,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <param name="password">The password for the encryption process.</param>
         /// <param name="salt">The salt to be used.</param>
         /// <returns></returns>
-        public byte[] Encrypt(byte[] plainData, string password, string salt)
+        public byte[] Encrypt(byte[] plainData, byte[] password, byte[] salt)
         {
             if (plainData == null)
                 throw new ArgumentNullException("plainData");
@@ -210,7 +222,7 @@ namespace Cipha.Security.Cryptography.Symmetric
             if (salt == null)
                 throw new ArgumentNullException("salt");
 
-            DeriveBytes rgb = new Rfc2898DeriveBytes(password, encoding.GetBytes(salt), rfc2898Iterations);
+            DeriveBytes rgb = new Rfc2898DeriveBytes(password, salt, rfc2898Iterations);
 
             SymmetricAlgorithm algo = new T();
             
@@ -227,7 +239,7 @@ namespace Cipha.Security.Cryptography.Symmetric
                 {
                     using (StreamWriter writer = new StreamWriter(stream, encoding))
                     {
-                        writer.Write(encoding.GetString(plainData));
+                        writer.Write(Convert.ToBase64String(plainData));
                     }
                 }
                 return buffer.ToArray();
@@ -244,23 +256,21 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <param name="password">The password to decrypt.</param>
         /// <param name="salt">The salt used for decryption.</param>
         /// <returns>The decrypted string.</returns>
-        public string Decrypt(string cipherString, string password, string salt)
+        public byte[] Decrypt(string cipherString, string password, string salt)
         {
-            return encoding.GetString(Decrypt(encoding.GetBytes(cipherString), password, salt));
+            return Decrypt(encoding.GetBytes(cipherString), password, encoding.GetBytes(salt));
         }
 
         /// <summary>
         /// Provides help decrypting a string with any encryption algo
         /// extending from SymmetricAlgorithm.
-        /// Possible algorithms to use are
-        /// AesManages, TripleDESCryptoServiceprovider, RijndaelManaged
         /// </summary>
         /// <typeparam name="T">The algo deriving from SymmetricAlgorithm.</typeparam>
         /// <param name="cipherData">The previously encrypted plain data.</param>
         /// <param name="password">The password to decrypt.</param>
         /// <param name="salt">The salt used to encrypt the data.</param>
         /// <returns>The decrypted bytes.</returns>
-        public byte[] Decrypt(byte[] cipherData, string password, string salt)
+        public byte[] Decrypt(byte[] cipherData, string password, byte[] salt)
         {
             if (cipherData == null)
                 throw new ArgumentNullException("cipherData");
@@ -268,7 +278,7 @@ namespace Cipha.Security.Cryptography.Symmetric
                 throw new ArgumentNullException("password");
             if (salt == null)
                 throw new ArgumentNullException("salt");
-            DeriveBytes rgb = new Rfc2898DeriveBytes(password, encoding.GetBytes(salt), rfc2898Iterations);
+            DeriveBytes rgb = new Rfc2898DeriveBytes(password, salt, rfc2898Iterations);
 
             SymmetricAlgorithm algo = new T();
             ApplyConfigurations(algo);
@@ -281,6 +291,14 @@ namespace Cipha.Security.Cryptography.Symmetric
             return Decrypt(cipherData, rgbKey, rgbIV);
         }
 
+        /// <summary>
+        /// Provides help decrypting a string with any encryption algo
+        /// extending from SymmetricAlgorithm.
+        /// </summary>
+        /// <param name="cipherData">The data to decrypt.</param>
+        /// <param name="key">The key used in the encryption.</param>
+        /// <param name="iv">the IV used in the encryption.</param>
+        /// <returns>The decrypted blob.</returns>
         public byte[] Decrypt(byte[] cipherData, byte[] key, byte[] iv)
         {
             if (cipherData == null)
@@ -304,10 +322,19 @@ namespace Cipha.Security.Cryptography.Symmetric
                     using (StreamReader reader = new StreamReader(stream, encoding))
                     {
                         algo.Dispose();
-                        return encoding.GetBytes(reader.ReadToEnd());
+                        return Convert.FromBase64String(reader.ReadToEnd());
                     }
                 }
             }
+        }
+
+        public string DecryptToString(string cipherData, string password, string salt)
+        {
+            return encoding.GetString(Decrypt(Convert.FromBase64String(cipherData), password, encoding.GetBytes(salt)));
+        }
+        public string DecryptToString(byte[] cipherData, string password, string salt)
+        {
+            return Convert.ToBase64String(Decrypt(cipherData, password, encoding.GetBytes(salt)));
         }
 
 

@@ -125,29 +125,23 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
         [TestMethod]
         public void RSAParameterEncryption_ExportEncryptedParameterWithPrivateKey_Pass()
         {
-            string plainKey;
+            string plainKey = "soonAssigned";
             byte[] salt = {
                               1,2,3,4,5,6,7,8,9
                           };
             string passwd = "SafeP4ssw0rd;,,:;DWAe";
             string encryptedKey = "";
+            string decryptedKey = "laterAssigned";
 
             using (var cipher = new RSACipher<RSACryptoServiceProvider>())
             {
-                string plnKey = cipher.ToXmlString(true);
-                using(var symCip = new SymmetricCipher<AesManaged>(passwd, salt))
-                {
-                    string encKey = symCip.EncryptToString(plnKey);
-                    string decKey = symCip.DecryptToString(encKey);
-                }
-
-
+                plainKey = cipher.ToXmlString(true);
                 encryptedKey = cipher.ToEncryptedXmlString<AesManaged>(true, passwd, salt);
                 cipher.FromEncryptedXmlString<AesManaged>(encryptedKey, passwd, salt);
-                plainKey = cipher.ToXmlString(true);
+                decryptedKey = cipher.ToXmlString(true);
             }
 
-            //Assert.AreEqual(plainKey, decryptedString);
+            Assert.AreEqual(plainKey, decryptedKey);
         }
 
         [TestMethod]
@@ -160,6 +154,106 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
                 current = cipher.KeySize;
             }
             Assert.AreEqual(wantedKeySize, current);
+        }
+
+        [TestMethod]
+        public void SignData_CompareSignaturesOfRSACSPAndRSACipher_Pass()
+        {
+            int wantedKeySize = 4096;
+            Random rdm = new Random();
+            byte[] message = new byte[256];
+            byte[] signedMessage;
+            byte[] signedMessageNative;
+            string nativeXmlString;
+            rdm.NextBytes(message);
+
+            using(var rsacsp = new RSACryptoServiceProvider(wantedKeySize))
+            {
+                signedMessageNative = rsacsp.SignData(message, new SHA512Managed());
+                nativeXmlString = rsacsp.ToXmlString(true);
+            }
+
+            using (var cipher = new RSACipher<RSACryptoServiceProvider>(nativeXmlString))
+            {
+                signedMessage = cipher.SignData<SHA512Managed>(message);
+            }
+
+            CollectionAssert.AreEqual(signedMessage, signedMessageNative);
+        }
+        [TestMethod]
+        public void SignHash_CompareSignaturesOfRSACSPAndRSACipher_Pass()
+        {
+            int wantedKeySize = 4096;
+            Random rdm = new Random();
+            byte[] message = new byte[256];
+            byte[] signedMessage;
+            byte[] signedMessageNative;
+            string nativeXmlString;
+            rdm.NextBytes(message);
+
+            using (var rsacsp = new RSACryptoServiceProvider(wantedKeySize))
+            {
+                byte[] nativeHash = new SHA1Managed().ComputeHash(message);
+                signedMessageNative = rsacsp.SignHash(nativeHash, "SHA1");
+                nativeXmlString = rsacsp.ToXmlString(true);
+            }
+
+            using (var cipher = new RSACipher<RSACryptoServiceProvider>(nativeXmlString))
+            {
+                byte[] hash = new SHA1Managed().ComputeHash(message);
+                signedMessage = cipher.SignHash(hash, Cipha.Security.Cryptography.HashAlg.SHA1);
+            }
+
+            CollectionAssert.AreEqual(signedMessage, signedMessageNative);
+        }
+        [TestMethod]
+        public void VerifyData_VerifiesComputedSignature_Pass()
+        {
+            Random rdm = new Random();
+            byte[] message = new byte[256];
+            byte[] signedMessage;
+            string nativeXmlString;
+            bool isMessageNotTamperedWith = true;
+            rdm.NextBytes(message);
+
+            using (var rsacsp = new RSACipher<RSACryptoServiceProvider>())
+            {
+                signedMessage = rsacsp.SignData<SHA256Cng>(message);
+                nativeXmlString = rsacsp.ToXmlString(true);
+            }
+
+            using (var cipher = new RSACipher<RSACryptoServiceProvider>(nativeXmlString))
+            {
+                isMessageNotTamperedWith = cipher.VerifyData<SHA256Cng>(message, signedMessage);
+            }
+
+            Assert.IsTrue(isMessageNotTamperedWith);
+        }
+        [TestMethod]
+        public void VerifyHash_VerifiesComputedSignature_Pass()
+        {
+            Random rdm = new Random();
+            string hashOID = "SHA384";
+            byte[] message = new byte[256];
+            byte[] signedMessage;
+            string nativeXmlString;
+            bool isMessageNotTamperedWith = true;
+            rdm.NextBytes(message);
+
+            using (var rsacsp = new RSACipher<RSACryptoServiceProvider>())
+            {
+                byte[] nativeHash = new SHA384Cng().ComputeHash(message);
+                signedMessage = rsacsp.SignHash(nativeHash, hashOID);
+                nativeXmlString = rsacsp.ToXmlString(true);
+            }
+
+            using (var cipher = new RSACipher<RSACryptoServiceProvider>(nativeXmlString))
+            {
+                byte[] hash = new SHA384Cng().ComputeHash(message);
+                isMessageNotTamperedWith = cipher.VerifyHash(hash, hashOID, signedMessage);
+            }
+
+            Assert.IsTrue(isMessageNotTamperedWith);
         }
     }
 }

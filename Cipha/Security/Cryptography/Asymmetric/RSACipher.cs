@@ -12,10 +12,10 @@ namespace Cipha.Security.Cryptography.Asymmetric
     /// for the RSA algorithm.
     /// </summary>
     /// <typeparam name="T">Any derivation of RSA.</typeparam>
-    public class RSACipher<T> : AsymmetricCipher<T>
+    public sealed class RSACipher<T> : AsymmetricCipher<T>
         where T : RSA, new()
     {
-        protected bool usefOAEPPadding = true;
+        bool usefOAEPPadding = true;
 
         /// <summary>
         /// Instantiates a new instance of the class.
@@ -120,6 +120,69 @@ namespace Cipha.Security.Cryptography.Asymmetric
                 return (algo as RSACryptoServiceProvider).Decrypt(cipherData, usefOAEPPadding);
             }
             throw new NotSupportedException("no decryption logic for type " + typeof(T));
+        }
+
+
+        public override byte[] SignData<U>(byte[] dataToSign)
+        {
+            if (algo is RSACryptoServiceProvider)
+            {
+                return (algo as RSACryptoServiceProvider).SignData(dataToSign, new U());
+            }
+            throw new NotSupportedException("no data signing logic for type " + typeof(T));
+        }
+
+        public override bool VerifyData<U>(byte[] dataToVerify, byte[] signedData)
+        {
+            if (algo is RSACryptoServiceProvider)
+            {
+                return (algo as RSACryptoServiceProvider).VerifyData(dataToVerify, new U(), signedData);
+            }
+            throw new NotSupportedException("no verifying logic for type " + typeof(T));
+        }
+
+        public override bool VerifyData<U>(byte[] dataToVerify, byte[] signedData, string xmlString)
+        {
+            if (algo is RSACryptoServiceProvider)
+            {
+                using(var tempAlgo = new RSACryptoServiceProvider())
+                {
+                    tempAlgo.FromXmlString(xmlString);
+                    return tempAlgo.VerifyData(dataToVerify, new U(), signedData);
+                }
+            }
+            throw new NotSupportedException("no verifying logic for type " + typeof(T));
+        }
+
+        public override byte[] SignHash(byte[] hashToSign, string hashIdentifier)
+        {
+            if (algo is RSACryptoServiceProvider)
+            {
+                return (algo as RSACryptoServiceProvider).SignHash(hashToSign, hashIdentifier);
+            }
+            throw new NotSupportedException("no hash signing logic for type " + typeof(T));
+        }
+
+        public override bool VerifyHash(byte[] hashToVerify, string hashIdentifier, byte[] signedHash)
+        {
+            if (algo is RSACryptoServiceProvider)
+            {
+                return (algo as RSACryptoServiceProvider).VerifyHash(hashToVerify, hashIdentifier, signedHash);
+            }           
+            throw new NotSupportedException("no hash verifying logic for type " + typeof(T));
+        }
+
+        public override bool VerifyHash(byte[] hashToVerify, string hashIdentifier, byte[] signedHash, string xmlString)
+        {
+            if (algo is RSACryptoServiceProvider)
+            {
+                using(var tempAlgo = new RSACryptoServiceProvider())
+                {
+                    tempAlgo.FromXmlString(xmlString);
+                    return tempAlgo.VerifyHash(hashToVerify, hashIdentifier, signedHash);
+                }
+            }
+            throw new NotSupportedException("no hash verifying logic for type " + typeof(T));
         }
     }
 }
