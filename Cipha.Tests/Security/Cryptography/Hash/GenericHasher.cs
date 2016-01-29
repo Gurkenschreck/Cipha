@@ -35,25 +35,25 @@ namespace Cipha.Tests.Security.Cryptography.Hash
         }
 
         [TestMethod]
-        public void CompareHashes_MD5HashGeneration_EqualHashPass()
+        public void ComputeHash_CreateMD5HashAndCompare_EqualHashPass()
         {
             GenericHasher<MD5CryptoServiceProvider> hasher = new GenericHasher<MD5CryptoServiceProvider>();
             string stringToHash = "This is my hashable stuff";
             byte[] hash = hasher.ComputeHash(stringToHash);
             byte[] md5hash = new MD5CryptoServiceProvider().ComputeHash(hasher.Encoding.GetBytes(stringToHash));
 
-            Assert.IsTrue(hasher.CompareHashes(hash, md5hash));
+            Assert.IsTrue(hasher.AreHashesEqual(hash, md5hash));
         }
 
         [TestMethod]
-        public void CompareHashes_SHA256HashComparison_EqualHashPass()
+        public void ComputeAndCompare_StringComputeSHA256HashAndComparie_EqualHashPass()
         {
             GenericHasher<SHA256Managed> hasher = new GenericHasher<SHA256Managed>();
             hasher.Encoding = Encoding.UTF8;
             string stringA = "welcoMe";
             string stringB = "welcoMe";
 
-            Assert.IsTrue(hasher.CompareHashes(stringA, stringB));
+            Assert.IsTrue(hasher.ComputeAndCompare(stringA, stringB));
         }
     }
 }

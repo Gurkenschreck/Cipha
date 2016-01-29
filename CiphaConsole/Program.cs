@@ -61,10 +61,6 @@ namespace CiphaConsole
                             string to2 = cmds[2];
                             string pw2 = cmds[3];
 
-                            if (!File.Exists(to2))
-                            { //not working
-                                File.WriteAllBytes(to2, new GenericSymmetricCipher<RijndaelManaged>().Decrypt(File.ReadAllBytes(from2), pw2, "abcdefghij;;;"));
-                            }
                             break;
                         case "rm":
                             string input = cmds[1];

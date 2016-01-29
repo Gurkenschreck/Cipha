@@ -15,6 +15,7 @@ namespace Cipha.Security.Cryptography.Hash
     /// System.Security.Cryptography.HashAlgoritm.
     /// 
     /// Possible classes include, but are not limited to:
+    ///     RIPEMD160Managed
     ///     SHA1Managed
     ///     SHA2Managed
     ///     SHA256Managed
@@ -24,9 +25,9 @@ namespace Cipha.Security.Cryptography.Hash
     ///     
     /// located in the System.Security.Cryptography namespace.
     /// </summary>
-    /// <typeparam name="T">A concrete hash algorithm deriving from HashAlgorithm</typeparam>
+    /// <typeparam name="T">A concrete hash algorithm deriving from HashAlg</typeparam>
     public class GenericHasher<T>
-        where T : System.Security.Cryptography.HashAlgorithm, new()
+        where T : HashAlgorithm, new()
     {
         private Encoding encoding = Encoding.UTF8;
         /// <summary>
@@ -97,12 +98,24 @@ namespace Cipha.Security.Cryptography.Hash
         /// Computes 2 hashes of the strings and
         /// compare them bitwise.
         /// </summary>
-        /// <param name="stringA"></param>
-        /// <param name="stringB"></param>
-        /// <returns></returns>
-        public bool CompareHashes(string stringA, string stringB)
+        /// <param name="stringA">String A to hash.</param>
+        /// <param name="stringB">String B to hash.</param>
+        /// <returns>If both hashes are equal.</returns>
+        public bool ComputeAndCompare(string stringA, string stringB)
         {
-            return CompareHashes(ComputeHash(stringA), ComputeHash(stringB));
+            return AreHashesEqual(ComputeHash(stringA), ComputeHash(stringB));
+        }
+
+        /// <summary>
+        /// Computes 2 hashes of the provided byte
+        /// arrays and compare them bitwise.
+        /// </summary>
+        /// <param name="dataA">Data A to hash.</param>
+        /// <param name="dataB">Data B to hash.</param>
+        /// <returns></returns>
+        public bool ComputeAndCompare(byte[] dataA, string dataB)
+        {
+            return AreHashesEqual(ComputeHash(dataA), ComputeHash(dataB));
         }
 
         /// <summary>
@@ -111,14 +124,14 @@ namespace Cipha.Security.Cryptography.Hash
         /// </summary>
         /// <param name="hashA">The first byte array.</param>
         /// <param name="hashB">The second byte array.</param>
-        /// <returns></returns>
-        public bool CompareHashes(byte[] hashA, byte[] hashB)
+        /// <returns>If both hashes are equal.</returns>
+        public bool AreHashesEqual(byte[] hashA, byte[] hashB)
         {
             return Utilities.SlowEquals(hashA, hashB);
         }
 
         /// <summary>
-        /// Computes a hash and transforms it to hex.
+        /// Computes a hash and transforms it to a hex string.
         /// </summary>
         /// <param name="stringToHash">The string to hash.</param>
         /// <param name="useLowercase">If the hex string should contain lowercase or uppercase letters.</param>
