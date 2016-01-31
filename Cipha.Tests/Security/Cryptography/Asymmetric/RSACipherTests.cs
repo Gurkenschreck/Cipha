@@ -201,7 +201,7 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             using (var cipher = new RSACipher<RSACryptoServiceProvider>(nativeXmlString))
             {
                 byte[] hash = new SHA1Managed().ComputeHash(message);
-                signedMessage = cipher.SignHash(hash, Cipha.Security.Cryptography.HashAlg.SHA1);
+                signedMessage = cipher.SignHash<SHA1CryptoServiceProvider>(hash);
             }
 
             CollectionAssert.AreEqual(signedMessage, signedMessageNative);
@@ -233,7 +233,6 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
         public void VerifyHash_VerifiesComputedSignature_Pass()
         {
             Random rdm = new Random();
-            string hashOID = "SHA384";
             byte[] message = new byte[256];
             byte[] signedMessage;
             string nativeXmlString;
@@ -243,14 +242,14 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             using (var rsacsp = new RSACipher<RSACryptoServiceProvider>())
             {
                 byte[] nativeHash = new SHA384Cng().ComputeHash(message);
-                signedMessage = rsacsp.SignHash(nativeHash, hashOID);
+                signedMessage = rsacsp.SignHash<SHA384Cng>(nativeHash);
                 nativeXmlString = rsacsp.ToXmlString(true);
             }
 
             using (var cipher = new RSACipher<RSACryptoServiceProvider>(nativeXmlString))
             {
                 byte[] hash = new SHA384Cng().ComputeHash(message);
-                isMessageNotTamperedWith = cipher.VerifyHash(hash, hashOID, signedMessage);
+                isMessageNotTamperedWith = cipher.VerifyHash<SHA384Cng>(hash, signedMessage);
             }
 
             Assert.IsTrue(isMessageNotTamperedWith);

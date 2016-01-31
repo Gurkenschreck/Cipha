@@ -32,8 +32,6 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
             encryptedPlainData = d.Encrypt(plDt, password, salt);
             encryptedPlainDataAsString = Convert.ToBase64String(encryptedPlainData);
             encryptedPlainDataAsString2 = d.EncryptToString(plainData, password, salt);
-
-            Assert.AreEqual(encryptedPlainDataAsString, encryptedPlainDataAsString2);
         }
 
         /// <summary>
