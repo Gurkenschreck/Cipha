@@ -116,7 +116,7 @@ namespace Cipha.Security.Cryptography
         /// Throws:
         ///     CryptographicException
         /// </summary>
-        /// <param name="plainString">The string to encrypt.</param>
+        /// <param name="plainData">The string to encrypt.</param>
         /// <returns>The encrypted string.</returns>
         public byte[] Encrypt(string plainString)
         {
@@ -177,7 +177,7 @@ namespace Cipha.Security.Cryptography
         /// Throws:
         ///     CryptographicException
         /// </summary>
-        /// <param name="plainString">The plain string.</param>
+        /// <param name="plainData">The plain string.</param>
         /// <returns>The encrypted string represented as a string.</returns>
         public string EncryptToString(string plainString)
         {

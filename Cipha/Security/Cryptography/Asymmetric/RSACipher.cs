@@ -57,28 +57,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <param name="iterationCount">The amount of iterations to derive the key.</param>
         public RSACipher(string encryptedXmlString, string password, byte[] salt, int keySize = 0, int iterationCount = 10000)
             : base(encryptedXmlString, password, salt, keySize, iterationCount) { }
-
-        /// <summary>
-        /// Gets or sets the current used key size.
-        /// </summary>
-        public override int KeySize
-        {
-            get
-            {
-                return algo.KeySize;
-            }
-            set
-            {
-                if (algo is RSACryptoServiceProvider)
-                {
-                    using (RSACryptoServiceProvider crypto = new RSACryptoServiceProvider(value))
-                    {
-                        algo.FromXmlString(crypto.ToXmlString(true));
-                    }
-                }
-            }
-        }
-
+        
         /// <summary>
         /// fOAEP is a padding which can be used
         /// by the RSACryptoServiceProvider.
@@ -122,7 +101,12 @@ namespace Cipha.Security.Cryptography.Asymmetric
             throw new NotSupportedException("no decryption logic for type " + typeof(T));
         }
 
-
+        /// <summary>
+        /// Signs data using the private key.
+        /// </summary>
+        /// <typeparam name="U">The hash algorithm to use.</typeparam>
+        /// <param name="dataToSign">The data to sign.</param>
+        /// <returns>The signature.</returns>
         public override byte[] SignData<U>(byte[] dataToSign)
         {
             if (algo is RSACryptoServiceProvider)
@@ -132,30 +116,34 @@ namespace Cipha.Security.Cryptography.Asymmetric
             throw new NotSupportedException("no data signing logic for type " + typeof(T));
         }
 
+        /// <summary>
+        /// Verifies a previously signed message to 
+        /// check the integrity of it.
+        /// </summary>
+        /// <typeparam name="U">The hash algorithm to use.</typeparam>
+        /// <param name="dataToVerify">The data to verify.</param>
+        /// <param name="signedData">The existing signature.</param>
+        /// <returns>If the message has not been tampered with.</returns>
         public override bool VerifyData<U>(byte[] dataToVerify, byte[] signedData)
         {
             if (algo is RSACryptoServiceProvider)
             {
                 return (algo as RSACryptoServiceProvider).VerifyData(dataToVerify, new U(), signedData);
             }
+
             throw new NotSupportedException("no verifying logic for type " + typeof(T));
         }
 
-        public override bool VerifyData<U>(byte[] dataToVerify, byte[] signedData, string xmlString)
+        /// <summary>
+        /// Signs a hashed value using the private key.
+        /// </summary>
+        /// <typeparam name="U">The hash algorithm to use.</typeparam>
+        /// <param name="hashToSign">The data to sign.</param>
+        /// <returns>The signature of the message.</returns>
+        public override byte[] SignHash<U>(byte[] hashToSign)
         {
-            if (algo is RSACryptoServiceProvider)
-            {
-                using(var tempAlgo = new RSACryptoServiceProvider())
-                {
-                    tempAlgo.FromXmlString(xmlString);
-                    return tempAlgo.VerifyData(dataToVerify, new U(), signedData);
-                }
-            }
-            throw new NotSupportedException("no verifying logic for type " + typeof(T));
-        }
+            string hashIdentifier = OIDIdentifier.Get(new U());
 
-        public override byte[] SignHash(byte[] hashToSign, string hashIdentifier)
-        {
             if (algo is RSACryptoServiceProvider)
             {
                 return (algo as RSACryptoServiceProvider).SignHash(hashToSign, hashIdentifier);
@@ -163,25 +151,23 @@ namespace Cipha.Security.Cryptography.Asymmetric
             throw new NotSupportedException("no hash signing logic for type " + typeof(T));
         }
 
-        public override bool VerifyHash(byte[] hashToVerify, string hashIdentifier, byte[] signedHash)
+        /// <summary>
+        /// Verifies a previously signed hash to check the integrity
+        /// of it.
+        /// </summary>
+        /// <typeparam name="U">The hash algorithm to use.</typeparam>
+        /// <param name="hashToVerify">The hash of the message to verify.</param>
+        /// <param name="signedHash">The previously signed hash of the message.</param>
+        /// <returns>If the message has not been tampered with.</returns>
+        public override bool VerifyHash<U>(byte[] hashToVerify, byte[] signedHash)
         {
-            if (algo is RSACryptoServiceProvider)
+            string hashIdentifier = OIDIdentifier.Get(new U());
+
+            if(algo is RSACryptoServiceProvider)
             {
                 return (algo as RSACryptoServiceProvider).VerifyHash(hashToVerify, hashIdentifier, signedHash);
-            }           
-            throw new NotSupportedException("no hash verifying logic for type " + typeof(T));
-        }
-
-        public override bool VerifyHash(byte[] hashToVerify, string hashIdentifier, byte[] signedHash, string xmlString)
-        {
-            if (algo is RSACryptoServiceProvider)
-            {
-                using(var tempAlgo = new RSACryptoServiceProvider())
-                {
-                    tempAlgo.FromXmlString(xmlString);
-                    return tempAlgo.VerifyHash(hashToVerify, hashIdentifier, signedHash);
-                }
             }
+            
             throw new NotSupportedException("no hash verifying logic for type " + typeof(T));
         }
     }

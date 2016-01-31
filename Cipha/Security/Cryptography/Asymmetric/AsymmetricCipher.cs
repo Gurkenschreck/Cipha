@@ -25,6 +25,9 @@ namespace Cipha.Security.Cryptography.Asymmetric
         protected T algo = new T();
 
         //Properties
+        /// <summary>
+        /// Gets or sets the current instance.
+        /// </summary>
         public T Algorithm
         {
             get { return algo; }
@@ -40,6 +43,27 @@ namespace Cipha.Security.Cryptography.Asymmetric
                 }
 
                 throw new ArgumentException("value is not of type " + algo.GetType());
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the key size of the algorithm.
+        /// 
+        /// When it sets, a new instance of T is created with
+        /// the new key size.
+        /// </summary>
+        public override int KeySize
+        {
+            get
+            {
+                return algo.KeySize;
+            }
+            set
+            {
+                using (var tempAlgo = (T)Activator.CreateInstance(typeof(T), (int)value))
+                {
+                    algo.FromXmlString(tempAlgo.ToXmlString(true));
+                }
             }
         }
 
@@ -218,7 +242,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// </summary>
         /// <typeparam name="U">The hash algorithm to use.</typeparam>
         /// <param name="dataToSign">The plain data to sign.</param>
-        /// <returns></returns>
+        /// <returns>The signature of the blob.</returns>
         public abstract byte[] SignData<U>(byte[] dataToSign)
             where U : HashAlgorithm, new();
 
@@ -227,48 +251,14 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// 
         /// The dataToVerify is encrypted using the same
         /// private key used in the signing process.
-        /// 
-        /// For a different private key, use the
-        /// other VerifyDataMethod which takes a
-        /// xmlString.
         /// </summary>
         /// <typeparam name="U">The same hash algorithm used in the signing process.</typeparam>
         /// <param name="dataToVerify">The plain data to verify its integrity.</param>
         /// <param name="signedData">The already signed data to check.</param>
-        /// <returns></returns>
+        /// <returns>If the data has not been tampered with.</returns>
         public abstract bool VerifyData<U>(byte[] dataToVerify, byte[] signedData)
             where U : HashAlgorithm, new();
 
-        /// <summary>
-        /// Checks the integrity of the plain message.
-        /// 
-        /// The dataToVerify is encrypted using the same
-        /// private key used in the signing process.
-        /// 
-        /// A new instance of T will be created using the
-        /// provided xmlString. The current configuration
-        /// is not touched.
-        /// </summary>
-        /// <typeparam name="U">The same hash algorithm used in the signing process.</typeparam>
-        /// <param name="dataToVerify">The plain data to verify its integrity.</param>
-        /// <param name="signedData">The already signed data to check.</param>
-        /// <param name="xmlString">The public key part to validate
-        /// .</param>
-        /// <returns>If the data has not been tampered with.</returns>
-        public abstract bool VerifyData<U>(byte[] dataToVerify, byte[] signedData, string xmlString)
-            where U : HashAlgorithm, new();
-
-        /// <summary>
-        /// Creates a signature for the specified pre-calculated 
-        /// hash value.
-        /// </summary>
-        /// <param name="hashToSign">The hash to sign.</param>
-        /// <param name="algorithm">The hashing algorithm to use.</param>
-        /// <returns>The signature of the hash.</returns>
-        public virtual byte[] SignHash(byte[] hashToSign, HashAlg algorithm)
-        {
-            return SignHash(hashToSign, OIDIdentifier.Get(algorithm));
-        }
 
         /// <summary>
         /// Creates a signature for the specified pre-calculated 
@@ -278,30 +268,19 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// OIDIdentifier class.
         /// </summary>
         /// <param name="hashToSign">The hash to sign.</param>
-        /// <param name="hashIdentifier">The hash OID.</param>
         /// <returns>The signature of the hash.</returns>
-        public abstract byte[] SignHash(byte[] hashToSign, string hashIdentifier);
+        public abstract byte[] SignHash<U>(byte[] hashToSign)
+            where U : HashAlgorithm, new();
 
         /// <summary>
-        /// Verifies a hash.
+        /// Verifies a previously signed hash to check the integrity
+        /// of it.
         /// </summary>
-        /// <param name="hashToVerify">The hash to check.</param>
-        /// <param name="hashIdentifier">The hash OID.</param>
-        /// <param name="signedHash">The already signed hash.</param>
+        /// <typeparam name="U">The hash algorithm to use.</typeparam>
+        /// <param name="hashToVerify">The hash of the message to verify.</param>
+        /// <param name="signedHash">The previously signed hash of the message.</param>
         /// <returns>If the message has not been tampered with.</returns>
-        public abstract bool VerifyHash(byte[] hashToVerify, string hashIdentifier, byte[] signedHash);
-
-        /// <summary>
-        /// Verifies a hash.
-        /// 
-        /// Creates a new instance of T using the xmlString
-        /// for configuration. The current config is not touched.
-        /// </summary>
-        /// <param name="hashToVerify">The hash to check.</param>
-        /// <param name="hashIdentifier">The hash OID.</param>
-        /// <param name="signedHash">The already signed hash.</param>
-        /// <param name="xmlString">The public key part to validate.</param>
-        /// <returns>If the message has not been tampered with.</returns>
-        public abstract bool VerifyHash(byte[] hashToVerify, string hashIdentifier, byte[] signedHash, string xmlString);
+        public abstract bool VerifyHash<U>(byte[] hashToVerify, byte[] signedHash)
+            where U : HashAlgorithm, new();
     }
 }
