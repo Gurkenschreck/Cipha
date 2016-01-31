@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Cipha.Security.Cryptography.Asymmetric
 {
-    public class DRACipher<T> : AsymmetricCipher<T>
+    public class DSACipher<T> : AsymmetricCipher<T>
         where T : DSA, new()
     {
         /// <summary>
