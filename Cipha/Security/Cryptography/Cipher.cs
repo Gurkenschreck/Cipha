@@ -81,17 +81,24 @@ namespace Cipha.Security.Cryptography
 
         public virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            try
             {
-                hashIterations = 0;
-                encoding = Encoding.ASCII;
-                encoding = null;
-                if(salt != null)
-                    Utilities.SetArrayValuesZero(salt);
-                salt = null;
+                // First dispose child
+                DisposeImplementation(disposing);
             }
-
-            DisposeImplementation(disposing);
+            finally
+            {
+                // then base
+                if (disposing)
+                {
+                    hashIterations = 0;
+                    encoding = Encoding.ASCII;
+                    encoding = null;
+                    if (salt != null)
+                        Utilities.SetArrayValuesZero(salt);
+                    salt = null;
+                }
+            }
         }
 
         /// <summary>
