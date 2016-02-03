@@ -7,6 +7,25 @@ using System.Threading.Tasks;
 
 namespace Cipha.Security.Cryptography.Asymmetric
 {
+    /// <summary>
+    /// Digital Signature Algorithm is used to create
+    /// digital signatures of data for verificational
+    /// reasons.
+    /// 
+    /// Using digital signatures, one can verify the
+    /// identity of a message and if the message itself
+    /// has been manipulated.
+    /// 
+    /// DSA uses SHA1 for the creation of
+    /// digital signatures.
+    /// 
+    /// DSA supports key lengths from 512 bits to 1024 
+    /// bits in increments of 64 bits.
+    /// 
+    /// There are newer asymmetric algorithms, so consider
+    /// leaving using RSA, ECDsa or ECDiffieHellmann.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class DSACipher<T> : AsymmetricCipher<T>
         where T : DSA, new()
     {
@@ -25,10 +44,9 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <typeparam name="U">The hash algorithm to use.</typeparam>
         /// <param name="dataToSign">The plain data to sign.</param>
         /// <returns>The signature of the blob.</returns>
-        public override byte[] SignData<U>(byte[] dataToSign)
+        public override byte[] SignData(byte[] dataToSign)
         {
-            byte[] hash = new U().ComputeHash(dataToSign);
-            return (algo as DSACryptoServiceProvider).CreateSignature(hash);
+            return algo.CreateSignature(new SHA1Cng().ComputeHash(dataToSign));
         }
 
         /// <summary>
@@ -41,10 +59,9 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <param name="dataToVerify">The plain data to verify its integrity.</param>
         /// <param name="signedData">The already signed data to check.</param>
         /// <returns>If the data has not been tampered with.</returns>
-        public override bool VerifyData<U>(byte[] dataToVerify, byte[] signedData)
+        public override bool VerifyData(byte[] dataToVerify, byte[] signedData)
         {
-            byte[] hash = new U().ComputeHash(dataToVerify);
-            return algo.VerifySignature(hash, signedData);
+            return algo.VerifySignature(new SHA1Cng().ComputeHash(dataToVerify), signedData);
         }
 
         /// <summary>
@@ -56,24 +73,21 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// </summary>
         /// <param name="hashToSign">The hash to sign.</param>
         /// <returns>The signature of the hash.</returns>
-        public override byte[] SignHash<U>(byte[] hashToSign)
+        public override byte[] SignHash(byte[] hashToSign)
         {
-            byte[] hash = new U().ComputeHash(hashToSign);
-            return algo.CreateSignature(hashToSign);
+            return algo.CreateSignature(new SHA1Cng().ComputeHash(hashToSign));
         }
 
         /// <summary>
         /// Verifies a previously signed hash to check the integrity
         /// of it.
         /// </summary>
-        /// <typeparam name="U">The hash algorithm to use.</typeparam>
         /// <param name="hashToVerify">The hash of the message to verify.</param>
         /// <param name="signedHash">The previously signed hash of the message.</param>
         /// <returns>If the message has not been tampered with.</returns>
-        public override bool VerifyHash<U>(byte[] hashToVerify, byte[] signedHash)
+        public override bool VerifyHash(byte[] hashToVerify, byte[] signedHash)
         {
-            byte[] hash = new U().ComputeHash(hashToVerify);
-            return algo.VerifySignature(hash, signedHash);
+            return algo.VerifySignature(new SHA1Cng().ComputeHash(hashToVerify), signedHash);
         }        
     }
 }

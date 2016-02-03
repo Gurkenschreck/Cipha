@@ -18,10 +18,17 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             Random rdm = new Random();
             byte[] randomMessage = new byte[128];
             rdm.NextBytes(randomMessage);
+            byte[] hashSignature;
+            bool notTamperedWith = false;
 
             using(var cipher = new DSACipher<DSACryptoServiceProvider>())
             {
+                hashSignature = cipher.SignHash<SHA512Cng>(randomMessage);
+
+                notTamperedWith = cipher.VerifyHash<SHA512Cng>(randomMessage, hashSignature);
             }
+
+            Assert.IsTrue(notTamperedWith);
         }
     }
 }
