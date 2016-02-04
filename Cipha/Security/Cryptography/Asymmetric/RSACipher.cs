@@ -135,20 +135,74 @@ namespace Cipha.Security.Cryptography.Asymmetric
         }
 
         /// <summary>
-        /// Signs a hashed value using the private key.
+        /// Signs a SHA256 hash using the private key.
         /// </summary>
-        /// <typeparam name="U">The hash algorithm to use.</typeparam>
-        /// <param name="hashToSign">The data to sign.</param>
+        /// <param name="dataToSign">The data to sign.</param>
         /// <returns>The signature of the message.</returns>
-        public override byte[] SignHash<U>(byte[] hashToSign)
+        public override byte[] SignHash(byte[] hashToSign)
         {
-            string hashIdentifier = OIDIdentifier.Get(new U());
-
             if (algo is RSACryptoServiceProvider)
             {
-                return (algo as RSACryptoServiceProvider).SignHash(hashToSign, hashIdentifier);
+                return (algo as RSACryptoServiceProvider).SignHash(hashToSign, "SHA256");
             }
             throw new NotSupportedException("no hash signing logic for type " + typeof(T));
+        }
+
+        public byte[] SignHash(byte[] hashToSign, string hashOID)
+        {
+            if (algo is RSACryptoServiceProvider)
+            {
+                return (algo as RSACryptoServiceProvider).SignHash(hashToSign, hashOID);
+            }
+            throw new NotSupportedException("no hash signing logic for type " + typeof(T));
+        }
+
+        public byte[] SignHash(byte[] hashToSign, HashAlg hashOID)
+        {
+            if (algo is RSACryptoServiceProvider)
+            {
+                return (algo as RSACryptoServiceProvider).SignHash(hashToSign, OIDIdentifier.Get(hashOID));
+            }
+            throw new NotSupportedException("no hash signing logic for type " + typeof(T));
+        }
+        public byte[] SignHash(byte[] hashToSign, HashAlgorithm hashAlgo)
+        {
+            if (algo is RSACryptoServiceProvider)
+            {
+                return (algo as RSACryptoServiceProvider).SignHash(hashToSign, OIDIdentifier.Get(hashAlgo));
+            }
+            throw new NotSupportedException("no hash signing logic for type " + typeof(T));
+        }
+
+        /// <summary>
+        /// Signs data using algorithm U.
+        /// </summary>
+        /// <typeparam name="U">The algorithm used in the hashing process.</typeparam>
+        /// <param name="dataToSign">The original message.</param>
+        /// <returns>The signed hash.</returns>
+        public override byte[] ComputeAndSignHash<U>(byte[] dataToSign)
+        {
+            if (algo is RSACryptoServiceProvider)
+            {
+                return (algo as RSACryptoServiceProvider).SignHash(new U().ComputeHash(dataToSign), OIDIdentifier.Get(new U()));
+            }
+            throw new NotSupportedException("no hash signing logic for type " + typeof(T));
+        }
+
+        /// <summary>
+        /// Verifies a SHA256 hash byt comparing it to the
+        /// already signed data.
+        /// </summary>
+        /// <param name="hashToVerify">The SHA256 hash of the data.</param>
+        /// <param name="signedHash">The already signed SHA256 hash.</param>
+        /// <returns></returns>
+        public override bool VerifyHash(byte[] hashToVerify, byte[] signedHash)
+        {
+            if (algo is RSACryptoServiceProvider)
+            {
+                return (algo as RSACryptoServiceProvider).VerifyHash(hashToVerify, "SHA256", signedHash);
+            }
+            throw new NotSupportedException("no hash verification logic for type " + typeof(T));
         }
 
         /// <summary>
@@ -156,16 +210,15 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// of it.
         /// </summary>
         /// <typeparam name="U">The hash algorithm to use.</typeparam>
-        /// <param name="hashToVerify">The hash of the message to verify.</param>
+        /// <param name="dataToVerify">The hash of the message to verify.</param>
         /// <param name="signedHash">The previously signed hash of the message.</param>
         /// <returns>If the message has not been tampered with.</returns>
-        public override bool VerifyHash<U>(byte[] hashToVerify, byte[] signedHash)
+        public override bool ComputeAndVerifyHash<U>(byte[] dataToVerify, byte[] signedHash)
         {
             string hashIdentifier = OIDIdentifier.Get(new U());
-
             if(algo is RSACryptoServiceProvider)
             {
-                return (algo as RSACryptoServiceProvider).VerifyHash(hashToVerify, hashIdentifier, signedHash);
+                return (algo as RSACryptoServiceProvider).VerifyHash(new U().ComputeHash(dataToVerify), hashIdentifier, signedHash);
             }
             
             throw new NotSupportedException("no hash verifying logic for type " + typeof(T));

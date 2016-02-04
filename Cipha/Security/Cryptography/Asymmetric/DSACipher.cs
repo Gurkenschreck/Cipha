@@ -44,9 +44,13 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <typeparam name="U">The hash algorithm to use.</typeparam>
         /// <param name="dataToSign">The plain data to sign.</param>
         /// <returns>The signature of the blob.</returns>
-        public override byte[] SignData(byte[] dataToSign)
+        public override byte[] SignData<U>(byte[] dataToSign)
         {
-            return algo.CreateSignature(new SHA1Cng().ComputeHash(dataToSign));
+            if(algo is DSACryptoServiceProvider)
+            {
+                return (algo as DSACryptoServiceProvider).SignData(dataToSign);
+            }
+            throw new InvalidOperationException(string.Format("operation not supported by type {0}", typeof(T)));
         }
 
         /// <summary>
@@ -59,9 +63,13 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <param name="dataToVerify">The plain data to verify its integrity.</param>
         /// <param name="signedData">The already signed data to check.</param>
         /// <returns>If the data has not been tampered with.</returns>
-        public override bool VerifyData(byte[] dataToVerify, byte[] signedData)
+        public override bool VerifyData<U>(byte[] dataToVerify, byte[] signedData)
         {
-            return algo.VerifySignature(new SHA1Cng().ComputeHash(dataToVerify), signedData);
+            if (algo is DSACryptoServiceProvider)
+            {
+                return (algo as DSACryptoServiceProvider).VerifyData(dataToVerify, signedData);
+            }
+            throw new InvalidOperationException(string.Format("operation not supported by type {0}", typeof(T)));
         }
 
         /// <summary>
@@ -71,7 +79,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// Some hash identifier can be found in the
         /// OIDIdentifier class.
         /// </summary>
-        /// <param name="hashToSign">The hash to sign.</param>
+        /// <param name="dataToSign">The hash to sign.</param>
         /// <returns>The signature of the hash.</returns>
         public override byte[] SignHash(byte[] hashToSign)
         {
@@ -82,12 +90,12 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// Verifies a previously signed hash to check the integrity
         /// of it.
         /// </summary>
-        /// <param name="hashToVerify">The hash of the message to verify.</param>
+        /// <param name="dataToVerify">The hash of the message to verify.</param>
         /// <param name="signedHash">The previously signed hash of the message.</param>
         /// <returns>If the message has not been tampered with.</returns>
         public override bool VerifyHash(byte[] hashToVerify, byte[] signedHash)
         {
             return algo.VerifySignature(new SHA1Cng().ComputeHash(hashToVerify), signedHash);
-        }        
+        }
     }
 }

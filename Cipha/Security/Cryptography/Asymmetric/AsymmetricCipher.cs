@@ -259,28 +259,46 @@ namespace Cipha.Security.Cryptography.Asymmetric
         public abstract bool VerifyData<U>(byte[] dataToVerify, byte[] signedData)
             where U : HashAlgorithm, new();
 
+        /// <summary>
+        /// Signs a already existing hash.
+        /// </summary>
+        /// <param name="hashToSign">The pre calculated hash to sign.</param>
+        /// <returns>The signed hash.</returns>
+        public abstract byte[] SignHash(byte[] hashToSign);
 
         /// <summary>
-        /// Creates a signature for the specified pre-calculated 
-        /// hash value.
-        /// 
-        /// Some hash identifier can be found in the
-        /// OIDIdentifier class.
+        /// Hashes the data with a new instance of U
+        /// and signs it.
         /// </summary>
-        /// <param name="hashToSign">The hash to sign.</param>
-        /// <returns>The signature of the hash.</returns>
-        public abstract byte[] SignHash<U>(byte[] hashToSign)
-            where U : HashAlgorithm, new();
+        /// <typeparam name="U">The hash to use for signing.</typeparam>
+        /// <param name="dataToSign">The data to create a hash from and sign it.</param>
+        /// <returns>The signed hash value calculated from dataToSign.</returns>
+        public virtual byte[] ComputeAndSignHash<U>(byte[] dataToSign)
+            where U : HashAlgorithm, new()
+        {
+            return SignHash(new U().ComputeHash(dataToSign));
+        }
+
+        /// <summary>
+        /// Verifies the two already existing hashes.
+        /// </summary>
+        /// <param name="hashToVerify">The hash of the original data.</param>
+        /// <param name="signedHash">The signed hash.</param>
+        /// <returns></returns>
+        public abstract bool VerifyHash(byte[] hashToVerify, byte[] signedHash);
 
         /// <summary>
         /// Verifies a previously signed hash to check the integrity
         /// of it.
         /// </summary>
         /// <typeparam name="U">The hash algorithm to use.</typeparam>
-        /// <param name="hashToVerify">The hash of the message to verify.</param>
+        /// <param name="dataToVerify">The hash of the message to verify.</param>
         /// <param name="signedHash">The previously signed hash of the message.</param>
         /// <returns>If the message has not been tampered with.</returns>
-        public abstract bool VerifyHash<U>(byte[] hashToVerify, byte[] signedHash)
-            where U : HashAlgorithm, new();
+        public virtual bool ComputeAndVerifyHash<U>(byte[] dataToVerify, byte[] signedHash)
+            where U : HashAlgorithm, new()
+        {
+            return VerifyHash(new U().ComputeHash(dataToVerify), signedHash);
+        }
     }
 }
