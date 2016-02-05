@@ -10,6 +10,22 @@ namespace Cipha.Security.Cryptography
     public class Utilities
     {
         /// <summary>
+        /// Fills an array of bytes with a cryptographically
+        /// strong sequence of random bytes.
+        /// 
+        /// Makes use of the RNGCryptoServiceProvider.GetBytes
+        /// method.
+        /// </summary>
+        /// <param name="randomBytes">The array to fill.</param>
+        /// <returns>The random byte array.</returns>
+        public void FillWithRandomBytes(byte[] randomBytes)
+        {
+            if (randomBytes == null)
+                throw new ArgumentNullException("randomBytes");
+
+            new RNGCryptoServiceProvider().GetBytes(randomBytes);
+        }
+        /// <summary>
         /// Compares two byte arrays in length-constant time. This comparison
         /// method is used so that setupPassword hashes cannot be extracted from
         /// on-line systems using a timing attack and then attacked off-line.
