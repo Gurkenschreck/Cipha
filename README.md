@@ -19,3 +19,8 @@ Stuff I want to add in the future:
 * documentation :^)
 
 I am relying on the native .NET implementations which are pretty much rock-solid.
+
+To take a deeper look on how to use it, simply browse the wiki or go through the unit
+tests.
+Each class has its own Test class, settled in a folder structured which is built parallel to the
+source code.
