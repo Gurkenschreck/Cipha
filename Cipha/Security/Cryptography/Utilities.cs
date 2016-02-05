@@ -18,7 +18,7 @@ namespace Cipha.Security.Cryptography
         /// </summary>
         /// <param name="randomBytes">The array to fill.</param>
         /// <returns>The random byte array.</returns>
-        public void FillWithRandomBytes(byte[] randomBytes)
+        public static void FillWithRandomBytes(byte[] randomBytes)
         {
             if (randomBytes == null)
                 throw new ArgumentNullException("randomBytes");

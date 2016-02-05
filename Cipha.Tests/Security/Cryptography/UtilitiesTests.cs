@@ -51,5 +51,24 @@ namespace Cipha.Tests.Security.Cryptography
 
             CollectionAssert.AreEqual(finalArr, arr);
         }
+        [TestMethod]
+        public void FillWithRandomBytes_GenerateBytes_PassNotEqual()
+        {
+            byte[] bytes1 = new byte[20];
+            byte[] bytes2 = new byte[20];
+
+            Utilities.FillWithRandomBytes(bytes1);
+            Utilities.FillWithRandomBytes(bytes2);
+
+            Assert.AreNotEqual(bytes1, bytes2);
+        }
+        [ExpectedException(typeof(ArgumentNullException))]
+        [TestMethod]
+        public void FillWithRandomBytes_GenerateBytes_ArgumentNullExceptionFail()
+        {
+            byte[] bytes1 = null;
+
+            Utilities.FillWithRandomBytes(bytes1);
+        }
     }
 }
