@@ -10,7 +10,7 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
     public class SymmetricCipherTest
     {
         [TestMethod]
-        public void AesBasicCipher1_SameInstance_ComparesOutput()
+        public void EncryptToString_AesEncryptToStringAndDecryptToString_Pass()
         {
             string plainText = "Encrypt me but don' forget me.";
             string encryptedText;
@@ -18,6 +18,37 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
             using(var cipher = new SymmetricCipher<AesManaged>("passwd", "mysalt1337"))
             {
                 encryptedText = cipher.EncryptToString(plainText);
+                decryptedText = cipher.DecryptToString(encryptedText);
+            }
+
+            Assert.AreEqual(plainText, decryptedText);
+        }
+
+        [TestMethod]
+        public void AesBasicCipher1_SameInstance_ComparesOutput()
+        {
+            string plainText = "Encrypt me but don' forget me.";
+            byte[] plaindata = Encoding.UTF8.GetBytes(plainText);
+            string encryptedText;
+            string decryptedText;
+            using (var cipher = new SymmetricCipher<AesManaged>("passwd", "mysalt1337"))
+            {
+                encryptedText = cipher.EncryptToString(plaindata);
+                decryptedText = cipher.DecryptToString(encryptedText);
+            }
+
+            Assert.AreEqual(plainText, decryptedText);
+        }
+        [TestMethod]
+        public void DecryptToString_EncryptAndDecryptToString_Pass()
+        {
+            string plainText = "Encrypt me but don' forget me.";
+            byte[] plaindata = Encoding.UTF8.GetBytes(plainText);
+            byte[] encryptedText;
+            string decryptedText;
+            using (var cipher = new SymmetricCipher<AesManaged>("passwd", "mysalt1337"))
+            {
+                encryptedText = cipher.Encrypt(plaindata);
                 decryptedText = cipher.DecryptToString(encryptedText);
             }
 
@@ -254,5 +285,6 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
 
             CollectionAssert.AreEqual(plainTextArr, decryptArr);
         }
+
     }
 }
