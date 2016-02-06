@@ -38,13 +38,16 @@ namespace Cipha.Security.Cryptography.Symmetric
                 if (value == null)
                     throw new ArgumentNullException("value");
 
-                if(value.GetType() == typeof(T))
-                    algo = (T)value;
+                if (value.GetType() != typeof(T))
+                    throw new ArgumentException("value is not of type " + algo.GetType());
 
-                throw new ArgumentException("value is not of type " + algo.GetType());
+                algo = (T)value;
             }
         }
 
+        /// <summary>
+        /// Gets or sets the current key size.
+        /// </summary>
         public override int KeySize
         {
             get
@@ -98,6 +101,11 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <summary>
         /// Creates a new instance of the algorithm.
         /// 
+        /// When no salt is specified, a strong, randomly
+        /// generated salt will be created with a size
+        /// of 64 bytes. After generation, the salt can be 
+        /// extracted using the Salt property.
+        /// 
         /// It creates a key with the password, salt and
         /// iteration count by using the Rfc2898DeriveBytes
         /// implementation of PBKDF2.
@@ -106,26 +114,66 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// key size shall be used.
         /// 
         /// Throws:
-        ///     ArgumentNullException: pw or salt is null
+        ///     ArgumentNullException: pw is null
         ///     CryptographicException: invalid keysize
         /// </summary>
         /// <param name="password">The password used in the hashing process.</param>
         /// <param name="salt">The salt to use.</param>
         /// <param name="iterations">The iteration count that shall be used in Rfc2898DeriveBytes.</param>
-        public SymmetricCipher(string password, byte[] salt, int keysize = 0, int iterations = 10000)
+        public SymmetricCipher(string password, byte[] salt = null, int keysize = 0, int iterations = 10000)
         {
             if (password == null)
                 throw new ArgumentNullException("password");
-            if (salt == null)
-                throw new ArgumentNullException("salt");
 
             algo = new T();
             if (keysize > 0)
                 algo.KeySize = keysize;
 
-            GenerateKeys(password, salt, iterations);
+            if (salt == null)
+                salt = Utilities.GenerateSalt(64);
 
             this.salt = salt;
+
+            GenerateKeys(password, salt, iterations);
+        }
+
+        /// <summary>
+        /// Creates a new instance of the algorithm.
+        /// 
+        /// A salt of length x is generated.
+        /// After generation, the salt can be 
+        /// extracted using the Salt property.
+        /// 
+        /// It creates a key with the password, salt and
+        /// iteration count by using the Rfc2898DeriveBytes
+        /// implementation of PBKDF2.
+        /// 
+        /// The key size of 0 indicates that the standard 
+        /// key size shall be used.
+        /// 
+        /// Throws:
+        ///     ArgumentNullException: pw is null
+        ///     CryptographicException: invalid keysize
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="saltByteLength"></param>
+        /// <param name="keysize"></param>
+        /// <param name="iterations"></param>
+        public SymmetricCipher(string password, int saltByteLength, int keysize = 0, int iterations = 10000)
+        {
+            if (password == null)
+                throw new ArgumentNullException("password");
+
+            algo = new T();
+            if (keysize > 0)
+                algo.KeySize = keysize;
+
+            if (salt == null)
+                salt = Utilities.GenerateSalt(saltByteLength);
+
+            this.salt = salt;
+
+            GenerateKeys(password, salt, iterations);
         }
 
         protected override byte[] EncryptData(byte[] plainData)

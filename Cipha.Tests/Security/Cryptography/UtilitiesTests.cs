@@ -36,6 +36,28 @@ namespace Cipha.Tests.Security.Cryptography
 
             CollectionAssert.AreEqual(finalArr, arr);
         }
+        [TestMethod]
+        public void SetByteArrayValuesZero_WipeIntArray_Pass()
+        {
+            byte[] arr = {
+                             1,2,3,4,5,6,7,8,9,0
+                         };
+            byte[] finalArr = {
+                                  0,0,0,0,0,0,0,0,0,0
+                              };
+
+            Utilities.SetArrayValuesZero(arr);
+
+            CollectionAssert.AreEqual(finalArr, arr);
+        }
+        [ExpectedException(typeof(ArgumentNullException))]
+        [TestMethod]
+        public void SetByteArrayValuesZero_PassNullArray_FailArgumentNullException()
+        {
+            byte[] arr = null;
+
+            Utilities.SetArrayValuesZero(arr);
+        }
 
         [TestMethod]
         public void SetArrayValuesEmpty_WipeStringArray_Pass()
@@ -69,6 +91,29 @@ namespace Cipha.Tests.Security.Cryptography
             byte[] bytes1 = null;
 
             Utilities.FillWithRandomBytes(bytes1);
+        }
+        [TestMethod]
+        public void FlipBytes_FlipAllZeroesOfArray_Pass()
+        {
+            byte[] bytes = {0,0,0,0,0,0,0,0,0,0};
+            byte[] flipped = { 255, 255, 255, 255, 255, 255, 255, 255, 255, 255 };
+            byte[] functionFlipped = Utilities.FlipBytes(bytes);
+            CollectionAssert.AreEqual(flipped, functionFlipped);
+        }
+        [TestMethod]
+        public void FlipBytes_FlipSmallArray_Pass()
+        {
+            byte[] bytes = { 0, 3 };
+            byte[] flipped = { 255, 252 };
+            byte[] functionFlipped = Utilities.FlipBytes(bytes);
+            CollectionAssert.AreEqual(flipped, functionFlipped);
+        }
+        [ExpectedException(typeof(ArgumentNullException))]
+        [TestMethod]
+        public void SetArrayValuesEmpty_PassNull_ArgumentNullException()
+        {
+            string[] nullarr = null;
+            Utilities.SetArrayValuesEmpty(nullarr);
         }
     }
 }

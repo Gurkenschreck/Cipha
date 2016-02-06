@@ -16,15 +16,29 @@ namespace Cipha.Security.Cryptography
         /// Makes use of the RNGCryptoServiceProvider.GetBytes
         /// method.
         /// </summary>
-        /// <param name="randomBytes">The array to fill.</param>
+        /// <param name="arrToFill">The array to fill.</param>
         /// <returns>The random byte array.</returns>
-        public static void FillWithRandomBytes(byte[] randomBytes)
+        public static void FillWithRandomBytes(byte[] arrToFill)
         {
-            if (randomBytes == null)
+            if (arrToFill == null)
                 throw new ArgumentNullException("randomBytes");
 
-            new RNGCryptoServiceProvider().GetBytes(randomBytes);
+            new RNGCryptoServiceProvider().GetBytes(arrToFill);
         }
+
+        /// <summary>
+        /// Generates a salt of n bytes using 
+        /// RNGCryptoServiceProvider.
+        /// </summary>
+        /// <param name="amountOfBytes">The amount of bytes.</param>
+        /// <returns>A strong salt</returns>
+        public static byte[] GenerateSalt(int amountOfBytes)
+        {
+            byte[] salt = new byte[amountOfBytes];
+            new RNGCryptoServiceProvider().GetBytes(salt);
+            return salt;
+        }
+
         /// <summary>
         /// Compares two byte arrays in length-constant time. This comparison
         /// method is used so that setupPassword hashes cannot be extracted from
@@ -39,6 +53,20 @@ namespace Cipha.Security.Cryptography
             for (int i = 0; i < a.Length && i < b.Length; i++)
                 diff |= (uint)(a[i] ^ b[i]);
             return diff == 0;
+        }
+
+        /// <summary>
+        /// Applies logical XOR on each byte of the provided array
+        /// and returns the mirrored data.
+        /// </summary>
+        /// <param name="arrToFlip">The data to flip its bytes.</param>
+        /// <returns>The exact opposite of arrToFlip.</returns>
+        public static byte[] FlipBytes(byte[] arrToFlip)
+        {
+            byte[] flipped = (byte[])arrToFlip.Clone();
+            for(int i = 0; i < flipped.Length; i++)
+                flipped[i] = (byte)(flipped[i] ^ 255);
+            return flipped;
         }
 
         /// <summary>

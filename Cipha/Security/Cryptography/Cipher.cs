@@ -201,10 +201,10 @@ namespace Cipha.Security.Cryptography
         ///     CryptographicException
         /// </summary>
         /// <param name="cipherData">The data to decrypt.</param>
-        /// <returns>The decrypted data represented as a string.</returns>
+        /// <returns>The decrypted data represented as a base64 string.</returns>
         public string DecryptToString(byte[] cipherData)
         {
-            return Convert.ToBase64String(DecryptData(cipherData));
+            return encoding.GetString(DecryptData(cipherData));
         }
 
         /// <summary>

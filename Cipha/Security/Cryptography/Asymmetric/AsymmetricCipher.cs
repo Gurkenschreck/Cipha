@@ -300,5 +300,31 @@ namespace Cipha.Security.Cryptography.Asymmetric
         {
             return VerifyHash(new U().ComputeHash(dataToVerify), signedHash);
         }
+
+        /// <summary>
+        /// Hashes the string and signs it.
+        /// </summary>
+        /// <typeparam name="U">The hashing algorithm to use.</typeparam>
+        /// <param name="message">The plain message to sign.</param>
+        /// <returns>The signature of the message as a base64 string.</returns>
+        public string SignStringToString<U>(string message)
+            where U : HashAlgorithm, new()
+        {
+            return Convert.ToBase64String(ComputeAndSignHash<U>(encoding.GetBytes(message)));
+        }
+
+        /// <summary>
+        /// Hashes the original message, signs it and 
+        /// compares it to the provided signature.
+        /// </summary>
+        /// <typeparam name="U">The hash algorithm to use.</typeparam>
+        /// <param name="originalMessage">The original message sent.</param>
+        /// <param name="signature">The asserted signature base64.</param>
+        /// <returns>If the message has not been tampered with.</returns>
+        public bool VerifyString<U>(string originalMessage, string signature)
+            where U : HashAlgorithm, new()
+        {
+            return ComputeAndVerifyHash<U>(encoding.GetBytes(originalMessage), Convert.FromBase64String(signature));
+        }
     }
 }

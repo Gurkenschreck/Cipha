@@ -10,6 +10,30 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
     public class SymmetricCipherTest
     {
         [TestMethod]
+        public void ConstructorWithSaltLength_InstantiateNewObjectWithSaltLength_Pass()
+        {
+            int saltLength = 55;
+            int actualLength;
+            using (var cipher = new SymmetricCipher<AesManaged>("passwd", saltLength))
+            {
+                actualLength = cipher.Salt.Length;
+            }
+
+            Assert.AreEqual(saltLength, actualLength);
+        }
+        [TestMethod]
+        public void ConstructorWithRandomSalt_InstantiateNewObjectWithDefaultSaltLength_Pass()
+        {
+            int saltLength = 64;
+            int actualLength;
+            using (var cipher = new SymmetricCipher<AesManaged>("passwd"))
+            {
+                actualLength = cipher.Salt.Length;
+            }
+
+            Assert.AreEqual(saltLength, actualLength);
+        }
+        [TestMethod]
         public void EncryptToString_AesEncryptToStringAndDecryptToString_Pass()
         {
             string plainText = "Encrypt me but don' forget me.";
