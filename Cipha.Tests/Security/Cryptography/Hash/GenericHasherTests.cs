@@ -55,5 +55,29 @@ namespace Cipha.Tests.Security.Cryptography.Hash
 
             Assert.IsTrue(hasher.ComputeAndCompare(stringA, stringB));
         }
+
+        [TestMethod]
+        public void ComputeHash_HashValueFiveTimesAndCompareToNative_Pass()
+        {
+            GenericHasher<SHA256Managed> hasher = new GenericHasher<SHA256Managed>();
+            hasher.Encoding = Encoding.UTF8;
+            string stringA = "welcoMe";
+            byte[] bytesToHash = hasher.Encoding.GetBytes(stringA);
+            int iterationCount = 5;
+            byte[] hash = null;
+            byte[] compareHash = hasher.Encoding.GetBytes(stringA);
+
+            // Our method
+            hash = hasher.ComputeHash(bytesToHash, iterationCount);
+
+            // native
+            using(var digester = new SHA256Managed())
+            {
+                for (int i = 0; i < 5; i++)
+                    compareHash = digester.ComputeHash(compareHash);
+            }
+
+            CollectionAssert.AreEqual(compareHash, hash);
+        }
     }
 }

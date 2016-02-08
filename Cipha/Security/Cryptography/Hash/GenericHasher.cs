@@ -94,6 +94,52 @@ namespace Cipha.Security.Cryptography.Hash
             return hashedValues;
         }
 
+        public byte[] ComputeHash(byte[] dataToHash, int iterationCount)
+        {
+            /*if (dataToHash == null)
+                throw new ArgumentNullException("dataToHash");
+            if (iterationCount < 1)
+                throw new ArgumentOutOfRangeException("iterationCount must be > 0");
+
+            byte[]  hashedValue = null;
+            using(var algo = new T())
+            {
+                hashedValue = algo.ComputeHash(dataToHash); // initial hash
+
+                for (int i = 1; i < iterationCount; i++) // hash the hashed values n times
+                    hashedValue = algo.ComputeHash(hashedValue);
+            }
+            return hashedValue;*/
+            return ComputeHash(dataToHash, new byte[] {}, iterationCount);
+        }
+        public byte[] ComputeHash(byte[] dataToHash, byte[] salt, int iterationCount)
+        {
+            if (dataToHash == null)
+                throw new ArgumentNullException("dataToHash");
+            if (salt == null)
+                throw new ArgumentNullException("salt");
+            if (iterationCount < 1)
+                throw new ArgumentOutOfRangeException("iterationCount must be > 0");
+
+
+            byte[] combi = null;
+
+                combi = new byte[dataToHash.Length + salt.Length];
+                dataToHash.CopyTo(combi, 0);
+                salt.CopyTo(combi, dataToHash.Length);
+
+            byte[] hashedValue = null;
+            using (var algo = new T())
+            {
+
+                hashedValue = algo.ComputeHash(combi); // initial hash
+
+                for (int i = 1; i < iterationCount; i++) // hash the hashed values n times
+                    hashedValue = algo.ComputeHash(hashedValue);
+            }
+            return hashedValue;
+        }
+
         /// <summary>
         /// Computes 2 hashes of the strings and
         /// compare them bitwise.
