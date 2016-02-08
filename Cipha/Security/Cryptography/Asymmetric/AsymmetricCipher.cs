@@ -163,7 +163,9 @@ namespace Cipha.Security.Cryptography.Asymmetric
         public virtual string ToEncryptedXmlString<U>(bool includePrivateKey, string password, byte[] salt, int keySize = 0, int iterationCount = 10000)
             where U : SymmetricAlgorithm, new ()
         {
-            using(var symAlgo = new SymmetricCipher<U>(password, (byte[])salt.Clone()))
+            this.salt = (byte[])salt.Clone();
+
+            using(var symAlgo = new SymmetricCipher<U>(password, this.salt, keySize, iterationCount))
             {
                 return symAlgo.EncryptToString(algo.ToXmlString(includePrivateKey));
             }

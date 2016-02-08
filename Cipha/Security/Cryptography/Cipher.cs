@@ -12,6 +12,8 @@ namespace Cipha.Security.Cryptography
         protected int hashIterations = 10000;
         protected Encoding encoding = Encoding.UTF8;
         protected byte[] salt;
+        protected static int DEFAULT_SALT_BYTE_LENGTH = 64;
+
 
         /// <summary>
         /// The amount of iterations used in the key
@@ -45,8 +47,7 @@ namespace Cipha.Security.Cryptography
         }
 
         /// <summary>
-        /// The salt used in the password derivation
-        /// process.
+        /// The salt used in the password derivation process.
         /// 
         /// Returns null if no salt was previously used.
         /// 
@@ -56,6 +57,18 @@ namespace Cipha.Security.Cryptography
         public byte[] Salt
         {
             get { return salt; }
+        }
+
+        /// <summary>
+        /// The salt used in the password derivation process
+        /// represented as a base64 string.
+        /// </summary>
+        public string SaltAsString
+        {
+            get
+            {
+                return Convert.ToBase64String(salt);
+            }
         }
 
         /// <summary>

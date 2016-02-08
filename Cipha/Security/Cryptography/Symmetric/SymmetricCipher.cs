@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cipha.Security.IO;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,12 +12,12 @@ namespace Cipha.Security.Cryptography.Symmetric
     /// <summary>
     /// Cipher implementation for symmetric algorithms.
     ///  
-    /// Algorithms with full support: <para />
-    ///     AesManaged<para />
-    ///     AesCryptoServiceProvider<para />
-    ///     RC2CryptoServiceProvider<para />
-    ///     RijndaelManaged<para />
-    ///     TrippleDESCryptoServiceProvider<para />
+    /// Algorithms with full support:
+    ///     AesManaged
+    ///     AesCryptoServiceProvider
+    ///     RC2CryptoServiceProvider
+    ///     RijndaelManaged
+    ///     TrippleDESCryptoServiceProvider
     /// </summary>
     /// <typeparam name="T">The symmetric algorithm.</typeparam>
     public class SymmetricCipher<T> : Cipher
@@ -129,18 +130,15 @@ namespace Cipha.Security.Cryptography.Symmetric
             if (keysize > 0)
                 algo.KeySize = keysize;
 
-            if (salt == null)
-                salt = Utilities.GenerateSalt(64);
+            this.salt = (byte[])salt.Clone() ?? Utilities.GenerateSalt(DEFAULT_SALT_BYTE_LENGTH);
 
-            this.salt = salt;
-
-            GenerateKeys(password, salt, iterations);
+            GenerateKeys(password, this.salt, iterations);
         }
 
         /// <summary>
         /// Creates a new instance of the algorithm.
         /// 
-        /// A salt of length x is generated.
+        /// A salt of length x >= 8 is generated.
         /// After generation, the salt can be 
         /// extracted using the Salt property.
         /// 
@@ -152,26 +150,27 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// key size shall be used.
         /// 
         /// Throws:
-        ///     ArgumentNullException: pw is null
-        ///     CryptographicException: invalid keysize
+        ///     ArgumentNullException
+        ///     ArgumentException
+        ///     CryptographicException
         /// </summary>
-        /// <param name="password"></param>
-        /// <param name="saltByteLength"></param>
-        /// <param name="keysize"></param>
-        /// <param name="iterations"></param>
+        /// <param name="password">The password to use.</param>
+        /// <param name="saltByteLength">The salt length in bytes. Must be at least 8.</param>
+        /// <param name="keysize">The key size. 0 indicates that the default shall be used.</param>
+        /// <param name="iterations">The amount of iterations to derive the key.</param>
         public SymmetricCipher(string password, int saltByteLength, int keysize = 0, int iterations = 10000)
         {
             if (password == null)
                 throw new ArgumentNullException("password");
+            if (saltByteLength < 8)
+                throw new ArgumentException("salt must be at least 8 byte");
 
             algo = new T();
             if (keysize > 0)
                 algo.KeySize = keysize;
 
-            if (salt == null)
-                salt = Utilities.GenerateSalt(saltByteLength);
-
-            this.salt = salt;
+            
+            salt = Utilities.GenerateSalt(saltByteLength);
 
             GenerateKeys(password, salt, iterations);
         }
@@ -235,6 +234,11 @@ namespace Cipha.Security.Cryptography.Symmetric
                 algo.Key = db.GetBytes(algo.KeySize >> 3);
                 algo.IV = db.GetBytes(algo.BlockSize >> 3);
             }
+        }
+
+        public CipherStream<T> CreateStream()
+        {
+            return new CipherStream<T>(this);
         }
     }
 }
