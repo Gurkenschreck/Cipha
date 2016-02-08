@@ -78,9 +78,11 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// </summary>
         /// <param name="key">The key to set.</param>
         /// <param name="iv">The IV to set.</param>
-        public SymmetricCipher(byte[] key, byte[] iv)
+        public SymmetricCipher(byte[] key, byte[] iv, int keySize, int blockSize)
         {
             algo = new T();
+            algo.KeySize = keySize;
+            algo.BlockSize = blockSize;
             algo.Key = key;
             algo.IV = iv;
         }
@@ -130,7 +132,7 @@ namespace Cipha.Security.Cryptography.Symmetric
             if (keysize > 0)
                 algo.KeySize = keysize;
 
-            this.salt = (byte[])salt.Clone() ?? Utilities.GenerateSalt(DEFAULT_SALT_BYTE_LENGTH);
+            this.salt = (salt != null) ? (byte[])salt.Clone() : Utilities.GenerateSalt(DEFAULT_SALT_BYTE_LENGTH);
 
             GenerateKeys(password, this.salt, iterations);
         }

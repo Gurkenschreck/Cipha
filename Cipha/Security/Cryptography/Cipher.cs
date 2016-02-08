@@ -113,7 +113,7 @@ namespace Cipha.Security.Cryptography
                 }
             }
         }
-
+        
         /// <summary>
         /// Encrypts a rgb using the algorithm.
         /// 
