@@ -55,8 +55,8 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <param name="salt">The salt.</param>
         /// <param name="keySize">The key size used in the encryption process.</param>
         /// <param name="iterationCount">The amount of iterations to derive the key.</param>
-        public RSACipher(string encryptedXmlString, string password, byte[] salt, int keySize = 0, int iterationCount = 10000)
-            : base(encryptedXmlString, password, salt, keySize, iterationCount) { }
+        public RSACipher(string encryptedXmlString, string password, byte[] salt, byte[] IV, int keySize = 0, int iterationCount = 10000)
+            : base(encryptedXmlString, password, salt, IV, keySize, iterationCount) { }
         
         /// <summary>
         /// fOAEP is a padding which can be used

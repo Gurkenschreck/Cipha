@@ -119,9 +119,9 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <param name="salt">The salt.</param>
         /// <param name="keySize">The key size used in the encryption process.</param>
         /// <param name="iterationCount">The amount of iterations to derive the key.</param>
-        public AsymmetricCipher(string encryptedXmlString, string password, byte[] salt, int keySize = 0, int iterationCount = 10000)
+        public AsymmetricCipher(string encryptedXmlString, string password, byte[] salt, byte[] IV, int keySize = 0, int iterationCount = 10000)
         {
-            FromEncryptedXmlString<AesManaged>(encryptedXmlString, password, salt, keySize, iterationCount);
+            FromEncryptedXmlString<AesManaged>(encryptedXmlString, password, salt, IV, keySize, iterationCount);
         }
 
         /// <summary>
@@ -160,13 +160,14 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <param name="keySize">The key size to use.</param>
         /// <param name="iterationCount">The amount of iterations to derive the key.</param>
         /// <returns></returns>
-        public virtual string ToEncryptedXmlString<U>(bool includePrivateKey, string password, byte[] salt, int keySize = 0, int iterationCount = 10000)
+        public virtual string ToEncryptedXmlString<U>(bool includePrivateKey, string password, byte[] salt, out byte[] IV, int keySize = 0, int iterationCount = 10000)
             where U : SymmetricAlgorithm, new ()
         {
             this.salt = (byte[])salt.Clone();
 
-            using(var symAlgo = new SymmetricCipher<U>(password, this.salt, keySize, iterationCount))
+            using(var symAlgo = new SymmetricCipher<U>(password, this.salt, null, keySize, iterationCount))
             {
+                IV = (byte[])symAlgo.Algorithm.IV.Clone();
                 return symAlgo.EncryptToString(algo.ToXmlString(includePrivateKey));
             }
         }
@@ -185,11 +186,12 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <param name="salt">The salt used in the encryption process.</param>
         /// <param name="keySize">THe key size to use.</param>
         /// <param name="iterationCount">The amount of iterations to derive the key.</param>
-        public virtual void FromEncryptedXmlString<U>(string encryptedXmlString, string password, byte[] salt, int keySize = 0, int iterationCount = 10000)
+        public virtual void FromEncryptedXmlString<U>(string encryptedXmlString, string password, byte[] salt, byte[] IV, int keySize = 0, int blockSize = 0, int iterationCount = 10000)
             where U : SymmetricAlgorithm, new ()
         {
-            using(var symAlgo = new SymmetricCipher<U>(password, (byte[])salt.Clone(), keySize, iterationCount))
+            using(var symAlgo = new SymmetricCipher<U>(password, (byte[])salt.Clone(), null, keySize, iterationCount))
             {
+                symAlgo.Algorithm.IV = (byte[])IV.Clone();
                 algo.FromXmlString(symAlgo.DecryptToString(encryptedXmlString));
             }
         }

@@ -46,15 +46,22 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Cryptography\Asymmetric\AsymmetricCipher.cs" />
+    <Compile Include="Security\Cryptography\Asymmetric\DSACipher.cs" />
+    <Compile Include="Security\Cryptography\Asymmetric\ECDsaCipher.cs" />
     <Compile Include="Security\Cryptography\Asymmetric\RSACipher.cs" />
+    <Compile Include="Security\Cryptography\Certificate.cs" />
     <Compile Include="Security\Cryptography\Cipher.cs" />
+    <Compile Include="Security\Cryptography\CryptoLine.cs" />
+    <Compile Include="Security\Cryptography\UnknownAlgorithmException.cs" />
     <Compile Include="Security\Cryptography\Hash\GenericHasher.cs" />
     <Compile Include="Security\Cryptography\OIDIdentifier.cs" />
-    <Compile Include="Security\Cryptography\Random.cs" />
     <Compile Include="Security\Cryptography\Symmetric\GenericSymmetricCipher.cs" />
     <Compile Include="Security\Cryptography\Symmetric\SymmetricCipher.cs" />
     <Compile Include="Security\Cryptography\Utilities.cs" />
     <Compile Include="Security\IO\CipherStream.cs" />
+    <Compile Include="Security\Net\INetMessage.cs" />
+    <Compile Include="Security\Net\NetMessage.cs" />
+    <Compile Include="Security\Net\SslServer.cs" />
     <Compile Include="Security\Wiping\Wiper.cs" />
     <Compile Include="Security\Wiping\WiperFactory.cs" />
     <Compile Include="Security\Wiping\HMG_IS5Wiper.cs" />
@@ -62,7 +69,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

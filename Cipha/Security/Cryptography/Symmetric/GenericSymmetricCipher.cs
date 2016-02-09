@@ -318,7 +318,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// </summary>
         /// <param name="cipherData">The data to decrypt.</param>
         /// <param name="key">The key used in the encryption.</param>
-        /// <param name="iv">the IV used in the encryption.</param>
+        /// <param name="IV">the IV used in the encryption.</param>
         /// <returns>The decrypted blob.</returns>
         public byte[] Decrypt(byte[] cipherData, byte[] key, byte[] iv)
         {
@@ -375,7 +375,7 @@ namespace Cipha.Security.Cryptography.Symmetric
 
 
         /// <summary>
-        /// Encrypts a file by creating a key and iv
+        /// Encrypts a file by creating a key and IV
         /// for the provided password and salt.
         /// 
         /// The amount of iterations of the Rfc2898
@@ -404,18 +404,18 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <summary>
         /// Encrypts a file using the SymmetricAlgorithm T.
         /// 
-        /// If you do not have a key or iv, pass null for both,
+        /// If you do not have a key or IV, pass null for both,
         /// those references will be filled with the key and
-        /// iv used in the process.
+        /// IV used in the process.
         /// 
-        /// When only a key or a iv is given, it is not used.
+        /// When only a key or a IV is given, it is not used.
         /// 
-        /// Store the generated key and iv for later decryption.
+        /// Store the generated key and IV for later decryption.
         /// </summary>
         /// <param name="inFile">The file to read.</param>
         /// <param name="outFile">The output file.</param>
         /// <param name="key">The key to use.</param>
-        /// <param name="iv">The iv to use.</param>
+        /// <param name="IV">The IV to use.</param>
         public void EncryptFile(string inFile, string outFile, ref byte[] key, ref byte[] iv)
         {
             if (!File.Exists(inFile))
@@ -491,7 +491,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <param name="inFile">The encrypted file.</param>
         /// <param name="outFile">The output file.</param>
         /// <param name="key">The key used.</param>
-        /// <param name="iv">The iv used.</param>
+        /// <param name="IV">The IV used.</param>
         public void DecryptFile(string inFile, string outFile, ref byte[] key, ref byte[] iv)
         {
             if (!File.Exists(inFile))

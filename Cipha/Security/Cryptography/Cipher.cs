@@ -12,7 +12,7 @@ namespace Cipha.Security.Cryptography
         protected int hashIterations = 10000;
         protected Encoding encoding = Encoding.UTF8;
         protected byte[] salt;
-        protected static int DEFAULT_SALT_BYTE_LENGTH = 64;
+        protected static int DEFAULT_SALT_BYTE_LENGTH = 32;
 
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace Cipha.Security.Cryptography
         /// </summary>
         public byte[] Salt
         {
-            get { return salt; }
+            get { return (byte[])salt.Clone(); }
         }
 
         /// <summary>

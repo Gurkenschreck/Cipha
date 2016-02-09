@@ -24,14 +24,14 @@ namespace Cipha.Security.Cryptography.Symmetric
         where T : SymmetricAlgorithm, new()
     {
         // Fields
-        protected T algo;
+        protected T algo = new T();
 
         // Properties
         /// <summary>
         /// The SymmetricAlgorithm which is used for the
         /// cryptographic processes.
         /// </summary>
-        public SymmetricAlgorithm Algorithm
+        public T Algorithm
         {
             get { return algo; }
             set 
@@ -57,7 +57,21 @@ namespace Cipha.Security.Cryptography.Symmetric
             }
             set
             {
-                algo.KeySize = value;
+                throw new NotSupportedException("keysize cannot be edited via property");
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the initialize vector (IV).
+        /// </summary>
+        public byte[] IV
+        {
+            get { return (byte[])algo.IV.Clone(); }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                algo.IV = value;
             }
         }
 
@@ -72,15 +86,14 @@ namespace Cipha.Security.Cryptography.Symmetric
 
         /// <summary>
         /// Creates a new instance of the algorithm and sets
-        /// its key and iv.
+        /// its key and IV.
         /// 
         /// Throws CryptographicException if Key of IV has a invalid size.
         /// </summary>
         /// <param name="key">The key to set.</param>
-        /// <param name="iv">The IV to set.</param>
+        /// <param name="IV">The IV to set.</param>
         public SymmetricCipher(byte[] key, byte[] iv, int keySize, int blockSize)
         {
-            algo = new T();
             algo.KeySize = keySize;
             algo.BlockSize = blockSize;
             algo.Key = key;
@@ -97,44 +110,31 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <param name="password">The password used in the hashing process.</param>
         /// <param name="salt">The salt to use.</param>
         /// <param name="iterations">The iteration count that shall be used in Rfc2898DeriveBytes.</param>
-        public SymmetricCipher(string password, string salt, int keysize = 0, int iterations = 10000)
-            : this(password, Encoding.UTF8.GetBytes(salt), keysize, iterations)
+        public SymmetricCipher(string password, string salt, byte[] IV = null, int keysize = 0, int iterations = 10000)
+            : this(password, Encoding.UTF8.GetBytes(salt), IV, keysize, iterations)
         {        }
 
         /// <summary>
-        /// Creates a new instance of the algorithm.
+        /// Creates a new instance.
         /// 
-        /// When no salt is specified, a strong, randomly
-        /// generated salt will be created with a size
-        /// of 64 bytes. After generation, the salt can be 
-        /// extracted using the Salt property.
+        /// Returns a salt with the specified salt size in
+        /// bytes, or the default salt length of 32 bytes.
         /// 
-        /// It creates a key with the password, salt and
-        /// iteration count by using the Rfc2898DeriveBytes
-        /// implementation of PBKDF2.
-        /// 
-        /// The key size of 0 indicates that the standard 
-        /// key size shall be used.
-        /// 
-        /// Throws:
-        ///     ArgumentNullException: pw is null
-        ///     CryptographicException: invalid keysize
+        /// Returns a random iv.
         /// </summary>
-        /// <param name="password">The password used in the hashing process.</param>
-        /// <param name="salt">The salt to use.</param>
-        /// <param name="iterations">The iteration count that shall be used in Rfc2898DeriveBytes.</param>
-        public SymmetricCipher(string password, byte[] salt = null, int keysize = 0, int iterations = 10000)
+        /// <param name="password">The password to derive the key from.</param>
+        /// <param name="salt">The salt to help deriving the key.</param>
+        /// <param name="iv">The initializing vector.</param>
+        /// <param name="saltSize">The salt size in bytes.</param>
+        /// <param name="iterations">The amount of iterations to derive the key.</param>
+        public SymmetricCipher(string password, out byte[] salt, out byte[] iv, int saltSize = 0, int iterations = 10000)
         {
-            if (password == null)
-                throw new ArgumentNullException("password");
-
-            algo = new T();
-            if (keysize > 0)
-                algo.KeySize = keysize;
-
-            this.salt = (salt != null) ? (byte[])salt.Clone() : Utilities.GenerateSalt(DEFAULT_SALT_BYTE_LENGTH);
-
-            GenerateKeys(password, this.salt, iterations);
+            if (saltSize <= 0)
+                salt = Utilities.GenerateSalt(DEFAULT_SALT_BYTE_LENGTH);
+            else
+                salt = Utilities.GenerateSalt(saltSize);
+            iv = Utilities.GenerateSalt(algo.BlockSize >> 3);
+            Initialize(password, (byte[])salt.Clone(), hashIterations, (byte[])iv.Clone(), 0, 0);
         }
 
         /// <summary>
@@ -160,21 +160,70 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <param name="saltByteLength">The salt length in bytes. Must be at least 8.</param>
         /// <param name="keysize">The key size. 0 indicates that the default shall be used.</param>
         /// <param name="iterations">The amount of iterations to derive the key.</param>
-        public SymmetricCipher(string password, int saltByteLength, int keysize = 0, int iterations = 10000)
+        public SymmetricCipher(string password, int saltByteLength, byte[] IV = null, int keysize = 0, int blockSize = 0, int iterations = 10000)
         {
             if (password == null)
                 throw new ArgumentNullException("password");
             if (saltByteLength < 8)
                 throw new ArgumentException("salt must be at least 8 byte");
 
-            algo = new T();
+            salt = Utilities.GenerateSalt(saltByteLength);
+
+            Initialize(password, salt, iterations, IV, keysize, blockSize);
+        }
+
+        /// <summary>
+        /// Creates a new instance of the algorithm.
+        /// 
+        /// When no salt is specified, a strong, randomly
+        /// generated salt will be created with a size
+        /// of 64 bytes. After generation, the salt can be 
+        /// extracted using the Salt property.
+        /// 
+        /// It creates a key with the password, salt and
+        /// iteration count by using the Rfc2898DeriveBytes
+        /// implementation of PBKDF2.
+        /// 
+        /// The key size of 0 indicates that the standard 
+        /// key size shall be used.
+        /// 
+        /// Throws:
+        ///     ArgumentNullException: pw is null
+        ///     CryptographicException: invalid keysize
+        /// </summary>
+        /// <param name="password">The password used in the hashing process.</param>
+        /// <param name="salt">The salt to use.</param>
+        /// <param name="iterations">The iteration count that shall be used in Rfc2898DeriveBytes.</param>
+        public SymmetricCipher(string password, byte[] salt = null, byte[] IV = null, int keysize = 0, int iterations = 10000)
+        {
+            if (password == null)
+                throw new ArgumentNullException("password");
+
+
+            salt = (salt != null) ? (byte[])salt.Clone() : Utilities.GenerateSalt(DEFAULT_SALT_BYTE_LENGTH);
+
+            Initialize(password, salt, iterations, IV, keysize, 0);
+        }
+
+        private void Initialize(string password, byte[] salt, int iterations, byte[] iv, int keysize, int blockSize)
+        {
+            if (password == null)
+                throw new ArgumentNullException("password");
+
             if (keysize > 0)
                 algo.KeySize = keysize;
 
-            
-            salt = Utilities.GenerateSalt(saltByteLength);
+            if (blockSize > 0)
+                algo.BlockSize = blockSize;
 
-            GenerateKeys(password, salt, iterations);
+            this.salt = salt;
+
+            DeriveKey(password, this.salt, iterations);
+
+            if (iv == null)
+                algo.IV = Utilities.GenerateSalt(algo.BlockSize >> 3);
+            else
+                algo.IV = iv;
         }
 
         protected override byte[] EncryptData(byte[] plainData)
@@ -224,17 +273,18 @@ namespace Cipha.Security.Cryptography.Symmetric
         {
             if(disposing)
             {
+                Utilities.SetArrayValuesZero(salt);
+                salt = null;
                 algo.Dispose();
                 algo = null;
             }
         }
 
-        public void GenerateKeys(string password, byte[] salt, int iterationCount)
+        public void DeriveKey(string password, byte[] salt, int iterationCount)
         {
             using (DeriveBytes db = new Rfc2898DeriveBytes(password, salt, iterationCount))
             {
                 algo.Key = db.GetBytes(algo.KeySize >> 3);
-                algo.IV = db.GetBytes(algo.BlockSize >> 3);
             }
         }
 

@@ -81,14 +81,15 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             string encryptedKey = "";
             string encryptedString;
             string decryptedString;
+            byte[] IV;
 
             using (var cipher = new RSACipher<RSACryptoServiceProvider>(new RSACryptoServiceProvider(2048)))
             {
                 encryptedString = cipher.EncryptToString(plainString);
-                encryptedKey = cipher.ToEncryptedXmlString<AesManaged>(true, passwd, salt);
+                encryptedKey = cipher.ToEncryptedXmlString<AesManaged>(true, passwd, salt, out IV);
             }
 
-            using (var cipher = new RSACipher<RSACryptoServiceProvider>(encryptedKey, passwd, salt))
+            using (var cipher = new RSACipher<RSACryptoServiceProvider>(encryptedKey, passwd, salt, IV))
             {
                 decryptedString = cipher.DecryptToString(encryptedString);
             }
@@ -108,14 +109,15 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             string encryptedKey = "";
             string encryptedString;
             string decryptedString;
+            byte[] IV = null;
 
             using (var cipher = new RSACipher<RSACryptoServiceProvider>())
             {
                 encryptedString = cipher.EncryptToString(plainString);
-                encryptedKey = cipher.ToEncryptedXmlString<AesManaged>(false, passwd, salt);
+                encryptedKey = cipher.ToEncryptedXmlString<AesManaged>(false, passwd, salt, out IV);
             }
 
-            using (var cipher = new RSACipher<RSACryptoServiceProvider>(encryptedKey, passwd, salt))
+            using (var cipher = new RSACipher<RSACryptoServiceProvider>(encryptedKey, passwd, salt, IV))
             {
                 decryptedString = cipher.DecryptToString(encryptedString);
             }
@@ -132,12 +134,13 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             string passwd = "SafeP4ssw0rd;,,:;DWAe";
             string encryptedKey = "";
             string decryptedKey = "laterAssigned";
+            byte[] IV;
 
             using (var cipher = new RSACipher<RSACryptoServiceProvider>())
             {
                 plainKey = cipher.ToXmlString(true);
-                encryptedKey = cipher.ToEncryptedXmlString<AesManaged>(true, passwd, salt);
-                cipher.FromEncryptedXmlString<AesManaged>(encryptedKey, passwd, salt);
+                encryptedKey = cipher.ToEncryptedXmlString<AesManaged>(true, passwd, salt, out IV);
+                cipher.FromEncryptedXmlString<AesManaged>(encryptedKey, passwd, salt, IV);
                 decryptedKey = cipher.ToXmlString(true);
             }
 

@@ -24,7 +24,7 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
         [TestMethod]
         public void ConstructorWithRandomSalt_InstantiateNewObjectWithDefaultSaltLength_Pass()
         {
-            int saltLength = 64;
+            int saltLength = 32;
             int actualLength;
             using (var cipher = new SymmetricCipher<AesManaged>("passwd"))
             {
@@ -32,6 +32,27 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
             }
 
             Assert.AreEqual(saltLength, actualLength);
+        }
+        [TestMethod]
+        public void ConstructorWithOutParams_InstantiateNewWithRandomSaltAndIV_Pass()
+        {
+            string passwd = "PassIWantt0youS3";
+            string message = "This is my cool message, you fokkin w0t m8";
+            string cipherMessage;
+            string decrypted;
+            byte[] salt;
+            byte[] IV;
+            using (var cipher = new SymmetricCipher<AesManaged>(passwd, out salt, out IV))
+            {
+                cipherMessage = cipher.EncryptToString(message);
+            }
+
+            using(var cipher = new SymmetricCipher<AesManaged>(passwd, salt, IV))
+            {
+                decrypted = cipher.DecryptToString(cipherMessage);
+            }
+
+            Assert.AreEqual(message, decrypted);
         }
         [TestMethod]
         public void EncryptToString_AesEncryptToStringAndDecryptToString_Pass()
@@ -214,13 +235,15 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
             byte[] plainTextArr = Encoding.UTF8.GetBytes(plainText);
             byte[] encryptArr;
             byte[] decryptArr;
+            byte[] IV;
 
             using (var cipher = new SymmetricCipher<AesManaged>("mypasswd2", "mysalt1337bb44"))
             {
+                IV = cipher.IV;
                 encryptArr = cipher.Encrypt(plainText);
             }
 
-            using (var cipher = new SymmetricCipher<AesManaged>("mypasswd2", "mysalt1337bb44"))
+            using (var cipher = new SymmetricCipher<AesManaged>("mypasswd2", "mysalt1337bb44", IV))
             {
                 decryptArr = cipher.Decrypt(encryptArr);
             }
@@ -236,13 +259,15 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
             byte[] plainTextArr = Encoding.UTF8.GetBytes(plainText);
             byte[] encryptArr;
             byte[] decryptArr;
+            byte[] IV;
 
             using (var cipher = new SymmetricCipher<RijndaelManaged>(passwd, salt))
             {
+                IV = cipher.IV;
                 encryptArr = cipher.Encrypt(plainText);
             }
 
-            using (var cipher = new SymmetricCipher<RijndaelManaged>(passwd, salt))
+            using (var cipher = new SymmetricCipher<RijndaelManaged>(passwd, salt, IV))
             {
                 decryptArr = cipher.Decrypt(encryptArr);
             }
@@ -256,13 +281,15 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
             byte[] plainTextArr = Encoding.UTF8.GetBytes(plainText);
             byte[] encryptArr;
             byte[] decryptArr;
+            byte[] IV;
 
             using (var cipher = new SymmetricCipher<DESCryptoServiceProvider>("mypasswd2", "mysalt1337bb44"))
             {
+                IV = cipher.IV;
                 encryptArr = cipher.Encrypt(plainText);
             }
 
-            using (var cipher = new SymmetricCipher<DESCryptoServiceProvider>("mypasswd2", "mysalt1337bb44"))
+            using (var cipher = new SymmetricCipher<DESCryptoServiceProvider>("mypasswd2", "mysalt1337bb44", IV))
             {
                 decryptArr = cipher.Decrypt(encryptArr);
             }
@@ -276,13 +303,15 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
             byte[] plainTextArr = Encoding.UTF8.GetBytes(plainText);
             byte[] encryptArr;
             byte[] decryptArr;
+            byte[] IV;
 
             using (var cipher = new SymmetricCipher<RC2CryptoServiceProvider>("mypasswd2", "mysalt1337bb44"))
             {
+                IV = cipher.IV;
                 encryptArr = cipher.Encrypt(plainText);
             }
 
-            using (var cipher = new SymmetricCipher<RC2CryptoServiceProvider>("mypasswd2", "mysalt1337bb44"))
+            using (var cipher = new SymmetricCipher<RC2CryptoServiceProvider>("mypasswd2", "mysalt1337bb44", IV))
             {
                 decryptArr = cipher.Decrypt(encryptArr);
             }
@@ -296,13 +325,15 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
             byte[] plainTextArr = Encoding.UTF8.GetBytes(plainText);
             byte[] encryptArr;
             byte[] decryptArr;
+            byte[] IV;
 
             using (var cipher = new SymmetricCipher<TripleDESCryptoServiceProvider>("mypasswd2", "mysalt1337bb44"))
             {
+                IV = cipher.IV;
                 encryptArr = cipher.Encrypt(plainText);
             }
 
-            using (var cipher = new SymmetricCipher<TripleDESCryptoServiceProvider>("mypasswd2", "mysalt1337bb44"))
+            using (var cipher = new SymmetricCipher<TripleDESCryptoServiceProvider>("mypasswd2", "mysalt1337bb44", IV))
             {
                 decryptArr = cipher.Decrypt(encryptArr);
             }

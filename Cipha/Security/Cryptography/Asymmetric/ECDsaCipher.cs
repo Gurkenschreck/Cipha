@@ -24,13 +24,13 @@ namespace Cipha.Security.Cryptography.Asymmetric
             throw new InvalidOperationException(string.Format("operation not supported by type {0}", typeof(T)));
         }
 
-        public override void FromEncryptedXmlString<U>(string encryptedXmlString, string password, byte[] salt, int keySize = 0, int iterationCount = 10000)
+        /*public override void FromEncryptedXmlString<U>(string encryptedXmlString, string password, byte[] salt, int keySize = 0, int iterationCount = 10000)
         {
             using (var symAlgo = new SymmetricCipher<U>(password, (byte[])salt.Clone(), keySize, iterationCount))
             {
                 FromXmlString(symAlgo.DecryptToString(encryptedXmlString), ECKeyXmlFormat.Rfc4050);
             }
-        }
+        }*/
 
         public override byte[] SignData<U>(byte[] dataToSign)
         {
