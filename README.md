@@ -1,7 +1,7 @@
 # Cipha
 Lightweight cryptography library
 
-Check out the develop branch. That is where the changes are made.
+It is currently under very active development. Do not use for actual applications yet.
 
 Cipha is a portable link library. Some of the goals are:
 * making a reusable library for other projects
