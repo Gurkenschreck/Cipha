@@ -24,7 +24,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         where T : SymmetricAlgorithm, new()
     {
         // Fields
-        protected T algo = new T();
+        protected T algo;
 
         // Properties
         /// <summary>
@@ -84,6 +84,26 @@ namespace Cipha.Security.Cryptography.Symmetric
             algo = symmetricAlgorithm;
         }
 
+        public SymmetricCipher(byte[] key, out byte[] iv, int keySize = 0, int blockSize = 0)
+        {
+            algo = new T();
+            if(keySize > 0)
+                algo.KeySize = keySize;
+            if(blockSize > 0)
+                algo.BlockSize = blockSize;
+            algo.Key = (byte[])key.Clone();
+            iv = Utilities.GenerateBytes(16);
+            algo.IV = (byte[])iv.Clone();
+        }
+        public SymmetricCipher(byte[] key, int blockSize = 0)
+        {
+            algo = new T();
+            if (blockSize > 0)
+                algo.BlockSize = blockSize;
+            algo.KeySize = key.Length * 8;
+            algo.Key = key;
+        }
+
         /// <summary>
         /// Creates a new instance of the algorithm and sets
         /// its key and IV.
@@ -92,12 +112,17 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// </summary>
         /// <param name="key">The key to set.</param>
         /// <param name="IV">The IV to set.</param>
-        public SymmetricCipher(byte[] key, byte[] iv, int keySize, int blockSize)
+        /// <param name="keySize">The key size to set.</param>
+        /// <param name="blockSize">The size of the blocks to process at once.</param>
+        public SymmetricCipher(byte[] key, byte[] iv, int keySize = 0, int blockSize = 0)
         {
-            algo.KeySize = keySize;
-            algo.BlockSize = blockSize;
-            algo.Key = key;
-            algo.IV = iv;
+            algo = new T();
+            if(keySize > 0)
+                algo.KeySize = keySize;
+            if(blockSize > 0)
+                algo.BlockSize = blockSize;
+            algo.Key = (byte[])key.Clone();
+            algo.IV = (byte[])iv.Clone();
         }
 
         /// <summary>
@@ -115,7 +140,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         {        }
         public SymmetricCipher(string password, string salt, out byte[] IV, int keysize = 0, int iterations = 10000)
         {
-            IV = Utilities.GenerateSalt(algo.BlockSize >> 3);
+            IV = Utilities.GenerateBytes(16);
 
             Initialize(password, encoding.GetBytes(salt), iterations, (byte[])IV.Clone(), keysize, 0);
         }
@@ -135,11 +160,12 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <param name="iterations">The amount of iterations to derive the key.</param>
         public SymmetricCipher(string password, out byte[] salt, out byte[] iv, int saltSize = 0, int iterations = 10000)
         {
-            if (saltSize <= 0)
-                salt = Utilities.GenerateSalt(DEFAULT_SALT_BYTE_LENGTH);
+            if (saltSize > 0)
+                salt = Utilities.GenerateBytes(saltSize);
             else
-                salt = Utilities.GenerateSalt(saltSize);
-            iv = Utilities.GenerateSalt(algo.BlockSize >> 3);
+                salt = Utilities.GenerateBytes(DEFAULT_SALT_BYTE_LENGTH);
+                
+            iv = Utilities.GenerateBytes(16);
             Initialize(password, (byte[])salt.Clone(), hashIterations, (byte[])iv.Clone(), 0, 0);
         }
 
@@ -173,7 +199,7 @@ namespace Cipha.Security.Cryptography.Symmetric
             if (saltByteLength < 8)
                 throw new ArgumentException("salt must be at least 8 byte");
 
-            salt = Utilities.GenerateSalt(saltByteLength);
+            salt = Utilities.GenerateBytes(saltByteLength);
 
             Initialize(password, salt, iterations, IV, keysize, blockSize);
         }
@@ -205,8 +231,7 @@ namespace Cipha.Security.Cryptography.Symmetric
             if (password == null)
                 throw new ArgumentNullException("password");
 
-
-            salt = (salt != null) ? (byte[])salt.Clone() : Utilities.GenerateSalt(DEFAULT_SALT_BYTE_LENGTH);
+            salt = (salt != null) ? (byte[])salt.Clone() : Utilities.GenerateBytes(DEFAULT_SALT_BYTE_LENGTH);
 
             Initialize(password, salt, iterations, IV, keysize, 0);
         }
@@ -217,6 +242,7 @@ namespace Cipha.Security.Cryptography.Symmetric
             if (password == null)
                 throw new ArgumentNullException("password");
 
+            algo = new T();
             if (keysize > 0)
                 algo.KeySize = keysize;
 
@@ -228,7 +254,7 @@ namespace Cipha.Security.Cryptography.Symmetric
             DeriveKey(password, this.salt, iterations);
 
             if (iv == null)
-                algo.IV = Utilities.GenerateSalt(algo.BlockSize >> 3);
+                algo.IV = Utilities.GenerateBytes(algo.BlockSize >> 3);
             else
                 algo.IV = iv;
         }
@@ -280,8 +306,6 @@ namespace Cipha.Security.Cryptography.Symmetric
         {
             if(disposing)
             {
-                Utilities.SetArrayValuesZero(salt);
-                salt = null;
                 algo.Dispose();
                 algo = null;
             }

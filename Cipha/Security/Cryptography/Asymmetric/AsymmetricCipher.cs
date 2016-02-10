@@ -22,7 +22,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         where T : AsymmetricAlgorithm, new()
     {
         // Fields
-        protected T algo = new T();
+        protected T algo;
 
         //Properties
         /// <summary>
@@ -79,6 +79,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// </summary>
         public AsymmetricCipher(int keySize = 0)
         {
+            algo = new T();
             if (keySize != 0)
                 KeySize = keySize;
         }
@@ -103,6 +104,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <param name="cleartextXmlString">The cleartext algorithm configuration.</param>
         public AsymmetricCipher(string cleartextXmlString)
         {
+            algo = new T();
             algo.FromXmlString(cleartextXmlString);
         }
 
@@ -121,6 +123,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <param name="iterationCount">The amount of iterations to derive the key.</param>
         public AsymmetricCipher(string encryptedXmlString, string password, byte[] salt, byte[] IV, int keySize = 0, int iterationCount = 10000)
         {
+            algo = new T();
             FromEncryptedXmlString<AesManaged>(encryptedXmlString, password, salt, IV, keySize, iterationCount);
         }
 

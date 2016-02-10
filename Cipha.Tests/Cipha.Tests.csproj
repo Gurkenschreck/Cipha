@@ -53,6 +53,7 @@
     <Compile Include="Security\Cryptography\Asymmetric\DSACipherTests.cs" />
     <Compile Include="Security\Cryptography\Asymmetric\RSACipherTests.cs" />
     <Compile Include="Security\Cryptography\Asymmetric\ECDsaCipherTests.cs" />
+    <Compile Include="Security\Cryptography\Asymmetric\ECDiffieHellmanCipherTests.cs" />
     <Compile Include="Security\Cryptography\Hash\GenericHasherTests.cs" />
     <Compile Include="Security\Cryptography\Symmetric\GenericSymmetricCipherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -60,7 +61,7 @@
     <Compile Include="Security\Cryptography\OIDItentifierTests.cs" />
     <Compile Include="Security\Cryptography\UtilitiesTests.cs" />
     <Compile Include="Security\IO\CipherStreamTest.cs" />
-    <Compile Include="Security\Wiping\HMG_IS5WiperTests.cs" />
+    <Compile Include="Security\IO\Wiping\HMG_IS5WiperTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cipha\Cipha.csproj">

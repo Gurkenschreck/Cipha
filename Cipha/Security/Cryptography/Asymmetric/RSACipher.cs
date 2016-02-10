@@ -206,7 +206,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         {
             if (algo is RSACryptoServiceProvider)
             {
-                return (algo as RSACryptoServiceProvider).VerifyHash(hashToVerify, "SHA256", signedHash);
+                return (algo as RSACryptoServiceProvider).VerifyHash(hashToVerify, usedHashOID, signedHash);
             }
             if(algo is ISigner)
             {

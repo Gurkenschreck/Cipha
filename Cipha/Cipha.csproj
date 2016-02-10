@@ -47,11 +47,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Cryptography\Asymmetric\AsymmetricCipher.cs" />
     <Compile Include="Security\Cryptography\Asymmetric\DSACipher.cs" />
+    <Compile Include="Security\Cryptography\Asymmetric\ECDiffieHellmanCipher.cs" />
     <Compile Include="Security\Cryptography\Asymmetric\ECDsaCipher.cs" />
     <Compile Include="Security\Cryptography\Asymmetric\RSACipher.cs" />
-    <Compile Include="Security\Cryptography\Certificate.cs" />
     <Compile Include="Security\Cryptography\Cipher.cs" />
-    <Compile Include="Security\Cryptography\CryptoLine.cs" />
+    <Compile Include="Security\Cryptography\ECDiffieHellmanAgreement.cs" />
+    <Compile Include="Security\Cryptography\ISigner.cs" />
     <Compile Include="Security\Cryptography\UnknownAlgorithmException.cs" />
     <Compile Include="Security\Cryptography\Hash\GenericHasher.cs" />
     <Compile Include="Security\Cryptography\OIDIdentifier.cs" />
@@ -62,10 +63,10 @@
     <Compile Include="Security\Net\INetMessage.cs" />
     <Compile Include="Security\Net\NetMessage.cs" />
     <Compile Include="Security\Net\SslServer.cs" />
-    <Compile Include="Security\Wiping\Wiper.cs" />
-    <Compile Include="Security\Wiping\WiperFactory.cs" />
-    <Compile Include="Security\Wiping\HMG_IS5Wiper.cs" />
-    <Compile Include="Security\Wiping\HMG_IS5WiperFactory.cs" />
+    <Compile Include="Security\IO\Wiping\Wiper.cs" />
+    <Compile Include="Security\IO\Wiping\WiperFactory.cs" />
+    <Compile Include="Security\IO\Wiping\HMG_IS5Wiper.cs" />
+    <Compile Include="Security\IO\Wiping\HMG_IS5WiperFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
