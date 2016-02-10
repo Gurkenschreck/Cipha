@@ -32,7 +32,7 @@ namespace Cipha.Security.Cryptography
         /// </summary>
         /// <param name="amountOfBytes">The amount of bytes.</param>
         /// <returns>A strong salt</returns>
-        public static byte[] GenerateSalt(int amountOfBytes)
+        public static byte[] GenerateBytes(int amountOfBytes)
         {
             byte[] salt = new byte[amountOfBytes];
             new RNGCryptoServiceProvider().GetBytes(salt);
@@ -114,6 +114,8 @@ namespace Cipha.Security.Cryptography
         {
             if (arr == null)
                 throw new ArgumentNullException("byte array");
+            if (arr.Length == 0)
+                return;
             for (int i = 0; i < arr.Length; i++)
                 arr[i] = 0;
         }
@@ -126,6 +128,8 @@ namespace Cipha.Security.Cryptography
         {
             if (arr == null)
                 throw new ArgumentNullException("int array");
+            if (arr.Length == 0)
+                return;
             for (int i = 0; i < arr.Length; i++)
                 arr[i] = 0;
         }
@@ -138,6 +142,8 @@ namespace Cipha.Security.Cryptography
         {
             if (arr == null)
                 throw new ArgumentNullException("string array");
+            if (arr.Length == 0)
+                return;
             for (int i = 0; i < arr.Length; i++)
                 arr[i] = string.Empty;
         }

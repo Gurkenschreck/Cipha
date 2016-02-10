@@ -115,7 +115,7 @@ namespace Cipha.Security.Cryptography
         }
         
         /// <summary>
-        /// Encrypts a rgb using the algorithm.
+        /// Encrypts a rgb using the cngAlgorithmthm.
         /// 
         /// Throws:
         ///     CryptographicException
@@ -128,7 +128,7 @@ namespace Cipha.Security.Cryptography
         }
 
         /// <summary>
-        /// Encrypts a string using the algorithm.
+        /// Encrypts a string using the cngAlgorithmthm.
         /// 
         /// Specify the character encoding with the
         /// Encoding property of this class.
@@ -144,7 +144,7 @@ namespace Cipha.Security.Cryptography
         }
 
         /// <summary>
-        /// Decrypts a rgb using the algorithm.
+        /// Decrypts a rgb using the cngAlgorithmthm.
         /// 
         /// Throws:
         ///     CryptographicException
@@ -157,7 +157,7 @@ namespace Cipha.Security.Cryptography
         }
 
         /// <summary>
-        /// Decrypts a string using the algorithm.
+        /// Decrypts a string using the cngAlgorithmthm.
         /// 
         /// Specify the character encoding with the
         /// Encoding property of this class.
@@ -173,7 +173,7 @@ namespace Cipha.Security.Cryptography
         }
 
         /// <summary>
-        /// Encrypts a rgb using the algorithm.
+        /// Encrypts a rgb using the cngAlgorithmthm.
         /// 
         /// The used character encoding is specified
         /// via the Encoding property.
@@ -189,7 +189,7 @@ namespace Cipha.Security.Cryptography
         }
 
         /// <summary>
-        /// Encrypts a rgb using the algorithm.
+        /// Encrypts a rgb using the cngAlgorithmthm.
         /// 
         /// The used character encoding is specified
         /// via the Encoding property.
@@ -205,7 +205,7 @@ namespace Cipha.Security.Cryptography
         }
 
         /// <summary>
-        /// Decrypts a rgb using the algorithm.
+        /// Decrypts a rgb using the cngAlgorithmthm.
         /// 
         /// The used character encoding is specified
         /// via the Encoding property.
@@ -221,7 +221,7 @@ namespace Cipha.Security.Cryptography
         }
 
         /// <summary>
-        /// Decrypts a string using the algorithm.
+        /// Decrypts a string using the cngAlgorithmthm.
         /// 
         /// The used character encoding is specified
         /// via the Encoding property.
