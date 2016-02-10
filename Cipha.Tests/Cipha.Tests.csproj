@@ -57,7 +57,7 @@
     <Compile Include="Security\Cryptography\Symmetric\GenericSymmetricCipherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Cryptography\Symmetric\SymmetricCipherTest.cs" />
-    <Compile Include="Security\Cryptography\UnitTest1.cs" />
+    <Compile Include="Security\Cryptography\OIDItentifierTests.cs" />
     <Compile Include="Security\Cryptography\UtilitiesTests.cs" />
     <Compile Include="Security\IO\CipherStreamTest.cs" />
     <Compile Include="Security\Wiping\HMG_IS5WiperTests.cs" />
