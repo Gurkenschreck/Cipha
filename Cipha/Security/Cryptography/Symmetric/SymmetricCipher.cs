@@ -113,6 +113,12 @@ namespace Cipha.Security.Cryptography.Symmetric
         public SymmetricCipher(string password, string salt, byte[] IV = null, int keysize = 0, int iterations = 10000)
             : this(password, Encoding.UTF8.GetBytes(salt), IV, keysize, iterations)
         {        }
+        public SymmetricCipher(string password, string salt, out byte[] IV, int keysize = 0, int iterations = 10000)
+        {
+            IV = Utilities.GenerateSalt(algo.BlockSize >> 3);
+
+            Initialize(password, encoding.GetBytes(salt), iterations, (byte[])IV.Clone(), keysize, 0);
+        }
 
         /// <summary>
         /// Creates a new instance.
@@ -204,6 +210,7 @@ namespace Cipha.Security.Cryptography.Symmetric
 
             Initialize(password, salt, iterations, IV, keysize, 0);
         }
+
 
         private void Initialize(string password, byte[] salt, int iterations, byte[] iv, int keysize, int blockSize)
         {

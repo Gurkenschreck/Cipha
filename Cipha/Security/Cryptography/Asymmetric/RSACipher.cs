@@ -194,11 +194,11 @@ namespace Cipha.Security.Cryptography.Asymmetric
         {
             return VerifyHash(hashToVerify, "SHA256", signedHash);
         }
-        public override bool VerifyHash(byte[] hashToVerify, HashAlg algo, byte[] signedHash)
+        public bool VerifyHash(byte[] hashToVerify, HashAlg algo, byte[] signedHash)
         {
             return VerifyHash(hashToVerify, OIDIdentifier.Get(algo), signedHash);
         }
-        public override bool VerifyHash(byte[] hashToVerify, HashAlgorithm algo, byte[] signedHash)
+        public bool VerifyHash(byte[] hashToVerify, HashAlgorithm algo, byte[] signedHash)
         {
             return VerifyHash(hashToVerify, OIDIdentifier.Get(algo), signedHash);
         }

@@ -6,12 +6,18 @@ using System.Threading.Tasks;
 
 namespace Cipha.Security.Cryptography
 {
+    /// <summary>
+    /// Provides an interface to sign and verify
+    /// data.
+    /// 
+    /// Compensates the lack of ability to sign
+    /// and verify data.
+    /// </summary>
     public interface ISigner
     {
-        abstract byte[] SignHash(byte[] hash);
-        abstract bool VerifyHash(byte[] validationHashbyte, byte[] hashSignature);
-        abstract byte[] SignData(byte[] dataToSign);
-        abstract bool VerifyData(byte[] dataToVerify, byte[] dataSignature);
-
+        byte[] SignHash(byte[] hash);
+        bool VerifyHash(byte[] validationHashbyte, byte[] hashSignature);
+        byte[] SignData(byte[] dataToSign);
+        bool VerifyData(byte[] dataToVerify, byte[] dataSignature);
     }
 }
