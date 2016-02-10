@@ -38,6 +38,10 @@ namespace Cipha.Security.Cryptography.Asymmetric
             {
                 return (algo as ECDsaCng).SignData(dataToSign);
             }
+            if(algo is ISigner)
+            {
+                return (algo as ISigner).SignData(dataToSign);
+            }
             throw new InvalidOperationException(string.Format("operation not supported by type {0}", typeof(T)));
         }
 
@@ -45,7 +49,11 @@ namespace Cipha.Security.Cryptography.Asymmetric
         {
             if(algo is ECDsaCng)
             {
-                (algo as ECDsaCng).VerifyData(dataToVerify, signedData);
+                return (algo as ECDsaCng).VerifyData(dataToVerify, signedData);
+            }
+            if(algo is ISigner)
+            {
+                return (algo as ISigner).VerifyData(dataToVerify, signedData);
             }
             throw new InvalidOperationException(string.Format("operation not supported by type {0}", typeof(T)));
 
