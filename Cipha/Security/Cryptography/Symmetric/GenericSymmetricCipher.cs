@@ -53,7 +53,6 @@ namespace Cipha.Security.Cryptography.Symmetric
                     if (algo.ValidKeySize((int)value))
                     {
                         keySize = value;
-
                     }
                     else
                         throw new CryptographicException("invalid new keysize");
@@ -61,6 +60,78 @@ namespace Cipha.Security.Cryptography.Symmetric
             }
         }
 
+        private int rfc2898Iterations = 1000;
+        /// <summary>
+        /// Some methods use the Rfc2898 implementation of the
+        /// PBKDF2 algorithm. 
+        /// 
+        /// This algorithm uses a password and a salt to apply
+        /// multiple hashes.
+        /// 
+        /// Default:
+        ///     1000
+        /// </summary>
+        public int Rfc2898Iterations
+        {
+            get { return rfc2898Iterations; }
+            set { rfc2898Iterations = value; }
+        }
+
+        private int? blockSize;
+        /// <summary>
+        /// The block size to be used by the
+        /// algorithm.
+        /// </summary>
+        public int? BlockSize
+        {
+            get { return blockSize; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                using (SymmetricAlgorithm algo = new T())
+                {
+                    if (Utilities.ValidSymmetricBlockSize(algo, (int)value))
+                    {
+                        blockSize = value;
+                    }
+                    else
+                        throw new CryptographicException("invalid new block size");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the legal key sizes for the
+        /// specified symmetric algorithm.
+        /// </summary>
+        public KeySizes[] LegalKeySizes
+        {
+            get
+            {
+                using (SymmetricAlgorithm algo = new T())
+                {
+                    return algo.LegalKeySizes;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the legal block sizes for the
+        /// specified symmetric algorithm.
+        /// </summary>
+        public KeySizes[] LegalBlockSizes
+        {
+            get
+            {
+                using(SymmetricAlgorithm algo = new T())
+                {
+                    return algo.LegalBlockSizes;
+                }
+            }
+        }
+ 
         private Encoding encoding = Encoding.Default;
         /// <summary>
         /// The standard string encoding used.
@@ -107,18 +178,51 @@ namespace Cipha.Security.Cryptography.Symmetric
 
 
         /// <summary>
-        /// Provides help encrypting a string with any encryption algo
-        /// extending from SymmetricAlgorithm.
-        /// Possible algorithms to use are
-        /// AesManages, TripleDESCryptoServiceprovider, RijndaelManaged
+        /// Encrypts a plain string.
+        /// Returns the encrypted data as a base64 String.
         /// </summary>
-        /// <param name="plainString">The Unicode string to encrypt.</param>
-        /// <param name="password">The password to encrypt.</param>
+        /// <param name="cipherData">The Unicode string to encrypt.</param>
+        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
         /// <param name="salt">The salt to encrypt.</param>
-        /// <returns></returns>
-        public string Encrypt(string plainString, string password, string salt)
+        /// <returns>The encrypted base64 string.</returns>
+        public string EncryptToString(string plainString, string password, string salt)
         {
-            return encoding.GetString(Encrypt(encoding.GetBytes(plainString), password, salt));
+            return Convert.ToBase64String(Encrypt(encoding.GetBytes(plainString), encoding.GetBytes(password), encoding.GetBytes(salt)));
+        }
+        /// <summary>
+        /// Encrypts plain data and converts it to a base 64 string.
+        /// </summary>
+        /// <param name="plainData">The data to encrypt.</param>
+        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
+        /// <param name="salt">The salt to use.</param>
+        /// <returns>The encrypted data.</returns>
+        public string EncryptToString(byte[] plainData, byte[] password, byte[] salt)
+        {
+            return Convert.ToBase64String(Encrypt(plainData, password, salt));
+        }
+
+        /// <summary>
+        /// Encrypts a blob of bytes.
+        /// </summary>
+        /// <param name="plainData">The data to encrypt.</param>
+        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
+        /// <param name="salt">The salt to use.</param>
+        /// <returns>The encrypted data.</returns>
+        public byte[] Encrypt(byte[] plainData, string password, string salt)
+        {
+            return Encrypt(plainData, encoding.GetBytes(password), encoding.GetBytes(salt));
+        }
+
+        /// <summary>
+        /// Encrypts a blob of bytes.
+        /// </summary>
+        /// <param name="plainData">The data to encrypt.</param>
+        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
+        /// <param name="salt">The salt.</param>
+        /// <returns>The encrypted data.</returns>
+        public byte[] Encrypt(byte[] plainData, string password, byte[] salt)
+        {
+            return Encrypt(plainData, encoding.GetBytes(password), salt);
         }
 
         /// <summary>
@@ -126,11 +230,11 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// extending from SymmetricAlgorithm.
         /// </summary>
         /// <typeparam name="T">The subclass of SymmetricAlgorithm.</typeparam>
-        /// <param name="plainData">The plain data to encrypt.</param>
-        /// <param name="password">The password for the encryption process.</param>
+        /// <param name="cipherData">The plain data to encrypt.</param>
+        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
         /// <param name="salt">The salt to be used.</param>
         /// <returns></returns>
-        public byte[] Encrypt(byte[] plainData, string password, string salt)
+        public byte[] Encrypt(byte[] plainData, byte[] password, byte[] salt)
         {
             if (plainData == null)
                 throw new ArgumentNullException("plainData");
@@ -139,7 +243,7 @@ namespace Cipha.Security.Cryptography.Symmetric
             if (salt == null)
                 throw new ArgumentNullException("salt");
 
-            DeriveBytes rgb = new Rfc2898DeriveBytes(password, encoding.GetBytes(salt));
+            DeriveBytes rgb = new Rfc2898DeriveBytes(password, salt, rfc2898Iterations);
 
             SymmetricAlgorithm algo = new T();
             
@@ -156,41 +260,38 @@ namespace Cipha.Security.Cryptography.Symmetric
                 {
                     using (StreamWriter writer = new StreamWriter(stream, encoding))
                     {
-                        writer.Write(encoding.GetString(plainData));
+                        writer.Write(Convert.ToBase64String(plainData));
                     }
                 }
-                algo.Dispose();
                 return buffer.ToArray();
             }
         }
 
         /// <summary>
-        /// Decrypts a cipherString by using the password and salt.
+        /// Decrypts a cipherData by using the password and salt.
         /// 
         /// The character encoding can be changed via the
         /// property Encoding.
         /// </summary>
-        /// <param name="cipherString">The previously encrypted string.</param>
+        /// <param name="cipherData">The previously encrypted string.</param>
         /// <param name="password">The password to decrypt.</param>
         /// <param name="salt">The salt used for decryption.</param>
         /// <returns>The decrypted string.</returns>
-        public string Decrypt(string cipherString, string password, string salt)
+        public byte[] Decrypt(string cipherString, string password, string salt)
         {
-            return encoding.GetString(Decrypt(encoding.GetBytes(cipherString), password, salt));
+            return Decrypt(encoding.GetBytes(cipherString), password, encoding.GetBytes(salt));
         }
 
         /// <summary>
         /// Provides help decrypting a string with any encryption algo
         /// extending from SymmetricAlgorithm.
-        /// Possible algorithms to use are
-        /// AesManages, TripleDESCryptoServiceprovider, RijndaelManaged
         /// </summary>
         /// <typeparam name="T">The algo deriving from SymmetricAlgorithm.</typeparam>
         /// <param name="cipherData">The previously encrypted plain data.</param>
         /// <param name="password">The password to decrypt.</param>
         /// <param name="salt">The salt used to encrypt the data.</param>
         /// <returns>The decrypted bytes.</returns>
-        public byte[] Decrypt(byte[] cipherData, string password, string salt)
+        public byte[] Decrypt(byte[] cipherData, string password, byte[] salt)
         {
             if (cipherData == null)
                 throw new ArgumentNullException("cipherData");
@@ -198,45 +299,123 @@ namespace Cipha.Security.Cryptography.Symmetric
                 throw new ArgumentNullException("password");
             if (salt == null)
                 throw new ArgumentNullException("salt");
-            DeriveBytes rgb = new Rfc2898DeriveBytes(password, encoding.GetBytes(salt));
+            DeriveBytes rgb = new Rfc2898DeriveBytes(password, salt, rfc2898Iterations);
 
             SymmetricAlgorithm algo = new T();
-
             ApplyConfigurations(algo);
 
             byte[] rgbKey = rgb.GetBytes(algo.KeySize >> 3);
             byte[] rgbIV = rgb.GetBytes(algo.BlockSize >> 3);
 
-            ICryptoTransform transform = algo.CreateDecryptor(rgbKey, rgbIV);
+            algo.Dispose();
+
+            return Decrypt(cipherData, rgbKey, rgbIV);
+        }
+
+        /// <summary>
+        /// Provides help decrypting a string with any encryption algo
+        /// extending from SymmetricAlgorithm.
+        /// </summary>
+        /// <param name="cipherData">The data to decrypt.</param>
+        /// <param name="key">The key used in the encryption.</param>
+        /// <param name="IV">the IV used in the encryption.</param>
+        /// <returns>The decrypted blob.</returns>
+        public byte[] Decrypt(byte[] cipherData, byte[] key, byte[] iv)
+        {
+            if (cipherData == null)
+                throw new ArgumentNullException("cipherData");
+            if (key == null)
+                throw new ArgumentNullException("key");
+            if (iv == null)
+                throw new ArgumentNullException("iv");
+            
+            SymmetricAlgorithm algo = new T();
+
+            ApplyConfigurations(algo);
+
+            algo.Key = key;
+            algo.IV = iv;
 
             using (MemoryStream buffer = new MemoryStream(cipherData))
             {
-                using (CryptoStream stream = new CryptoStream(buffer, transform, CryptoStreamMode.Read))
+                using (CryptoStream stream = new CryptoStream(buffer, algo.CreateDecryptor(), CryptoStreamMode.Read))
                 {
                     using (StreamReader reader = new StreamReader(stream, encoding))
                     {
                         algo.Dispose();
-                        return encoding.GetBytes(reader.ReadToEnd());
+                        return Convert.FromBase64String(reader.ReadToEnd());
                     }
                 }
             }
         }
 
         /// <summary>
+        /// Decrypts a cipher string
+        /// </summary>
+        /// <param name="cipherData">The string to decrypt.</param>
+        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
+        /// <param name="salt">The salt.</param>
+        /// <returns></returns>
+        public string DecryptToString(string cipherData, string password, string salt)
+        {
+            return encoding.GetString(Decrypt(Convert.FromBase64String(cipherData), password, encoding.GetBytes(salt)));
+        }
+
+        /// <summary>
+        /// Decrypts an encrypted blob of bytes.
+        /// </summary>
+        /// <param name="cipherData">The data to decrypt.</param>
+        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
+        /// <param name="salt">The salt.</param>
+        /// <returns></returns>
+        public string DecryptToString(byte[] cipherData, string password, string salt)
+        {
+            return Convert.ToBase64String(Decrypt(cipherData, password, encoding.GetBytes(salt)));
+        }
+
+
+        /// <summary>
+        /// Encrypts a file by creating a key and IV
+        /// for the provided password and salt.
+        /// 
+        /// The amount of iterations of the Rfc2898
+        /// algorithm is set via the property
+        /// Rfc2898Iterations.
+        /// </summary>
+        /// <param name="inFile">The file to encrypt.</param>
+        /// <param name="outFile">The file to decrypt.</param>
+        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
+        /// <param name="salt">The salt used in the encryption process.</param>
+        public void EncryptFile(string inFile, string outFile, string password, string salt)
+        {
+            DeriveBytes rgb = new Rfc2898DeriveBytes(password, encoding.GetBytes(salt), rfc2898Iterations);
+            
+
+            SymmetricAlgorithm algo = new T();
+
+            byte[] rgbKey = rgb.GetBytes(algo.KeySize >> 3);
+            byte[] rgbIV = rgb.GetBytes(algo.BlockSize >> 3);
+
+            algo.Dispose();
+
+            EncryptFile(inFile, outFile, ref rgbKey, ref rgbIV);
+        }
+
+        /// <summary>
         /// Encrypts a file using the SymmetricAlgorithm T.
         /// 
-        /// If you do not have a key or iv, pass null for both,
+        /// If you do not have a key or IV, pass null for both,
         /// those references will be filled with the key and
-        /// iv used in the process.
+        /// IV used in the process.
         /// 
-        /// When only a key or a iv is given, it is not used.
+        /// When only a key or a IV is given, it is not used.
         /// 
-        /// Store the generated key and iv for later decryption.
+        /// Store the generated key and IV for later decryption.
         /// </summary>
         /// <param name="inFile">The file to read.</param>
         /// <param name="outFile">The output file.</param>
-        /// <param name="key">The key to use. Passing null generates a key.</param>
-        /// <param name="iv"></param>
+        /// <param name="key">The key to use.</param>
+        /// <param name="IV">The IV to use.</param>
         public void EncryptFile(string inFile, string outFile, ref byte[] key, ref byte[] iv)
         {
             if (!File.Exists(inFile))
@@ -281,7 +460,30 @@ namespace Cipha.Security.Cryptography.Symmetric
                 }
             }
         }
-        
+
+        /// <summary>
+        /// Decrypts a file using a password and a salt.
+        /// </summary>
+        /// <param name="inFile">The file to decrypt.</param>
+        /// <param name="outFile">The output file.</param>
+        /// <param name="password">The password to use.</param>
+        /// <param name="salt">The salt to use.</param>
+        public void DecryptFile(string inFile, string outFile, string password, string salt)
+        {
+            DeriveBytes rgb = new Rfc2898DeriveBytes(password, encoding.GetBytes(salt), rfc2898Iterations);
+
+            SymmetricAlgorithm algo = new T();
+
+            ApplyConfigurations(algo);
+
+            byte[] rgbKey = rgb.GetBytes(algo.KeySize >> 3);
+            byte[] rgbIV = rgb.GetBytes(algo.BlockSize >> 3);
+
+            algo.Dispose();
+
+            DecryptFile(inFile, outFile, ref rgbKey, ref rgbIV);
+        }
+
         /// <summary>
         /// Decrypts a file which was previously encrypted
         /// with the alogrithm T.
@@ -289,8 +491,8 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <param name="inFile">The encrypted file.</param>
         /// <param name="outFile">The output file.</param>
         /// <param name="key">The key used.</param>
-        /// <param name="iv">The iv used.</param>
-        public void DecryptFile(string inFile, string outFile, byte[] key, byte[] iv)
+        /// <param name="IV">The IV used.</param>
+        public void DecryptFile(string inFile, string outFile, ref byte[] key, ref byte[] iv)
         {
             if (!File.Exists(inFile))
                 throw new FileNotFoundException("inFile not found: " + inFile);
@@ -334,39 +536,23 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <param name="algo">The algorithm to configure.</param>
         private void ApplyConfigurations(SymmetricAlgorithm algo)
         {
+            // Set padding
             if (algo.Padding != padding)
                 algo.Padding = padding;
 
+            // Set current CipherMode
             if (algo.Mode != mode)
                 algo.Mode = mode;
 
-            SetKeySize(algo, keySize);
-        }
+            // Set the block size to use
+            if (blockSize != null)
+                if (algo.BlockSize != blockSize)
+                    algo.BlockSize = (int)blockSize;
 
-        /// <summary>
-        /// Sets the keysize of the SymmetricAlgorithm if a
-        /// size is given.
-        /// 
-        /// The size can be changed via the KeySize property of
-        /// this class.
-        /// 
-        /// Throws CryptographicException if the keySize is invalid.
-        /// </summary>
-        /// <param name="algo">The algo to change the keysize.</param>
-        /// <param name="keySize">The keysize to set.</param>
-        private void SetKeySize(SymmetricAlgorithm algo, int? keySize)
-        {
+            // Set the key size
             if (keySize != null)
-            {
-                if (algo.ValidKeySize((int)keySize))
-                {
+                if (algo.KeySize != keySize)
                     algo.KeySize = (int)keySize;
-                }
-                else
-                {
-                    throw new System.Security.Cryptography.CryptographicException("Invalid KeySize: " + keySize);
-                }
-            }
         }
     }
 }
