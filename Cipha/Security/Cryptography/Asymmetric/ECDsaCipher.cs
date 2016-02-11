@@ -11,6 +11,11 @@ namespace Cipha.Security.Cryptography.Asymmetric
     public class ECDsaCipher<T> : AsymmetricCipher<T>
         where T : ECDsa, new()
     {
+        public ECDsaCipher(int keySize = 0) : base(keySize) { }
+        public ECDsaCipher(T algo) : base(algo) { }
+        public ECDsaCipher(string cleartextXmlString) : base(cleartextXmlString) { }
+        public ECDsaCipher(string encryptedXmlString, string password, byte[] salt, byte[] IV, int keySize = 0, int iterationCount = 10000)
+            : base(encryptedXmlString, password, salt, IV, keySize, iterationCount) { }
         public override void FromXmlString(string xmlString)
         {
             FromXmlString(xmlString, ECKeyXmlFormat.Rfc4050);
@@ -23,15 +28,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
             }
             throw new InvalidOperationException(string.Format("operation not supported by type {0}", typeof(T)));
         }
-
-        /*public override void FromEncryptedXmlString<U>(string encryptedXmlString, string password, byte[] salt, int keySize = 0, int iterationCount = 10000)
-        {
-            using (var symAlgo = new SymmetricCipher<U>(password, (byte[])salt.Clone(), keySize, iterationCount))
-            {
-                FromXmlString(symAlgo.DecryptToString(encryptedXmlString), ECKeyXmlFormat.Rfc4050);
-            }
-        }*/
-
+        
         public override byte[] SignData<U>(byte[] dataToSign)
         {
             if(algo is ECDsaCng)
