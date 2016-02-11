@@ -79,9 +79,10 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// </summary>
         public AsymmetricCipher(int keySize = 0)
         {
-            algo = new T();
-            if (keySize != 0)
-                KeySize = keySize;
+            if (keySize > 0)
+                algo = (T)Activator.CreateInstance(typeof(T), keySize);
+            else
+                algo = new T();
         }
 
         /// <summary>

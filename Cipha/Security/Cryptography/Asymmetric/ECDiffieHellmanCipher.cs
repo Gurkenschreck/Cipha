@@ -14,20 +14,17 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
     {
         CngKeyBlobFormat blobFormat = CngKeyBlobFormat.EccPublicBlob;
 
-        public ECDiffieHellmanCipher()
-        {
-            algo = new T();
-        }
-        public ECDiffieHellmanCipher(T referenceAlgo)
-        {
-            algo = referenceAlgo;
-        }
-        public ECDiffieHellmanCipher(int keySize)
-        {
-            algo = (T)Activator.CreateInstance(typeof(T), keySize);
-        }
-        // Evaluate need for constructor with xmlString parameter
+        public ECDiffieHellmanCipher(int keySize = 0) : base(keySize)
+        { }
+        public ECDiffieHellmanCipher(T referenceAlgo) : base(referenceAlgo)
+        { }
+        public ECDiffieHellmanCipher(string cleartextXmlString) : base(cleartextXmlString)
+        { }
+        public ECDiffieHellmanCipher(string encryptedXmlString, string password, byte[] salt, byte[] IV, int keySize = 0, int iterationCount = 10000)
+            : base(encryptedXmlString, password, salt, IV, keySize, iterationCount)
+        { }
 
+        // Evaluate need for constructor with xmlString parameter
         public ECDiffieHellmanCipher(ECDiffieHellmanAgreement agreement)
         {
             algo = new T();
@@ -46,6 +43,7 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
                 return algo.PublicKey;
             }
         }
+
 
         public byte[] DeriveKey(ECDiffieHellmanPublicKey otherPublicKey)
         {
@@ -67,7 +65,23 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
                 throw new NotSupportedException();
             }
         }
+        public byte[] AgreementToBytes
+        {
+            get
+            {
+                if (algo is ECDiffieHellmanCng)
+                {
+                    var curAlgo = algo as ECDiffieHellmanCng;
+                    var agreeM = new ECDiffieHellmanAgreement(curAlgo.KeyDerivationFunction, curAlgo.HashAlgorithm, blobFormat);
+                    return agreeM.ToBytes();
 
+                }
+
+                throw new NotSupportedException();
+            }
+        }
+
+        // Not supported
         public override byte[] SignData<U>(byte[] dataToSign)
         {
             throw new NotSupportedException();

@@ -29,6 +29,11 @@ namespace Cipha.Security.Cryptography.Asymmetric
     public class DSACipher<T> : AsymmetricCipher<T>
         where T : DSA, new()
     {
+        public DSACipher(int keySize = 0) : base(keySize) { }
+        public DSACipher(T algo) : base(algo) { }
+        public DSACipher(string cleartextXmlString) : base(cleartextXmlString) { }
+        public DSACipher(string encryptedXmlString, string password, byte[] salt, byte[] IV, int keySize = 0, int iterationCount = 10000)
+            : base(encryptedXmlString, password, salt, IV, keySize, iterationCount) { }
         /// <summary>
         /// Signs a blob of bytes with the current
         /// algorithm.

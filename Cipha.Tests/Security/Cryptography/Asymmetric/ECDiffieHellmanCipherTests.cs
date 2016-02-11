@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Security.Cryptography;
 using Cipha.Security.Cryptography;
 using Cipha.Security.Cryptography.Symmetric;
+using Cipha.Security.Cryptography.Asymmetric;
 
 namespace Cipha.Tests.Security.Cryptography.Asymmetric
 {
@@ -55,5 +56,6 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
 
             CollectionAssert.AreEqual(aliceKey, bobKey);
         }
+
     }
 }

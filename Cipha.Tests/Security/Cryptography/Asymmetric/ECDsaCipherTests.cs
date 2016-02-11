@@ -16,7 +16,6 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             byte[] hash;
             byte[] signedhash;
             bool verified = false;
-
             using(var x = new ECDsaCipher<ECDsaCng>())
             {
                 hash = new SHA512Managed().ComputeHash(dataToSign);
