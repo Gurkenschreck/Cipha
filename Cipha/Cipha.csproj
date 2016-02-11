@@ -60,9 +60,6 @@
     <Compile Include="Security\Cryptography\Symmetric\SymmetricCipher.cs" />
     <Compile Include="Security\Cryptography\Utilities.cs" />
     <Compile Include="Security\IO\CipherStream.cs" />
-    <Compile Include="Security\Net\INetMessage.cs" />
-    <Compile Include="Security\Net\NetMessage.cs" />
-    <Compile Include="Security\Net\SslServer.cs" />
     <Compile Include="Security\IO\Wiping\Wiper.cs" />
     <Compile Include="Security\IO\Wiping\WiperFactory.cs" />
     <Compile Include="Security\IO\Wiping\HMG_IS5Wiper.cs" />

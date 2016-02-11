@@ -96,7 +96,7 @@ namespace Cipha.Security.Cryptography.Hash
 
         public byte[] ComputeHash(byte[] dataToHash, int iterationCount)
         {
-            /*if (dataToHash == null)
+            if (dataToHash == null)
                 throw new ArgumentNullException("dataToHash");
             if (iterationCount < 1)
                 throw new ArgumentOutOfRangeException("iterationCount must be > 0");
@@ -109,8 +109,8 @@ namespace Cipha.Security.Cryptography.Hash
                 for (int i = 1; i < iterationCount; i++) // hash the hashed values n times
                     hashedValue = algo.ComputeHash(hashedValue);
             }
-            return hashedValue;*/
-            return ComputeHash(dataToHash, new byte[] {}, iterationCount);
+            return hashedValue;
+            //return ComputeHash(dataToHash, new byte[] {}, iterationCount);
         }
         public byte[] ComputeHash(byte[] dataToHash, byte[] salt, int iterationCount)
         {
