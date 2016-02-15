@@ -30,5 +30,28 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
 
             Assert.IsTrue(notTamperedWith);
         }
+        [TestMethod]
+        public void Intitialize_PassReferenceInConstructor_Pass()
+        {
+            Random rdm = new Random();
+            byte[] randomMessage = new byte[128];
+            byte[] randomMessageHash;
+            rdm.NextBytes(randomMessage);
+            byte[] hashSignature;
+            bool notTamperedWith = false;
+
+            using (var csp = new DSACryptoServiceProvider())
+            {
+                randomMessageHash = new SHA1Managed().ComputeHash(new SHA512Cng().ComputeHash(randomMessage));
+                hashSignature = csp.CreateSignature(randomMessageHash);
+
+                using(var cipher = new DSACipher<DSACryptoServiceProvider>(csp))
+                {
+                    notTamperedWith = cipher.ComputeAndVerifyHash<SHA512Cng>(randomMessage, hashSignature);
+                }
+            }
+
+            Assert.IsTrue(notTamperedWith);
+        }
     }
 }

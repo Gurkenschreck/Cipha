@@ -56,7 +56,12 @@ namespace Cipha.Security.Cryptography
         /// </summary>
         public byte[] Salt
         {
-            get { return (byte[])salt.Clone(); }
+            get 
+            {
+                if(salt != null)
+                    return (byte[])salt.Clone();
+                return null;
+            }
         }
 
         /// <summary>
@@ -67,7 +72,9 @@ namespace Cipha.Security.Cryptography
         {
             get
             {
-                return Convert.ToBase64String(salt);
+                if(salt != null)
+                    return Convert.ToBase64String(salt);
+                return null;
             }
         }
 

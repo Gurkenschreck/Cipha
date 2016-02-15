@@ -340,6 +340,41 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
 
             CollectionAssert.AreEqual(plainTextArr, decryptArr);
         }
-
+        [TestMethod]
+        public void Encoding_SetGetEncoding_Pass()
+        {
+            Encoding setEncoding = Encoding.Unicode;
+            Encoding getEncoding;
+            using (var mock = new SymmetricCipher<AesManaged>())
+            {
+                mock.Encoding = Encoding.Unicode;
+                getEncoding = mock.Encoding;
+            }
+            Assert.AreEqual(setEncoding, getEncoding);
+        }
+        [TestMethod]
+        public void HashIterations_SetGetHashIterations_Pass()
+        {
+            int setHashIterations = 10042;
+            int getHashIterations;
+            using (var mock = new SymmetricCipher<AesManaged>())
+            {
+                mock.HashIterations = setHashIterations;
+                getHashIterations = mock.HashIterations;
+            }
+            Assert.AreEqual(setHashIterations, getHashIterations);
+        }
+        [TestMethod]
+        public void SaltAsString_GetSaltAsString_Pass()
+        {
+            byte[] saltBytes;
+            string saltString;
+            using (var mock = new SymmetricCipher<AesManaged>("neufreund"))
+            {
+                saltBytes = mock.Salt;
+                saltString = mock.SaltAsString;
+            }
+            Assert.AreEqual(Convert.ToBase64String(saltBytes), saltString);
+        }
     }
 }

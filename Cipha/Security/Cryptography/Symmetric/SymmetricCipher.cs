@@ -75,6 +75,16 @@ namespace Cipha.Security.Cryptography.Symmetric
             }
         }
 
+
+        public SymmetricCipher(int keySize = 0)
+        {
+            algo = new T();
+            if (keySize > 0)
+                algo.KeySize = keySize;
+            algo.GenerateKey();
+            algo.GenerateIV();
+        }
+
         /// <summary>
         /// Adapts the configuration of the provided algorithm.
         /// </summary>

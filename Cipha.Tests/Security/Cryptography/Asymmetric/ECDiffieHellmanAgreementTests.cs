@@ -23,7 +23,7 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
                 formatter.Serialize(ms, agreement);
                 agreementNativeBytes = ms.ToArray();
             }
-
+            
             CollectionAssert.AreEqual(agreementBytes, agreementNativeBytes);
         }
 
