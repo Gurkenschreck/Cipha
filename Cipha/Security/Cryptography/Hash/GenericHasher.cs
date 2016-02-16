@@ -173,7 +173,7 @@ namespace Cipha.Security.Cryptography.Hash
         /// <returns>If both hashes are equal.</returns>
         public bool AreHashesEqual(byte[] hashA, byte[] hashB)
         {
-            return Utilities.SlowEquals(hashA, hashB);
+            return hashA.SequenceEqual(hashB);
         }
 
         /// <summary>
