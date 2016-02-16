@@ -90,9 +90,10 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// the algorithm object to the passed object.
         /// </summary>
         /// <param name="asymmetricAlgorithm">The reference object.</param>
-        public AsymmetricCipher(T asymmetricAlgorithm)
+        public AsymmetricCipher(T asymmetricAlgorithm, bool disposeAlgorithm = false)
         {
             algo = asymmetricAlgorithm;
+            this.disposeAlgorithm = disposeAlgorithm;
         }
 
         /// <summary>
@@ -231,7 +232,8 @@ namespace Cipha.Security.Cryptography.Asymmetric
         {
             if(disposing)
             {
-                algo.Dispose();
+                if(disposeAlgorithm)
+                    algo.Dispose();
                 algo = null;
             }
         }

@@ -12,7 +12,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         where T : ECDsa, new()
     {
         public ECDsaCipher(int keySize = 0) : base(keySize) { }
-        public ECDsaCipher(T algo) : base(algo) { }
+        public ECDsaCipher(T algo, bool disposeAlgorithm = false) : base(algo, disposeAlgorithm) { }
         public ECDsaCipher(string cleartextXmlString) : base(cleartextXmlString) { }
         public ECDsaCipher(string encryptedXmlString, string password, byte[] salt, byte[] IV, int keySize = 0, int iterationCount = 10000)
             : base(encryptedXmlString, password, salt, IV, keySize, iterationCount) { }

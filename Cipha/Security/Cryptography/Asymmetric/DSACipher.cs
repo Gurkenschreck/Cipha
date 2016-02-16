@@ -30,7 +30,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         where T : DSA, new()
     {
         public DSACipher(int keySize = 0) : base(keySize) { }
-        public DSACipher(T algo) : base(algo) { }
+        public DSACipher(T algo, bool disposeAlgorithm = false) : base(algo, disposeAlgorithm) { }
         public DSACipher(string cleartextXmlString) : base(cleartextXmlString) { }
         public DSACipher(string encryptedXmlString, string password, byte[] salt, byte[] IV, int keySize = 0, int iterationCount = 10000)
             : base(encryptedXmlString, password, salt, IV, keySize, iterationCount) { }

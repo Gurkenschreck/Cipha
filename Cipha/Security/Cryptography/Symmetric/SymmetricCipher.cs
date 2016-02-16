@@ -89,9 +89,10 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// Adapts the configuration of the provided algorithm.
         /// </summary>
         /// <param name="symmetricAlgorithm">The algorithm to adapt.</param>
-        public SymmetricCipher(T symmetricAlgorithm)
+        public SymmetricCipher(T symmetricAlgorithm, bool disposeAlgorithm = false)
         {
             algo = symmetricAlgorithm;
+            this.disposeAlgorithm = disposeAlgorithm;
         }
 
         public SymmetricCipher(byte[] key, out byte[] iv, int keySize = 0, int blockSize = 0)
@@ -316,7 +317,8 @@ namespace Cipha.Security.Cryptography.Symmetric
         {
             if(disposing)
             {
-                algo.Dispose();
+                if(disposeAlgorithm)
+                    algo.Dispose();
                 algo = null;
             }
         }

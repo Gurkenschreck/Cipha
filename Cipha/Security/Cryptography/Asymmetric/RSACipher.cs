@@ -32,7 +32,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// the algorithm object to the passed object.
         /// </summary>
         /// <param name="rsaAlgorithm">The reference object.</param>
-        public RSACipher(T rsaAlgorithm) : base(rsaAlgorithm) { }
+        public RSACipher(T rsaAlgorithm, bool disposeAlgorithm = false) : base(rsaAlgorithm, disposeAlgorithm) { }
         /// <summary>
         /// The constructor accepts the algorithm 
         /// configuration in the xml format.

@@ -13,7 +13,7 @@ namespace Cipha.Security.Cryptography
         protected Encoding encoding = Encoding.UTF8;
         protected byte[] salt;
         protected static int DEFAULT_SALT_BYTE_LENGTH = 32;
-
+        protected bool disposeAlgorithm = true;
 
         /// <summary>
         /// The amount of iterations used in the key

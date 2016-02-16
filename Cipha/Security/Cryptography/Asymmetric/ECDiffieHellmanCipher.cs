@@ -16,7 +16,7 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
 
         public ECDiffieHellmanCipher(int keySize = 0) : base(keySize)
         { }
-        public ECDiffieHellmanCipher(T referenceAlgo) : base(referenceAlgo)
+        public ECDiffieHellmanCipher(T referenceAlgo, bool disposeAlgorithm = false) : base(referenceAlgo, disposeAlgorithm)
         { }
         public ECDiffieHellmanCipher(string cleartextXmlString) : base(cleartextXmlString)
         { }
