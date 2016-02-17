@@ -1,4 +1,5 @@
-﻿using Cipha.Security.IO;
+﻿using Cipha.Security.Cryptography.Hash;
+using Cipha.Security.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -334,6 +335,11 @@ namespace Cipha.Security.Cryptography.Symmetric
         public CipherStream<T> CreateStream()
         {
             return new CipherStream<T>(this);
+        }
+        public HMACer<U> CreateHMACer<U>()
+            where U : KeyedHashAlgorithm, new()
+        {
+            return new HMACer<U>(algo.Key);
         }
     }
 }

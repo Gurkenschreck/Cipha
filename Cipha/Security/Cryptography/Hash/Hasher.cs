@@ -253,7 +253,7 @@ namespace Cipha.Security.Cryptography.Hash
             GC.SuppressFinalize(this);
         }
 
-        protected void Dispose(bool isDisposing)
+        protected virtual void Dispose(bool isDisposing)
         {
             if(isDisposing)
             {

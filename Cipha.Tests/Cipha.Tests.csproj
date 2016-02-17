@@ -57,6 +57,7 @@
     <Compile Include="Security\Cryptography\Asymmetric\ECDiffieHellmanAgreementTests.cs" />
     <Compile Include="Security\Cryptography\Hash\GenericHasherTests.cs" />
     <Compile Include="Security\Cryptography\Hash\HasherTests.cs" />
+    <Compile Include="Security\Cryptography\Hash\HMACerTests.cs" />
     <Compile Include="Security\Cryptography\Symmetric\GenericSymmetricCipherTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\Cryptography\Symmetric\SymmetricCipherTest.cs" />

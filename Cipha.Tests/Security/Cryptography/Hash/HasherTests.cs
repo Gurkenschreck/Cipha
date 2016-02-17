@@ -244,6 +244,7 @@ namespace Cipha.Tests.Security.Cryptography.Hash
             {
                 digesterHash = digester.Hash(message);
                 same = digester.VerifyHash(digester.Encoding.GetBytes(message), digesterHash);
+                digester.Dispose();
             }
             Assert.IsTrue(same);
         }

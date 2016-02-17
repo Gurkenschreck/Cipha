@@ -53,6 +53,7 @@
     <Compile Include="Security\Cryptography\Cipher.cs" />
     <Compile Include="Security\Cryptography\Asymmetric\ECDiffieHellmanAgreement.cs" />
     <Compile Include="Security\Cryptography\Hash\Hasher.cs" />
+    <Compile Include="Security\Cryptography\Hash\HMACer.cs" />
     <Compile Include="Security\Cryptography\ISigner.cs" />
     <Compile Include="Security\Cryptography\UnknownAlgorithmException.cs" />
     <Compile Include="Security\Cryptography\Hash\GenericHasher.cs" />
