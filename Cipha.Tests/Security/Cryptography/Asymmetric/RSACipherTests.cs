@@ -203,7 +203,6 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
 
             using (var cipher = new RSACipher<RSACryptoServiceProvider>(nativeXmlString))
             {
-                //byte[] hash = new SHA1Managed().ComputeHash(message);
                 signedMessage = cipher.ComputeAndSignHash<SHA1Cng>(message);
             }
 

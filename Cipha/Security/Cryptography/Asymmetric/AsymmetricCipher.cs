@@ -169,10 +169,10 @@ namespace Cipha.Security.Cryptography.Asymmetric
             where U : SymmetricAlgorithm, new ()
         {
             this.salt = (byte[])salt.Clone();
-
+            
             using(var symAlgo = new SymmetricCipher<U>(password, this.salt, null, keySize, iterationCount))
             {
-                IV = (byte[])symAlgo.Algorithm.IV.Clone();
+                IV = (byte[])symAlgo.IV.Clone();
                 return symAlgo.EncryptToString(algo.ToXmlString(includePrivateKey));
             }
         }

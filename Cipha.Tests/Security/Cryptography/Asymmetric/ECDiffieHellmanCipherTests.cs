@@ -56,6 +56,5 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
 
             CollectionAssert.AreEqual(aliceKey, bobKey);
         }
-
     }
 }

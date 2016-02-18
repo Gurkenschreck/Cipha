@@ -90,6 +90,9 @@ namespace Cipha.Security.Cryptography.Hash
                 encoding.GetBytes(key));
         }
 
+        
+
+        
         private void TripleDESKeyCheck(byte[] key)
         {
             if (algo is MACTripleDES)
