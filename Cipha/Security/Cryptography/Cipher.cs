@@ -16,7 +16,7 @@ namespace Cipha.Security.Cryptography
         protected bool disposeAlgorithm = true;
 
         /// <summary>
-        /// The amount of iterations used in the key
+        /// The amount of iterations used in the plainData
         /// derivation process.
         /// 
         /// Default:
@@ -79,7 +79,7 @@ namespace Cipha.Security.Cryptography
         }
 
         /// <summary>
-        /// Gets or sets the used key size.
+        /// Gets or sets the used plainData size.
         /// </summary>
         public abstract int KeySize
         {
@@ -99,7 +99,7 @@ namespace Cipha.Security.Cryptography
             GC.SuppressFinalize(this);
         }
 
-        public virtual void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             try
             {
@@ -122,7 +122,7 @@ namespace Cipha.Security.Cryptography
         }
         
         /// <summary>
-        /// Encrypts a rgb using the cngAlgorithmthm.
+        /// Encrypts a rgb using the cngAlgorithm.
         /// 
         /// Throws:
         ///     CryptographicException
@@ -135,7 +135,7 @@ namespace Cipha.Security.Cryptography
         }
 
         /// <summary>
-        /// Encrypts a string using the cngAlgorithmthm.
+        /// Encrypts a string using the cngAlgorithm.
         /// 
         /// Specify the character encoding with the
         /// Encoding property of this class.
@@ -151,7 +151,7 @@ namespace Cipha.Security.Cryptography
         }
 
         /// <summary>
-        /// Decrypts a rgb using the cngAlgorithmthm.
+        /// Decrypts a rgb using the cngAlgorithm.
         /// 
         /// Throws:
         ///     CryptographicException
@@ -164,7 +164,7 @@ namespace Cipha.Security.Cryptography
         }
 
         /// <summary>
-        /// Decrypts a string using the cngAlgorithmthm.
+        /// Decrypts a string using the cngAlgorithm.
         /// 
         /// Specify the character encoding with the
         /// Encoding property of this class.
@@ -180,7 +180,7 @@ namespace Cipha.Security.Cryptography
         }
 
         /// <summary>
-        /// Encrypts a rgb using the cngAlgorithmthm.
+        /// Encrypts a rgb using the cngAlgorithm.
         /// 
         /// The used character encoding is specified
         /// via the Encoding property.
@@ -196,7 +196,7 @@ namespace Cipha.Security.Cryptography
         }
 
         /// <summary>
-        /// Encrypts a rgb using the cngAlgorithmthm.
+        /// Encrypts a rgb using the cngAlgorithm.
         /// 
         /// The used character encoding is specified
         /// via the Encoding property.
@@ -208,11 +208,11 @@ namespace Cipha.Security.Cryptography
         /// <returns>The encrypted string represented as a string.</returns>
         public string EncryptToString(string plainString)
         {
-            return Convert.ToBase64String(EncryptData(encoding.GetBytes(plainString)));
+            return EncryptToString(encoding.GetBytes(plainString));
         }
 
         /// <summary>
-        /// Decrypts a rgb using the cngAlgorithmthm.
+        /// Decrypts a rgb using the cngAlgorithm.
         /// 
         /// The used character encoding is specified
         /// via the Encoding property.
@@ -228,7 +228,7 @@ namespace Cipha.Security.Cryptography
         }
 
         /// <summary>
-        /// Decrypts a string using the cngAlgorithmthm.
+        /// Decrypts a string using the cngAlgorithm.
         /// 
         /// The used character encoding is specified
         /// via the Encoding property.
@@ -240,7 +240,7 @@ namespace Cipha.Security.Cryptography
         /// <returns>The decrypted string.</returns>
         public string DecryptToString(string cipherString)
         {
-            return encoding.GetString(DecryptData(Convert.FromBase64String(cipherString)));
+            return DecryptToString(Convert.FromBase64String(cipherString));
         }
 
         // Implementations of the encryption process.

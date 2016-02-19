@@ -19,7 +19,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
     /// DSA uses SHA1 for the creation of
     /// digital signatures.
     /// 
-    /// DSA supports key lengths from 512 bits to 1024 
+    /// DSA supports plainData lengths from 512 bits to 1024 
     /// bits in increments of 64 bits.
     /// 
     /// There are newer asymmetric algorithms, so consider
@@ -42,9 +42,9 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// algorithm to do its magic.
         /// 
         /// Signing data encrypts the plain data
-        /// with the private key.
+        /// with the private plainData.
         /// Signed data can later be verified by
-        /// encrypting it with the public key.
+        /// encrypting it with the public plainData.
         /// </summary>
         /// <typeparam name="U">The hash algorithm to use.</typeparam>
         /// <param name="dataToSign">The plain data to sign.</param>
@@ -66,7 +66,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// Checks the integrity of the plain message.
         /// 
         /// The dataToVerify is encrypted using the same
-        /// private key used in the signing process.
+        /// private plainData used in the signing process.
         /// </summary>
         /// <typeparam name="U">The same hash algorithm used in the signing process.</typeparam>
         /// <param name="dataToVerify">The plain data to verify its integrity.</param>

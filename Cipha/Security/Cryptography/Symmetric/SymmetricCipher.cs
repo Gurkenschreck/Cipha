@@ -18,7 +18,7 @@ namespace Cipha.Security.Cryptography.Symmetric
     ///     AesCryptoServiceProvider
     ///     RC2CryptoServiceProvider
     ///     RijndaelManaged
-    ///     TrippleDESCryptoServiceProvider
+    ///     TripleDESCryptoServiceProvider
     /// </summary>
     /// <typeparam name="T">The symmetric algorithm.</typeparam>
     public class SymmetricCipher<T> : Cipher
@@ -43,12 +43,12 @@ namespace Cipha.Security.Cryptography.Symmetric
                 if (value.GetType() != typeof(T))
                     throw new ArgumentException("value is not of type " + algo.GetType());
 
-                algo = (T)value;
+                algo = value;
             }
         }
 
         /// <summary>
-        /// Gets or sets the current key size.
+        /// Gets or sets the current plainData size.
         /// </summary>
         public override int KeySize
         {
@@ -63,6 +63,50 @@ namespace Cipha.Security.Cryptography.Symmetric
         }
 
         /// <summary>
+        /// Gets or sets the block size.
+        /// </summary>
+        public int BlockSize
+        {
+            get
+            {
+                return algo.BlockSize;
+            }
+            set
+            {
+                algo.BlockSize = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the plainData.
+        /// </summary>
+        public byte[] Key
+        {
+            get
+            {
+                return algo.Key.Clone() as byte[];
+            }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+                if (value.Length == 0)
+                    throw new ArgumentException("invalid length");
+                algo.Key = (byte[])value.Clone();
+            }
+        }
+        /// <summary>
+        /// Gets the current secret plainData as a base64 string.
+        /// </summary>
+        public string KeyAsString
+        {
+            get
+            {
+                return Convert.ToBase64String(algo.Key);
+            }
+        }
+
+        /// <summary>
         /// Gets or sets the initialize vector (IV).
         /// </summary>
         public byte[] IV
@@ -72,10 +116,21 @@ namespace Cipha.Security.Cryptography.Symmetric
             {
                 if (value == null)
                     throw new ArgumentNullException("value");
-                algo.IV = value;
+                algo.IV = (byte[])value.Clone();
             }
         }
 
+        /// <summary>
+        /// Gets the IV as a base64 string.
+        /// </summary>
+        public string IVAsString
+        {
+            get
+            {
+                return Convert.ToBase64String(algo.IV);
+            }
+        }
+        
 
         public SymmetricCipher(int keySize = 0)
         {
@@ -113,18 +168,18 @@ namespace Cipha.Security.Cryptography.Symmetric
             if (blockSize > 0)
                 algo.BlockSize = blockSize;
             algo.KeySize = key.Length * 8;
-            algo.Key = key;
+            algo.Key = key.Clone() as byte[];
         }
 
         /// <summary>
         /// Creates a new instance of the algorithm and sets
-        /// its key and IV.
+        /// its plainData and IV.
         /// 
         /// Throws CryptographicException if Key of IV has a invalid size.
         /// </summary>
-        /// <param name="key">The key to set.</param>
+        /// <param name="plainData">The plainData to set.</param>
         /// <param name="IV">The IV to set.</param>
-        /// <param name="keySize">The key size to set.</param>
+        /// <param name="keySize">The plainData size to set.</param>
         /// <param name="blockSize">The size of the blocks to process at once.</param>
         public SymmetricCipher(byte[] key, byte[] iv, int keySize = 0, int blockSize = 0)
         {
@@ -140,7 +195,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <summary>
         /// Creates a new instance of the algorithm.
         /// 
-        /// It creates a key with the password, salt and
+        /// It creates a plainData with the password, salt and
         /// iteration count by using the Rfc2898DeriveBytes
         /// implementation of PBKDF2.
         /// </summary>
@@ -165,11 +220,11 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// 
         /// Returns a random iv.
         /// </summary>
-        /// <param name="password">The password to derive the key from.</param>
-        /// <param name="salt">The salt to help deriving the key.</param>
+        /// <param name="password">The password to derive the plainData from.</param>
+        /// <param name="salt">The salt to help deriving the plainData.</param>
         /// <param name="iv">The initializing vector.</param>
         /// <param name="saltSize">The salt size in bytes.</param>
-        /// <param name="iterations">The amount of iterations to derive the key.</param>
+        /// <param name="iterations">The amount of iterations to derive the plainData.</param>
         public SymmetricCipher(string password, out byte[] salt, out byte[] iv, int saltSize = 0, int iterations = 10000)
         {
             if (saltSize > 0)
@@ -188,12 +243,12 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// After generation, the salt can be 
         /// extracted using the Salt property.
         /// 
-        /// It creates a key with the password, salt and
+        /// It creates a plainData with the password, salt and
         /// iteration count by using the Rfc2898DeriveBytes
         /// implementation of PBKDF2.
         /// 
-        /// The key size of 0 indicates that the standard 
-        /// key size shall be used.
+        /// The plainData size of 0 indicates that the standard 
+        /// plainData size shall be used.
         /// 
         /// Throws:
         ///     ArgumentNullException
@@ -202,8 +257,8 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// </summary>
         /// <param name="password">The password to use.</param>
         /// <param name="saltByteLength">The salt length in bytes. Must be at least 8.</param>
-        /// <param name="keysize">The key size. 0 indicates that the default shall be used.</param>
-        /// <param name="iterations">The amount of iterations to derive the key.</param>
+        /// <param name="keysize">The plainData size. 0 indicates that the default shall be used.</param>
+        /// <param name="iterations">The amount of iterations to derive the plainData.</param>
         public SymmetricCipher(string password, int saltByteLength, byte[] IV = null, int keysize = 0, int blockSize = 0, int iterations = 10000)
         {
             if (password == null)
@@ -224,12 +279,12 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// of 64 bytes. After generation, the salt can be 
         /// extracted using the Salt property.
         /// 
-        /// It creates a key with the password, salt and
+        /// It creates a plainData with the password, salt and
         /// iteration count by using the Rfc2898DeriveBytes
         /// implementation of PBKDF2.
         /// 
-        /// The key size of 0 indicates that the standard 
-        /// key size shall be used.
+        /// The plainData size of 0 indicates that the standard 
+        /// plainData size shall be used.
         /// 
         /// Throws:
         ///     ArgumentNullException: pw is null

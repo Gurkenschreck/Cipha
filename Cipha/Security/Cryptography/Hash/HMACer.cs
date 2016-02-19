@@ -11,7 +11,7 @@ namespace Cipha.Security.Cryptography.Hash
         where T : KeyedHashAlgorithm, new()
     {
         /// <summary>
-        /// Gets or sets the key used to create the HMAC.
+        /// Gets or sets the plainData used to create the HMAC.
         /// </summary>
         public byte[] Key
         {
@@ -36,10 +36,10 @@ namespace Cipha.Security.Cryptography.Hash
         { }
         /// <summary>
         /// Creates a new instance of the HMACer T with a 
-        /// cryptographic strong random key of the specified
+        /// cryptographic strong random plainData of the specified
         /// length in bytes.
         /// </summary>
-        /// <param name="length">The length of the key in bytes.</param>
+        /// <param name="length">The length of the plainData in bytes.</param>
         public HMACer(int length)
         {
             if(algo is MACTripleDES)
@@ -49,9 +49,9 @@ namespace Cipha.Security.Cryptography.Hash
         }
         /// <summary>
         /// Creates a new instance of the HMACer T with a
-        /// predefined key.
+        /// predefined plainData.
         /// </summary>
-        /// <param name="key">The key to use.</param>
+        /// <param name="plainData">The plainData to use.</param>
         public HMACer(byte[] key)
         {
             TripleDESKeyCheck(key);
@@ -60,11 +60,11 @@ namespace Cipha.Security.Cryptography.Hash
         }
         /// <summary>
         /// Creates a new instance of the HMACer T using the
-        /// key of the given symmetric algorithm.
+        /// plainData of the given symmetric algorithm.
         /// 
         /// The original object will not be disposed when
         /// this object is disposed, because it just copies
-        /// its key.
+        /// its plainData.
         /// </summary>
         /// <param name="symAlgo"></param>
         public HMACer(SymmetricAlgorithm symAlgo)
@@ -76,13 +76,13 @@ namespace Cipha.Security.Cryptography.Hash
                 symAlgo.Key);
         }
         /// <summary>
-        /// Creates a new instance of T and uses the key
-        /// string as the key to use.
+        /// Creates a new instance of T and uses the plainData
+        /// string as the plainData to use.
         /// 
         /// The string is decoded using the current Encoding.
         /// Default encoding is UTF8.
         /// </summary>
-        /// <param name="key">The key string to use</param>
+        /// <param name="plainData">The plainData string to use</param>
         public HMACer(string key)
         {
             TripleDESKeyCheck(encoding.GetBytes(key));
@@ -97,10 +97,10 @@ namespace Cipha.Security.Cryptography.Hash
         {
             if (algo is MACTripleDES)
             {
-                // If T is TripleDES, check for problems with key to
+                // If T is TripleDES, check for problems with plainData to
                 // prevent later exceptions.
                 if (TripleDES.IsWeakKey(key))
-                    throw new CryptographicException("key is a known weak key");
+                    throw new CryptographicException("plainData is a known weak plainData");
                 TripleDESKeyLengthCheck(key.Length);                
             }
         }
@@ -108,7 +108,7 @@ namespace Cipha.Security.Cryptography.Hash
         {
             if (length != 16 && length != 24)
             {
-                throw new CryptographicException("invalid key size for TripleDES. " + length);
+                throw new CryptographicException("invalid plainData size for TripleDES. " + length);
             }
         }
     }

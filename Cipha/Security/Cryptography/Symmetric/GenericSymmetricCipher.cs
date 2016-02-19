@@ -103,7 +103,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         }
 
         /// <summary>
-        /// Returns the legal key sizes for the
+        /// Returns the legal plainData sizes for the
         /// specified symmetric algorithm.
         /// </summary>
         public KeySizes[] LegalKeySizes
@@ -182,7 +182,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// Returns the encrypted data as a base64 String.
         /// </summary>
         /// <param name="cipherData">The Unicode string to encrypt.</param>
-        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
+        /// <param name="password">The password to use in the plainData derivation keyDerivationFunction.</param>
         /// <param name="salt">The salt to encrypt.</param>
         /// <returns>The encrypted base64 string.</returns>
         public string EncryptToString(string plainString, string password, string salt)
@@ -193,7 +193,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// Encrypts plain data and converts it to a base 64 string.
         /// </summary>
         /// <param name="plainData">The data to encrypt.</param>
-        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
+        /// <param name="password">The password to use in the plainData derivation keyDerivationFunction.</param>
         /// <param name="salt">The salt to use.</param>
         /// <returns>The encrypted data.</returns>
         public string EncryptToString(byte[] plainData, byte[] password, byte[] salt)
@@ -205,7 +205,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// Encrypts a blob of bytes.
         /// </summary>
         /// <param name="plainData">The data to encrypt.</param>
-        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
+        /// <param name="password">The password to use in the plainData derivation keyDerivationFunction.</param>
         /// <param name="salt">The salt to use.</param>
         /// <returns>The encrypted data.</returns>
         public byte[] Encrypt(byte[] plainData, string password, string salt)
@@ -217,7 +217,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// Encrypts a blob of bytes.
         /// </summary>
         /// <param name="plainData">The data to encrypt.</param>
-        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
+        /// <param name="password">The password to use in the plainData derivation keyDerivationFunction.</param>
         /// <param name="salt">The salt.</param>
         /// <returns>The encrypted data.</returns>
         public byte[] Encrypt(byte[] plainData, string password, byte[] salt)
@@ -231,7 +231,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// </summary>
         /// <typeparam name="T">The subclass of SymmetricAlgorithm.</typeparam>
         /// <param name="cipherData">The plain data to encrypt.</param>
-        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
+        /// <param name="password">The password to use in the plainData derivation keyDerivationFunction.</param>
         /// <param name="salt">The salt to be used.</param>
         /// <returns></returns>
         public byte[] Encrypt(byte[] plainData, byte[] password, byte[] salt)
@@ -317,7 +317,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// extending from SymmetricAlgorithm.
         /// </summary>
         /// <param name="cipherData">The data to decrypt.</param>
-        /// <param name="key">The key used in the encryption.</param>
+        /// <param name="plainData">The plainData used in the encryption.</param>
         /// <param name="IV">the IV used in the encryption.</param>
         /// <returns>The decrypted blob.</returns>
         public byte[] Decrypt(byte[] cipherData, byte[] key, byte[] iv)
@@ -325,7 +325,7 @@ namespace Cipha.Security.Cryptography.Symmetric
             if (cipherData == null)
                 throw new ArgumentNullException("cipherData");
             if (key == null)
-                throw new ArgumentNullException("key");
+                throw new ArgumentNullException("plainData");
             if (iv == null)
                 throw new ArgumentNullException("iv");
             
@@ -353,7 +353,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// Decrypts a cipher string
         /// </summary>
         /// <param name="cipherData">The string to decrypt.</param>
-        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
+        /// <param name="password">The password to use in the plainData derivation keyDerivationFunction.</param>
         /// <param name="salt">The salt.</param>
         /// <returns></returns>
         public string DecryptToString(string cipherData, string password, string salt)
@@ -365,7 +365,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// Decrypts an encrypted blob of bytes.
         /// </summary>
         /// <param name="cipherData">The data to decrypt.</param>
-        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
+        /// <param name="password">The password to use in the plainData derivation keyDerivationFunction.</param>
         /// <param name="salt">The salt.</param>
         /// <returns></returns>
         public string DecryptToString(byte[] cipherData, string password, string salt)
@@ -375,7 +375,7 @@ namespace Cipha.Security.Cryptography.Symmetric
 
 
         /// <summary>
-        /// Encrypts a file by creating a key and IV
+        /// Encrypts a file by creating a plainData and IV
         /// for the provided password and salt.
         /// 
         /// The amount of iterations of the Rfc2898
@@ -384,7 +384,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// </summary>
         /// <param name="inFile">The file to encrypt.</param>
         /// <param name="outFile">The file to decrypt.</param>
-        /// <param name="password">The password to use in the key derivation keyDerivationFunction.</param>
+        /// <param name="password">The password to use in the plainData derivation keyDerivationFunction.</param>
         /// <param name="salt">The salt used in the encryption process.</param>
         public void EncryptFile(string inFile, string outFile, string password, string salt)
         {
@@ -404,17 +404,17 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <summary>
         /// Encrypts a file using the SymmetricAlgorithm T.
         /// 
-        /// If you do not have a key or IV, pass null for both,
-        /// those references will be filled with the key and
+        /// If you do not have a plainData or IV, pass null for both,
+        /// those references will be filled with the plainData and
         /// IV used in the process.
         /// 
-        /// When only a key or a IV is given, it is not used.
+        /// When only a plainData or a IV is given, it is not used.
         /// 
-        /// Store the generated key and IV for later decryption.
+        /// Store the generated plainData and IV for later decryption.
         /// </summary>
         /// <param name="inFile">The file to read.</param>
         /// <param name="outFile">The output file.</param>
-        /// <param name="key">The key to use.</param>
+        /// <param name="plainData">The plainData to use.</param>
         /// <param name="IV">The IV to use.</param>
         public void EncryptFile(string inFile, string outFile, ref byte[] key, ref byte[] iv)
         {
@@ -490,7 +490,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// </summary>
         /// <param name="inFile">The encrypted file.</param>
         /// <param name="outFile">The output file.</param>
-        /// <param name="key">The key used.</param>
+        /// <param name="plainData">The plainData used.</param>
         /// <param name="IV">The IV used.</param>
         public void DecryptFile(string inFile, string outFile, ref byte[] key, ref byte[] iv)
         {
@@ -549,7 +549,7 @@ namespace Cipha.Security.Cryptography.Symmetric
                 if (algo.BlockSize != blockSize)
                     algo.BlockSize = (int)blockSize;
 
-            // Set the key size
+            // Set the plainData size
             if (keySize != null)
                 if (algo.KeySize != keySize)
                     algo.KeySize = (int)keySize;

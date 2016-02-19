@@ -104,10 +104,10 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
         }
 
         /// <summary>
-        /// Tries to encrypt a string using a 127 bit key.
+        /// Tries to encrypt a string using a 127 bit plainData.
         /// 
         /// Expecting a CryptographicException because
-        /// an Aes key cannot have the size of 127.
+        /// an Aes plainData cannot have the size of 127.
         /// </summary>
         [ExpectedException(typeof(CryptographicException))]
         [TestMethod]

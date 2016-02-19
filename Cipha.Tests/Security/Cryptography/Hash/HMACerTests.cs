@@ -59,7 +59,7 @@ namespace Cipha.Tests.Security.Cryptography.Hash
             byte[] b = Encoding.UTF8.GetBytes(keyString);
             HMACer<MACTripleDES> hmacer = new HMACer<MACTripleDES>(keyString);
             hmacer.Dispose();
-            Assert.Fail("should have failed with crypto exception because of invalid key size");
+            Assert.Fail("should have failed with crypto exception because of invalid plainData size");
         }
         [TestMethod]
         public void Instantiate_TripleDESKeyPass_Pass()

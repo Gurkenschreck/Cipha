@@ -80,6 +80,7 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
             {
                 encryptedText = cipher.EncryptToString(plaindata);
                 decryptedText = cipher.DecryptToString(encryptedText);
+                decryptedText = Encoding.UTF8.GetString(decryptedText);
             }
 
             Assert.AreEqual(plainText, decryptedText);
@@ -87,7 +88,7 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
         [TestMethod]
         public void DecryptToString_EncryptAndDecryptToString_Pass()
         {
-            string plainText = "Encrypt me but don' forget me.";
+            string plainText = "Encrypt me but don't forget me.";
             byte[] plaindata = Encoding.UTF8.GetBytes(plainText);
             byte[] encryptedText;
             string decryptedText;
@@ -375,6 +376,18 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
                 saltString = mock.SaltAsString;
             }
             Assert.AreEqual(Convert.ToBase64String(saltBytes), saltString);
+        }
+        [TestMethod]
+        public void IVAsString_GetIVAsString_Pass()
+        {
+            byte[] ivBytes;
+            string ivString;
+            using (var mock = new SymmetricCipher<AesManaged>("neufreund"))
+            {
+                ivBytes = mock.IV;
+                ivString = mock.IVAsString;
+            }
+            Assert.AreEqual(Convert.ToBase64String(ivBytes), ivString);
         }
     }
 }

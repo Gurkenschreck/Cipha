@@ -20,10 +20,10 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <summary>
         /// Instantiates a new instance of the class.
         /// 
-        /// If the key size in the parameter is not 0,
-        /// it tries to apply the key.
+        /// If the plainData size in the parameter is not 0,
+        /// it tries to apply the plainData.
         /// 
-        /// The default key size of the algorithms can differ.
+        /// The default plainData size of the algorithms can differ.
         /// Check out the default size via KeySize.
         /// </summary>
         public RSACipher(int keySize = 2048) : base(keySize) { }
@@ -46,15 +46,15 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// Constructor to adapt an already existing 
         /// configuration in the xml format.
         /// 
-        /// The encryptedXmlString will be decrypted using AES256.
+        /// The encryptedPublicKeyXmlString will be decrypted using AES256.
         /// A possible workaround is to instantiate the
         /// cipher and call the FromEncryptedXmlString.
         /// </summary>
-        /// <param name="encryptedXmlString">The encrypted encryptedXmlString.</param>
+        /// <param name="encryptedPublicKeyXmlString">The encrypted encryptedPublicKeyXmlString.</param>
         /// <param name="password">The password.</param>
         /// <param name="salt">The salt.</param>
-        /// <param name="keySize">The key size used in the encryption process.</param>
-        /// <param name="iterationCount">The amount of iterations to derive the key.</param>
+        /// <param name="keySize">The plainData size used in the encryption process.</param>
+        /// <param name="iterationCount">The amount of iterations to derive the plainData.</param>
         public RSACipher(string encryptedXmlString, string password, byte[] salt, byte[] IV, int keySize = 0, int iterationCount = 10000)
             : base(encryptedXmlString, password, salt, IV, keySize, iterationCount) { }
         
@@ -102,7 +102,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         }
 
         /// <summary>
-        /// Signs data using the private key.
+        /// Signs data using the private plainData.
         /// </summary>
         /// <typeparam name="U">The hash algorithm to use.</typeparam>
         /// <param name="dataToSign">The data to sign.</param>
@@ -142,7 +142,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         }
 
         /// <summary>
-        /// Signs a SHA256 hash using the private key.
+        /// Signs a SHA256 hash using the private plainData.
         /// </summary>
         /// <param name="dataToSign">The data to sign.</param>
         /// <returns>The signature of the message.</returns>

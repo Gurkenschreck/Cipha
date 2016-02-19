@@ -47,10 +47,10 @@ namespace Cipha.Security.Cryptography.Asymmetric
         }
 
         /// <summary>
-        /// Gets or sets the key size of the algorithm.
+        /// Gets or sets the plainData size of the algorithm.
         /// 
         /// When it sets, a new instance of T is created with
-        /// the new key size.
+        /// the new plainData size.
         /// </summary>
         public override int KeySize
         {
@@ -70,10 +70,10 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <summary>
         /// Instantiates a new instance of the class.
         /// 
-        /// The default key size of the algorithms can differ.
+        /// The default plainData size of the algorithms can differ.
         /// Check out the default size via KeySize.
         /// 
-        /// To set a different key size, use the
+        /// To set a different plainData size, use the
         /// AsymmetricCipher(T asymmetricAlgorithm)
         /// constructor with new T(int keySize)
         /// </summary>
@@ -114,15 +114,15 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// Constructor to adapt an already existing 
         /// configuration in the xml format.
         /// 
-        /// The encryptedXmlString will be decrypted using AES256.
+        /// The encryptedPublicKeyXmlString will be decrypted using AES256.
         /// A possible workaround is to instantiate the
         /// cipher and call the FromEncryptedXmlString.
         /// </summary>
-        /// <param name="encryptedXmlString">The encrypted encryptedXmlString.</param>
+        /// <param name="encryptedPublicKeyXmlString">The encrypted encryptedPublicKeyXmlString.</param>
         /// <param name="password">The password.</param>
         /// <param name="salt">The salt.</param>
-        /// <param name="keySize">The key size used in the encryption process.</param>
-        /// <param name="iterationCount">The amount of iterations to derive the key.</param>
+        /// <param name="keySize">The plainData size used in the encryption process.</param>
+        /// <param name="iterationCount">The amount of iterations to derive the plainData.</param>
         public AsymmetricCipher(string encryptedXmlString, string password, byte[] salt, byte[] IV, int keySize = 0, int iterationCount = 10000)
         {
             algo = new T();
@@ -133,7 +133,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// Exports the current configuration as plaintext 
         /// in xml format.
         /// </summary>
-        /// <param name="includePrivateKey">If the exported configuration should include the private key.</param>
+        /// <param name="includePrivateKey">If the exported configuration should include the private plainData.</param>
         /// <returns>The plain configuration string.</returns>
         public virtual string ToXmlString(bool includePrivateKey)
         {
@@ -141,10 +141,10 @@ namespace Cipha.Security.Cryptography.Asymmetric
         }
 
         /// <summary>
-        /// Applies the given encryptedXmlString to the current
+        /// Applies the given encryptedPublicKeyXmlString to the current
         /// object.
         /// </summary>
-        /// <param name="encryptedXmlString">The xml configuration string.</param>
+        /// <param name="encryptedPublicKeyXmlString">The xml configuration string.</param>
         public virtual void FromXmlString(string xmlString)
         {
             algo.FromXmlString(xmlString);
@@ -152,18 +152,18 @@ namespace Cipha.Security.Cryptography.Asymmetric
         
         /// <summary>
         /// Makes use of the SymmetricCipher to encrypt
-        /// the current encryptedXmlString configuration using
+        /// the current encryptedPublicKeyXmlString configuration using
         /// at least a password and salt.
         /// 
         /// Throws:
         ///     CryptographicException
         /// </summary>
         /// <typeparam name="U">The symmetric algorithm to use for the encryption.</typeparam>
-        /// <param name="includePrivateKey">Specifies if the encrypted xml config should include the private key.</param>
+        /// <param name="includePrivateKey">Specifies if the encrypted xml config should include the private plainData.</param>
         /// <param name="password">The password to encrypt it.</param>
         /// <param name="salt">The salt.</param>
-        /// <param name="keySize">The key size to use.</param>
-        /// <param name="iterationCount">The amount of iterations to derive the key.</param>
+        /// <param name="keySize">The plainData size to use.</param>
+        /// <param name="iterationCount">The amount of iterations to derive the plainData.</param>
         /// <returns></returns>
         public virtual string ToEncryptedXmlString<U>(bool includePrivateKey, string password, byte[] salt, out byte[] IV, int keySize = 0, int iterationCount = 10000)
             where U : SymmetricAlgorithm, new ()
@@ -179,24 +179,23 @@ namespace Cipha.Security.Cryptography.Asymmetric
 
         /// <summary>
         /// Makes use of the SymmetricCipher to decrypt
-        /// the given encryptedXmlString configuration using
+        /// the given encryptedPublicKeyXmlString configuration using
         /// at least a password and salt.
         /// 
         /// Throws:
         ///     CryptographicException
         /// </summary>
         /// <typeparam name="U">The symmetric algorithm that was used in the encryption process.</typeparam>
-        /// <param name="encryptedXmlString">The encrypted plainXmlString.</param>
+        /// <param name="encryptedPublicKeyXmlString">The encrypted plainXmlString.</param>
         /// <param name="password">The password to decrypt it.</param>
         /// <param name="salt">The salt used in the encryption process.</param>
-        /// <param name="keySize">THe key size to use.</param>
-        /// <param name="iterationCount">The amount of iterations to derive the key.</param>
+        /// <param name="keySize">THe plainData size to use.</param>
+        /// <param name="iterationCount">The amount of iterations to derive the plainData.</param>
         public virtual void FromEncryptedXmlString<U>(string encryptedXmlString, string password, byte[] salt, byte[] IV, int keySize = 0, int blockSize = 0, int iterationCount = 10000)
             where U : SymmetricAlgorithm, new ()
         {
-            using(var symAlgo = new SymmetricCipher<U>(password, (byte[])salt.Clone(), null, keySize, iterationCount))
+            using(var symAlgo = new SymmetricCipher<U>(password, salt, IV, keySize, iterationCount))
             {
-                symAlgo.Algorithm.IV = (byte[])IV.Clone();
                 algo.FromXmlString(symAlgo.DecryptToString(encryptedXmlString));
             }
         }
@@ -246,9 +245,9 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// algorithm to do its magic.
         /// 
         /// Signing data encrypts the plain data
-        /// with the private key.
+        /// with the private plainData.
         /// Signed data can later be verified by
-        /// encrypting it with the public key.
+        /// encrypting it with the public plainData.
         /// </summary>
         /// <typeparam name="U">The hash algorithm to use.</typeparam>
         /// <param name="dataToSign">The plain data to sign.</param>
@@ -260,7 +259,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// Checks the integrity of the plain message.
         /// 
         /// The dataToVerify is encrypted using the same
-        /// private key used in the signing process.
+        /// private plainData used in the signing process.
         /// </summary>
         /// <typeparam name="U">The same hash algorithm used in the signing process.</typeparam>
         /// <param name="dataToVerify">The plain data to verify its integrity.</param>
