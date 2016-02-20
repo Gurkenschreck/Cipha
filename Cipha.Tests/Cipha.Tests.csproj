@@ -51,7 +51,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Security\Cryptography\Asymmetric\DSACipherTests.cs" />
-    <Compile Include="Security\Cryptography\Hash\RSACipherTests.cs" />
+    <Compile Include="Security\Cryptography\Asymmetric\RSACipherTests.cs" />
     <Compile Include="Security\Cryptography\Asymmetric\ECDsaCipherTests.cs" />
     <Compile Include="Security\Cryptography\Asymmetric\ECDiffieHellmanCipherTests.cs" />
     <Compile Include="Security\Cryptography\Asymmetric\ECDiffieHellmanAgreementTests.cs" />
