@@ -55,6 +55,8 @@
     <Compile Include="Security\Cryptography\Hash\Hasher.cs" />
     <Compile Include="Security\Cryptography\Hash\HMACer.cs" />
     <Compile Include="Security\Cryptography\ISigner.cs" />
+    <Compile Include="Security\Cryptography\KeyPacker.cs" />
+    <Compile Include="Security\Cryptography\MalformedXmlConfigStringException.cs" />
     <Compile Include="Security\Cryptography\UnknownAlgorithmException.cs" />
     <Compile Include="Security\Cryptography\Hash\GenericHasher.cs" />
     <Compile Include="Security\Cryptography\OIDIdentifier.cs" />
