@@ -70,17 +70,18 @@ namespace Cipha.Tests.Security.Cryptography.Symmetric
         }
 
         [TestMethod]
-        public void AesBasicCipher1_SameInstance_ComparesOutput()
+        public void EncryptToString_EncryptedPreviouslyDecodedTextBytesAndEncodeItLaterBack_Pass()
         {
             string plainText = "Encrypt me but don' forget me.";
             byte[] plaindata = Encoding.UTF8.GetBytes(plainText);
             string encryptedText;
+            byte[] decryptedTextBytes;
             string decryptedText;
             using (var cipher = new SymmetricCipher<AesManaged>("passwd", "mysalt1337"))
             {
                 encryptedText = cipher.EncryptToString(plaindata);
-                decryptedText = cipher.DecryptToString(encryptedText);
-                decryptedText = Encoding.UTF8.GetString(decryptedText);
+                decryptedTextBytes = cipher.Decrypt(encryptedText);
+                decryptedText = Encoding.UTF8.GetString(decryptedTextBytes);
             }
 
             Assert.AreEqual(plainText, decryptedText);

@@ -350,7 +350,7 @@ namespace Cipha.Security.Cryptography.Symmetric
         }
 
         /// <summary>
-        /// Decrypts a cipher string
+        /// Decrypts a symmetricCipher string
         /// </summary>
         /// <param name="cipherData">The string to decrypt.</param>
         /// <param name="password">The password to use in the plainData derivation keyDerivationFunction.</param>

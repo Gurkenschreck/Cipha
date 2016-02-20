@@ -24,7 +24,7 @@ namespace Cipha.Tests.Security.Cryptography.Asymmetric
             : base(encryptedXmlString, password, salt, IV, keySize, iterationCount)
         { }
 
-        // Evaluate need for constructor with xmlString parameter
+        // Evaluate need for constructor with encryptedXmlString parameter
         public ECDiffieHellmanCipher(ECDiffieHellmanAgreement agreement)
         {
             algo = new T();

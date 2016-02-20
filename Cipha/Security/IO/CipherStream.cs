@@ -33,7 +33,7 @@ namespace Cipha.Security.IO
         }
 
         /// <summary>
-        /// Gets the instance of the cipher
+        /// Gets the instance of the symmetricCipher
         /// in use.
         /// </summary>
         public SymmetricCipher<T> Cipher
@@ -44,10 +44,10 @@ namespace Cipha.Security.IO
         /// <summary>
         /// Creates a new instance of the CipherStream.
         /// 
-        /// Acceps the cipher which shall be used in the
+        /// Acceps the symmetricCipher which shall be used in the
         /// encryption process.
         /// </summary>
-        /// <param name="cipher">The cipher instance to use.</param>
+        /// <param name="symmetricCipher">The symmetricCipher instance to use.</param>
         public CipherStream(SymmetricCipher<T> cipher)
             : this(cipher, 100)
         {        }
@@ -57,12 +57,12 @@ namespace Cipha.Security.IO
         /// accepts a SymmetricCipher instance and the length 
         /// of the buffer used in the encryption processes.
         /// </summary>
-        /// <param name="cipher">The valid SymmetricCipher instance.</param>
+        /// <param name="symmetricCipher">The valid SymmetricCipher instance.</param>
         /// <param name="bufferLength">The amount of bytes which shall be encrypted at once.</param>
         public CipherStream(SymmetricCipher<T> cipher, int bufferLength)
         {
             if(cipher == null)
-                throw new ArgumentNullException("cipher");
+                throw new ArgumentNullException("symmetricCipher");
             if (bufferLength <= 0)
                 throw new ArgumentOutOfRangeException("bufferLength cannot be less or equal 0");
 
@@ -201,7 +201,7 @@ namespace Cipha.Security.IO
         /// <summary>
         /// Method to release all ressources of the CipherStream.
         /// 
-        /// Warning: The cipher itself will not be cleared.
+        /// Warning: The symmetricCipher itself will not be cleared.
         /// </summary>
         public void Dispose()
         {

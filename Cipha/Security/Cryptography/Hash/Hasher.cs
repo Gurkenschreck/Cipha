@@ -93,7 +93,7 @@ namespace Cipha.Security.Cryptography.Hash
         /// </summary>
         /// <param name="refAlgo">The reference to use.</param>
         /// <param name="disposeAlgorithm">If true, the reference 
-        /// object is also disposed when the cipher is disposed.</param>
+        /// object is also disposed when the symmetricCipher is disposed.</param>
         public Hasher(T refAlgo, bool disposeAlgorithm = false)
         {
             if (refAlgo == null)

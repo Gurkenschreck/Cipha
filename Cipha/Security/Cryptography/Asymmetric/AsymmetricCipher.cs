@@ -116,7 +116,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// 
         /// The encryptedPublicKeyXmlString will be decrypted using AES256.
         /// A possible workaround is to instantiate the
-        /// cipher and call the FromEncryptedXmlString.
+        /// symmetricCipher and call the FromEncryptedXmlString.
         /// </summary>
         /// <param name="encryptedPublicKeyXmlString">The encrypted encryptedPublicKeyXmlString.</param>
         /// <param name="password">The password.</param>
