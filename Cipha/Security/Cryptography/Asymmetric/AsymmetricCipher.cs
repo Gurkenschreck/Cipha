@@ -164,7 +164,7 @@ namespace Cipha.Security.Cryptography.Asymmetric
         /// <param name="salt">The salt.</param>
         /// <param name="keySize">The plainData size to use.</param>
         /// <param name="iterationCount">The amount of iterations to derive the plainData.</param>
-        /// <returns></returns>
+        /// <returns>The encrypted xml string.</returns>
         public virtual string ToEncryptedXmlString<U>(bool includePrivateKey, string password, byte[] salt, out byte[] IV, int keySize = 0, int iterationCount = 10000)
             where U : SymmetricAlgorithm, new ()
         {
@@ -173,6 +173,31 @@ namespace Cipha.Security.Cryptography.Asymmetric
             using(var symAlgo = new SymmetricCipher<U>(password, this.salt, null, keySize, iterationCount))
             {
                 IV = (byte[])symAlgo.IV.Clone();
+                return symAlgo.EncryptToString(algo.ToXmlString(includePrivateKey));
+            }
+        }
+        /// <summary>
+        /// Makes use of the SymmetricCipher to encrypt
+        /// the current encryptedPublicKeyXmlString configuration using
+        /// at least a password and salt.
+        /// 
+        /// Throws:
+        ///     CryptographicException
+        /// </summary>
+        /// <typeparam name="U">The symmetric algorithm to use for the encryption.</typeparam>
+        /// <param name="includePrivateKey">Specifies if the encrypted xml config should include the private plainData.</param>
+        /// <param name="password">The password to encrypt it.</param>
+        /// <param name="salt">The salt.</param>
+        /// <param name="keySize">The plainData size to use.</param>
+        /// <param name="iterationCount">The amount of iterations to derive the plainData.</param>
+        /// <returns>The encrypted xml string.</returns>
+        public virtual string ToEncryptedXmlString<U>(bool includePrivateKey, string password, byte[] salt, byte[] IV, int keySize = 0, int iterationCount = 10000)
+            where U : SymmetricAlgorithm, new()
+        {
+            this.salt = (byte[])salt.Clone();
+
+            using (var symAlgo = new SymmetricCipher<U>(password, this.salt, IV, keySize, iterationCount))
+            {
                 return symAlgo.EncryptToString(algo.ToXmlString(includePrivateKey));
             }
         }
