@@ -133,7 +133,7 @@ namespace Cipha.Security.Cryptography
         /// <param name="rsaConfigXmlString">The rsa xml configuration string.</param>
         /// <param name="symmetricConfigXmlString">The xml configuration string to apply.</param>
         /// <returns></returns>
-        public static SymmetricCipher<T> CreateCipher<T>(string rsaConfigXmlString, string symmetricConfigXmlString)
+        public static SymmetricCipher<T> CreateCipher<T>(string rsaConfigXmlString, string symmetricConfigXmlString, bool decryptIV = true, bool isMinimalConfigString = true)
             where T : SymmetricAlgorithm, new()
         {
             var symCipher = new SymmetricCipher<T>(new T());
@@ -142,16 +142,22 @@ namespace Cipha.Security.Cryptography
             {
                 using(var packer = new KeyPacker(rsaConfigXmlString))
                 {
-                    packer.ApplyConfigXmlString(symCipher, symmetricConfigXmlString);
+                    if (isMinimalConfigString)
+                        packer.ApplyMinimalConfigXmlString(symCipher, symmetricConfigXmlString, decryptIV);
+                    else
+                        packer.ApplyConfigXmlString(symCipher, symmetricConfigXmlString);
                 }
             }
             return symCipher;
         }
-        public SymmetricCipher<T> CreateCipher<T>(string symmetricConfigXmlString, bool decryptIV = true)
+        public SymmetricCipher<T> CreateCipher<T>(string symmetricConfigXmlString, bool decryptIV = true, bool isMinimalConfigString = true)
             where T : SymmetricAlgorithm, new()
         {
             var symCipher = new SymmetricCipher<T>(new T());
-            ApplyConfigXmlString(symCipher, symmetricConfigXmlString, decryptIV);
+            if (isMinimalConfigString)
+                ApplyMinimalConfigXmlString(symCipher, symmetricConfigXmlString, decryptIV);
+            else
+                ApplyConfigXmlString(symCipher, symmetricConfigXmlString, decryptIV);
             return symCipher;
         }
 

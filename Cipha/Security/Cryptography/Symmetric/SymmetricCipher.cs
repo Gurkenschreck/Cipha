@@ -347,7 +347,6 @@ namespace Cipha.Security.Cryptography.Symmetric
                 return buffer.ToArray();
             }
         }
-
         protected override byte[] DecryptData(byte[] cipherData)
         {
             using (MemoryStream buffer = new MemoryStream(cipherData))
