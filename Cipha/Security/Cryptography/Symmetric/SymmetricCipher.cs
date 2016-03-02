@@ -224,16 +224,18 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// <param name="salt">The salt to help deriving the plainData.</param>
         /// <param name="iv">The initializing vector.</param>
         /// <param name="saltSize">The salt size in bytes.</param>
+        /// <param name="keySize">The key size to use.</param>
+        /// <param name="blockSize">The block size to use.</param>
         /// <param name="iterations">The amount of iterations to derive the plainData.</param>
-        public SymmetricCipher(string password, out byte[] salt, out byte[] iv, int saltSize = 0, int iterations = 10000)
+        public SymmetricCipher(string password, out byte[] salt, out byte[] iv, int saltSize = 0, int keySize = 0, int blockSize = 0, int iterations = 10000)
         {
             if (saltSize > 0)
                 salt = Utilities.GenerateBytes(saltSize);
             else
                 salt = Utilities.GenerateBytes(DEFAULT_SALT_BYTE_LENGTH);
-                
+
             iv = Utilities.GenerateBytes(16);
-            Initialize(password, (byte[])salt.Clone(), hashIterations, (byte[])iv.Clone(), 0, 0);
+            Initialize(password, (byte[])salt.Clone(), hashIterations, (byte[])iv.Clone(), keySize, blockSize);
         }
 
         /// <summary>
