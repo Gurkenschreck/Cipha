@@ -179,19 +179,16 @@ namespace Cipha.Security.Cryptography.Symmetric
         /// </summary>
         /// <param name="plainData">The plainData to set.</param>
         /// <param name="IV">The IV to set.</param>
-        /// <param name="keySize">The plainData size to set.</param>
         /// <param name="blockSize">The size of the blocks to process at once.</param>
-        public SymmetricCipher(byte[] key, byte[] iv, int keySize = 0, int blockSize = 0)
+        public SymmetricCipher(byte[] key, byte[] iv, int blockSize = 0)
         {
             algo = new T();
-            if(keySize > 0)
-                algo.KeySize = keySize;
             if(blockSize > 0)
                 algo.BlockSize = blockSize;
             algo.Key = (byte[])key.Clone();
             algo.IV = (byte[])iv.Clone();
         }
-
+        
         /// <summary>
         /// Creates a new instance of the algorithm.
         /// 
