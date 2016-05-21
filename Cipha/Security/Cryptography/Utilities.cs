@@ -109,7 +109,7 @@ namespace Cipha.Security.Cryptography
         /// <summary>
         /// Overwrites each value with zeroes.
         /// </summary>
-        /// <param name="arr">The array to fill.</param>
+        /// <param name="arr">The array to wipe.</param>
         public static void SetArrayValuesZero(byte[] arr)
         {
             if (arr == null)

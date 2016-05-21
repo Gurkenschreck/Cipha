@@ -176,6 +176,15 @@ namespace Cipha.Security.Cryptography.Asymmetric
                 return symAlgo.EncryptToString(algo.ToXmlString(includePrivateKey));
             }
         }
+        public virtual string ToEncryptedXmlString<U>(bool includePrivateKey, byte[] key, byte[] IV, int blockSize = 0)
+            where U : SymmetricAlgorithm, new()
+        {
+            using (var symAlgo = new SymmetricCipher<U>(key, IV, blockSize: blockSize))
+            {
+                IV = (byte[])symAlgo.IV.Clone();
+                return symAlgo.EncryptToString(algo.ToXmlString(includePrivateKey));
+            }
+        }
         /// <summary>
         /// Makes use of the SymmetricCipher to encrypt
         /// the current encryptedPublicKeyXmlString configuration using
@@ -225,6 +234,14 @@ namespace Cipha.Security.Cryptography.Asymmetric
             }
         }
 
+        public virtual void FromEncryptedXmlString<U>(string encryptedXmlString, byte[] key, byte[] IV, int blockSize = 0)
+            where U : SymmetricAlgorithm, new()
+        {
+            using (var symAlgo = new SymmetricCipher<U>(key, IV, blockSize))
+            {
+                algo.FromXmlString(symAlgo.DecryptToString(encryptedXmlString));
+            }
+        }
         /// <summary>
         /// Encrypts a blob of plain data using the
         /// current configuration.

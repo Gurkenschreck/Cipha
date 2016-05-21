@@ -122,7 +122,6 @@ namespace Cipha.Security.IO
         public void DecryptStream(Stream source, Stream writeTo)
         {
             //Create variables to help with read and write.
-            byte[] bin = new byte[bufferLength]; //This is intermediate storage for the encryption.
             long totlen = source.Length;    //This is the total length of the input file.
 
             using (CryptoStream decStream = new CryptoStream(source, cipher.Algorithm.CreateDecryptor(), CryptoStreamMode.Read))
@@ -142,7 +141,6 @@ namespace Cipha.Security.IO
                 }
             }
 
-            Utilities.SetArrayValuesZero(bin);
             totlen = 0;
         }
 
