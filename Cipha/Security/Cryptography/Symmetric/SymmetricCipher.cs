@@ -232,7 +232,7 @@ namespace Cipha.Security.Cryptography.Symmetric
                 salt = Utilities.GenerateBytes(DEFAULT_SALT_BYTE_LENGTH);
 
             iv = Utilities.GenerateBytes(16);
-            Initialize(password, (byte[])salt.Clone(), hashIterations, (byte[])iv.Clone(), keySize, blockSize);
+            Initialize(password, (byte[])salt.Clone(), iterations, (byte[])iv.Clone(), keySize, blockSize);
         }
 
         /// <summary>
@@ -316,6 +316,7 @@ namespace Cipha.Security.Cryptography.Symmetric
                 algo.BlockSize = blockSize;
 
             this.salt = salt;
+            this.hashIterations = iterations;
 
             DeriveKey(password, this.salt, iterations);
 
